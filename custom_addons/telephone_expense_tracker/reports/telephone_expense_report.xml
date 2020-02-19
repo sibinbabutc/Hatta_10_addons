@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="telephone_expense_report_document">
+        <t t-call="report.html_container">
+            <t t-foreach="docs" t-as="o">
+                <div class="page">
+                    <table class="table table-condensed">
+                        <thead>
+                            <tr>
+                                <th style="border: 1px solid black;">Sl No</th>
+                                <th border="1">Name</th>
+                                <th border="1">Mobile</th>
+                                <th border="1">Total Amount</th>
+                                <th border="1">Allowed Amount </th>
+                                <th border="1">Deduction</th>
+                                <th border="1">Balance</th>
+                                <th border="1">Remarks</th>
+                                <th border="1">Prev. Month Balance</th>
+                                <th border="1">Inc. over Prev. Month</th>
+                                <th border="1">Dec. over Prev. Month</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="o.expense_line_ids" t-as="expense_line">
+                                <tr>
+                                    <td t-esc="expense_line_index+1"/>
+                                    <td><span t-field="expense_line.directory_id"/></td>
+                                    <td t-esc="expense_line.mobile"/>
+                                    <td t-esc="expense_line.total_amount"/>
+                                    <td t-esc="expense_line.allowed_amount"/>
+                                    <td t-esc="expense_line.deduction"/>
+                                    <td t-esc="expense_line.balance"/>
+                                    <td t-esc="expense_line.remarks"/>
+                                    <td t-esc="expense_line.prev_month_balance"/>
+                                    <td t-esc="expense_line.prev_month_increase"/>
+                                    <td t-esc="expense_line.prev_month_decrease"/>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+
+                </div>
+            </t>
+        </t>
+    </template>
+
+
+    <record id="paperformat_for_telephone_expense" model="report.paperformat">
+        <field name="name">Telephone Expense</field>
+        <field name="default" eval="True"/>
+        <field name="format">A4</field>
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">40</field>
+        <field name="margin_bottom">10</field>
+        <field name="margin_left">7</field>
+        <field name="margin_right">7</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">37</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <report
+        id="telephone_expense_report"
+        model="telephone.expense"
+        report_type="qweb-pdf"
+        string="Print Report"
+        name="telephone_expense_tracker.telephone_expense_report_document"
+        file="telephone_expense_tracker.telephone_expense_report_document"
+        paperformat="paperformat_for_telephone_expense"
+    />
+</odoo>

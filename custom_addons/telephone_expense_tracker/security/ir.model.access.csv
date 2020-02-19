@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_tel_account_allocation,access_tel_account_allocation,model_tel_account_allocation,,1,1,1,1
+access_telephone_expense_line,access_telephone_expense_line,model_telephone_expense_line,,1,1,1,1
+access_telephone_expense,access_telephone_expense,model_telephone_expense,,1,1,1,1
+access_telephone_directory,access_telephone_directory,model_telephone_directory,,1,1,1,1
+access_tel_group_allocation,access_tel_group_allocation,model_tel_group_allocation,,1,1,1,1
+access_tel_service_provider,access_tel_service_provider,model_tel_service_provider,,1,1,1,1
+access_telephone_group,access_telephone_group,model_telephone_group,,1,1,1,1

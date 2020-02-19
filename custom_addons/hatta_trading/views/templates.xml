@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <template id="assets_backend" name="widget_color assets" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <link rel="stylesheet" href="/hatta_trading/static/src/css/hatta.css"/>
+            <script type="text/javascript" src="/hatta_trading/static/src/js/hatta.js"></script>
+            <script type="text/javascript" src="/hatta_trading/static/src/js/button_no_wizard_close.js"></script>
+            <script type="text/javascript" src="/hatta_trading/static/src/js/view_form.js"></script>
+            <script type="text/javascript" src="/hatta_trading/static/src/js/multiple_attachments.js"></script>
+            <!--<script type="text/javascript" src="/hatta_trading/static/src/js/web_pdf_preview.js"/>-->
+        </xpath>
+    </template>
+
+    <template id="bid_details_supplier_wise">
+        <table class="table table-bordered">
+            <tr style="background: darkgrey;">
+                <th>Purchase Quotations</th>
+                <th>Supplier</th>
+                 <th>Product</th>
+                <th>Bid Quantity</th>
+                <th>Bid Amount</th>
+            </tr>
+            <t t-set="last_order"/>
+            <tr t-foreach="bids" t-as="b">
+                <td><t t-if="last_order != b.order_id.id">
+                    <span t-field="b.order_id"/>
+                </t></td>
+                <td><t t-if="last_order != b.order_id.id">
+                    <span t-field="b.order_id.partner_id"/>
+                </t></td>
+                <td><span t-field="b.product_id"/></td>
+                <td><span t-field="b.product_qty"/></td>
+                <td><span t-field="b.price_unit" t-options='{"widget": "monetary", "display_currency": b.order_id.currency_id}'/></td>
+                <t t-set="last_order" t-value="b.order_id.id"/>
+            </tr>
+        </table>
+    </template>
+
+    <template id="bid_details_product_wise">
+        <table class="table table-bordered">
+            <tr style="background: darkgrey;">
+                <th>Product</th>
+                <th>Supplier</th>
+                <th>Purchase Quotations</th>
+                <th>Bid Quantity</th>
+                <th>Bid Amount</th>
+            </tr>
+            <t t-set="last_product"/>
+            <tr t-foreach="bids" t-as="b">
+                <td><t t-if="last_product != b.product_id.id">
+                    <span t-field="b.product_id"/>
+                </t></td>
+                <td><span t-field="b.order_id.partner_id"/></td>
+                <td><span t-field="b.order_id"/></td>
+                <td><span t-field="b.product_qty"/></td>
+                <td><span t-field="b.price_unit" t-options='{"widget": "monetary", "display_currency": b.order_id.currency_id}'/></td>
+                <t t-set="last_product" t-value="b.product_id.id"/>
+            </tr>
+        </table>
+    </template>
+
+    <template id="product_supplier_details">
+        <table class="table table-bordered">
+            <tr style="background: darkgrey;">
+                <th>Product</th>
+                <th>Selected Suppliers</th>
+                <th>Quantity</th>
+                <th>Status</th>
+            </tr>
+            <t t-set="product_id"/>
+            <tr t-foreach="lines" t-as="line"  t-attf-class=" #{(not line.purchase_order_line_id) and 'with-rfq' or ''}">
+                <t t-if="line.product_id.id != product_id">
+                    <td><t t-esc="line.product_id.name"/></td>
+                    <td><t t-esc="line.supplier_id.name"/></td>
+                    <td><t t-esc="line.product_qty"/></td>
+                    <td>
+                        <t t-if="line.purchase_order_line_id">RFQ Created</t>
+                        <t t-if="not line.purchase_order_line_id">No RFQ Created</t>
+                    </td>
+                </t>
+                <t t-if="line.product_id.id == product_id">
+                    <td></td>
+                    <td><t t-esc="line.supplier_id.name"/></td>
+                    <td><t t-esc="line.product_qty"/></td>
+                    <td>
+                        <t t-if="line.purchase_order_line_id">RFQ Created</t>
+                        <t t-if="not line.purchase_order_line_id">No RFQ Created</t>
+                    </td>
+                </t>
+                <t t-set="product_id" t-value="line.product_id.id"/>
+            </tr>
+        </table>
+    </template>
+
+    <template id="supplier_product_details">
+        <table class="table table-bordered">
+            <tr style="background: darkgrey;">
+                <th>Supplier</th>
+                <th>Selected Products</th>
+                <th>Quantity</th>
+                <th>Status</th>
+            </tr>
+            <t t-set="supplier_id"/>
+            <tr t-foreach="lines" t-as="line" t-attf-class=" #{(not line.purchase_order_line_id) and 'with-rfq' or ''}">
+                <t t-if="line.supplier_id.id != supplier_id">
+                    <td><t t-esc="line.supplier_id.name"/></td>
+                    <td><t t-esc="line.product_id.name"/></td>
+                    <td><t t-esc="line.product_qty"/></td>
+                    <td>
+                        <t t-if="line.purchase_order_line_id">RFQ Created</t>
+                        <t t-if="not line.purchase_order_line_id">No RFQ Created</t>
+                    </td>
+                </t>
+                <t t-if="line.supplier_id.id == supplier_id">
+                    <td></td>
+                    <td><t t-esc="line.product_id.name"/></td>
+                    <td><t t-esc="line.product_qty"/></td>
+                    <td>
+                        <t t-if="line.purchase_order_line_id">RFQ Created</t>
+                        <t t-if="not line.purchase_order_line_id">No RFQ Created</t>
+                    </td>
+                </t>
+                <t t-set="supplier_id" t-value="line.supplier_id.id"/>
+            </tr>
+        </table>
+    </template>
+
+    <template id="cost_sheet_equipment_cost_details">
+        <div class="col-xs-6">
+            <t t-if="foreign_currency != local_currency">
+                <table class="table table-bordered">
+                    <tr style="background: darkgrey;">
+                        <th colspan="2" style="text-align:center;">Cost in Foreign Currency</th>
+                    </tr>
+                    <tr>
+                        <td width="50%"><b>Product Cost</b></td>
+                        <td><b><t t-esc="product_cost_fc" t-options="{'widget':'monetary', 'display_currency':foreign_currency}"/></b></td>
+                    </tr>
+                    <tr>
+                        <td width="50%"><b>Total Equipment Cost</b></td>
+                        <td><b><t t-esc="total_equipment_cost_fc" t-options="{'widget':'monetary', 'display_currency':foreign_currency}"/></b></td>
+                    </tr>
+                    <tr>
+                        <td width="50%" style="padding-left:25px;">Freight Charge</td>
+                        <td><t t-esc="freight_charge_fc" t-options="{'widget':'monetary', 'display_currency':foreign_currency}"/></td>
+                    </tr>
+                    <tr>
+                        <td width="50%" style="padding-left:25px;">FOB</td>
+                        <td><t t-esc="fob_charges_fc" t-options="{'widget':'monetary', 'display_currency':foreign_currency}"/></td>
+                    </tr>
+                    <tr>
+                        <td width="50%" style="padding-left:25px;">Other Charges</td>
+                        <td><t t-esc="other_charges_fc" t-options="{'widget':'monetary', 'display_currency':foreign_currency}"/></td>
+                    </tr>
+                    <tr>
+                        <td width="50%" style="padding-left:25px;">Certificate Charges</td>
+                        <td><t t-esc="certificate_charges_fc" t-options="{'widget':'monetary', 'display_currency':foreign_currency}"/></td>
+                    </tr>
+                    <tr>
+                        <td width="50%"><b>Total Cost</b></td>
+                        <td><b><t t-esc="total_cost_fc" t-options="{'widget':'monetary', 'display_currency':foreign_currency}"/></b></td>
+                    </tr>
+                </table>
+            </t>
+            <t t-if="foreign_currency != local_currency">
+                <table class="table table-bordered" style="margin-top:-12px;">
+                    <tr>
+                        <td width="50%" style="border-collapse:separate;border-spacing:10px;"><b>Agency Commission</b></td>
+                        <td><b><t t-esc="agency_commission_fc" t-options="{'widget':'monetary', 'display_currency':foreign_currency}"/></b></td>
+                    </tr>
+                    <tr>
+                        <td width="50%"><b>Payable to Vendor</b></td>
+                        <td><b><t t-esc="net_payable_supplier_fc" t-options="{'widget':'monetary', 'display_currency':foreign_currency}"/></b></td>
+                    </tr>
+                </table>
+            </t>
+            <t t-if="foreign_currency != local_currency">
+                <table class="table table-bordered" style="margin-top:-12px;">
+                    <tr>
+                        <td width="50%"><b>Total Expense</b></td>
+                        <td><b><t t-esc="total_expense_line_fc" t-options="{'widget':'monetary', 'display_currency':foreign_currency}"/></b></td>
+                    </tr>
+                    <t t-foreach="expense_line_ids" t-as="expense_line">
+                        <tr>
+                            <td width="50%" style="border-collapse:separate;border-spacing:10px;padding-left:25px;" ><span t-field="expense_line.line_charge_id"/></td>
+                            <td><b><span t-field="expense_line.amount_fc" t-options="{'widget':'monetary', 'display_currency':foreign_currency}"/></b></td>
+                        </tr>
+                    </t>
+                </table>
+            </t>
+            <t t-if="foreign_currency != local_currency">
+                <table class="table table-bordered" style="margin-top:-12px;font-size:15px">
+                    <tr>
+                        <td width="50%"><b>Total</b></td>
+                        <td><b><t t-esc="final_total_fc" t-options="{'widget':'monetary', 'display_currency':foreign_currency}"/></b></td>
+                    </tr>
+                </table>
+            </t>
+        </div>
+        <div class="col-xs-6">
+            <table class="table table-bordered">
+                <tr style="background: darkgrey;">
+                    <th colspan="2" style="text-align:center;">Cost in Local Currency</th>
+                </tr>
+                <tr>
+                    <td width="50%"><b>Product Cost</b></td>
+                    <td><b><t t-esc="product_cost_lc" t-options="{'widget':'monetary', 'display_currency':local_currency}"/></b></td>
+                </tr>
+                <tr>
+                    <td width="50%"><b>Total Equipment Cost</b></td>
+                    <td><b><t t-esc="total_equipment_cost_lc" t-options="{'widget':'monetary', 'display_currency':local_currency}"/></b></td>
+                </tr>
+                <tr>
+                    <td width="50%" style="padding-left:25px;">Freight Charge</td>
+                    <td><t t-esc="freight_charge_lc" t-options="{'widget':'monetary', 'display_currency':local_currency}"/></td>
+                </tr>
+                <tr>
+                    <td width="50%" style="padding-left:25px;">FOB</td>
+                    <td><t t-esc="fob_charges_lc" t-options="{'widget':'monetary', 'display_currency':local_currency}"/></td>
+                </tr>
+                <tr>
+                    <td width="50%" style="padding-left:25px;">Other Charges</td>
+                    <td><t t-esc="other_charges_lc" t-options="{'widget':'monetary', 'display_currency':local_currency}"/></td>
+                </tr>
+                <tr>
+                    <td width="50%" style="padding-left:25px;">Certificate Charges</td>
+                    <td><t t-esc="certificate_charges_lc" t-options="{'widget':'monetary', 'display_currency':local_currency}"/></td>
+                </tr>
+                <tr>
+                    <td width="50%"><b>Total Cost</b></td>
+                    <td><b><t t-esc="total_cost_lc" t-options="{'widget':'monetary', 'display_currency':local_currency}"/></b></td>
+                </tr>
+                </table>
+            <table class="table table-bordered" style="margin-top:-12px;">
+                <tr>
+                    <td width="50%" style="border-collapse:separate;border-spacing:10px;"><b>Agency Commission</b></td>
+                    <td><b><t t-esc="agency_commission_lc" t-options="{'widget':'monetary', 'display_currency':local_currency}"/></b></td>
+                </tr>
+                <tr>
+                    <td width="50%"><b>Payable to Vendor</b></td>
+                    <td><b><t t-esc="net_payable_supplier_lc" t-options="{'widget':'monetary', 'display_currency':local_currency}"/></b></td>
+                </tr>
+            </table>
+            <table class="table table-bordered" style="margin-top:-12px;">
+                <tr>
+                    <td width="50%"><b>Total Expense</b></td>
+                    <td><b><t t-esc="total_expense_line_lc" t-options="{'widget':'monetary', 'display_currency':local_currency}"/></b></td>
+                </tr>
+                <t t-foreach="expense_line_ids" t-as="expense_line">
+                    <tr>
+                        <td width="50%" style="border-collapse:separate;border-spacing:10px;padding-left:25px;"><span t-field="expense_line.line_charge_id"/></td>
+                        <td><b><span t-field="expense_line.amount_lc" t-options="{'widget':'monetary', 'display_currency':local_currency}"/></b></td>
+                    </tr>
+                </t>
+            </table>
+            <table class="table table-bordered" style="margin-top:-12px;font-size:15px">
+                <tr>
+                    <td width="50%"><b>Total</b></td>
+                    <td><b><t t-esc="final_total_lc" t-options="{'widget':'monetary', 'display_currency':local_currency}"/></b></td>
+                </tr>
+            </table>
+        </div>
+
+    </template>
+
+    <template id="percentage_mapping_status">
+        <table class="table table-bordered">
+            <tr style="background: darkgrey;">
+                <th>Cost Line</th>
+                <th>Total Allocated Percentage</th>
+            </tr>
+            <tr t-foreach="lines" t-as="line"  t-attf-class=" #{line['allocated_percentage'] != 100 and 'percentage-full' or 'percentage-not'}">
+                <td><t t-esc="line['cost_line']"/></td>
+                <td><t t-esc="line['allocated_percentage']"/></td>
+            </tr>
+        </table>
+    </template>
+
+    <template id="margin_percentage_mapping_status">
+        <table class="table table-bordered">
+            <tr t-attf-class=" #{allocated_margin_percentage != 100 and 'percentage-full' or 'percentage-not'}">
+                <td>Total Margin Allocation</td>
+                <td><t t-esc="allocated_margin_percentage"/></td>
+            </tr>
+        </table>
+    </template>
+
+</odoo>

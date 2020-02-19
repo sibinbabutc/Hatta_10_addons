@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="so_invoice_summary_wizard" model="ir.ui.view">
+        <field name="name">hatta.so.invoice.summary.wizard</field>
+        <field name="model">sale.invoice.summary</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                        <field name="cost_center_id" domain="[('tag_type', '=', 'cost_center')]"/>
+                        <field name="inv_id" domain="[('state', 'not in', ['draft', 'cancel']),
+                        ('type', '=', 'out_invoice')]"/>
+                        <field name="partner_id" domain="[('customer', '=', True)]"/>
+                    </group>
+                    <group>
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="print_report" string="Print" type="object" class="oe_highlight" />
+                        or
+                    <button string="Cancel" class="oe_link" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="hatta_so_invoice_summary" model="ir.actions.act_window">
+        <field name="name">Sale Invoice Summary</field>
+        <field name="res_model">sale.invoice.summary</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <!--<field name="view_id" ref="hatta_reports.po_summary_report"/>-->
+        <field name="target">new</field>
+    </record>
+
+<menuitem id="so_invoice_summary_menu" name="Sales Invoice Summary" parent="sales_team.menu_sale_report" sequence="1"
+          action="hatta_so_invoice_summary"/>
+
+
+</odoo>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="partner_ledger_document">
+        <div class="page ft_font">
+        <div class="arrow-down"/>
+        <div class="col-xs-6" style="background:#c9c9c9;height:30px;margin-left:-30px;text-align:center;font-size:16px;padding-top:7px;"><b>HATTA TRADING &amp; SERVICES</b></div>
+        <div class="arrow-down_1"/>
+        <div class="col-xs-12" style="margin-bottom:10px;"></div>
+        <div class="col-xs-12" style="text-align:center;font-size:13px;margin-bottom:10px;padding-right:30px;"><b>PARTNER LEDGER</b></div>
+            <table class="tab1" style="" width="100%">
+                <thead>
+                    <th style="text-align:left;border-top:.05em solid grey;border-bottom:.05em solid grey;padding:8px;background:#c9c9c9;">Chart of Accounts</th>
+                    <th style="text-align:left;border-top:.05em solid grey;border-bottom:.05em solid grey;padding:8px;background:#c9c9c9;">Fiscal Year</th>
+                    <th style="text-align:left;border-top:.05em solid grey;border-bottom:.05em solid grey;padding:8px;background:#c9c9c9;">Journals</th>
+                    <th style="text-align:left;border-top:.05em solid grey;border-bottom:.05em solid grey;padding:8px;background:#c9c9c9;">Filter By</th>
+                    <th style="text-align:left;border-top:.05em solid grey;border-bottom:.05em solid grey;padding:8px;background:#c9c9c9;">Partners</th>
+                    <th style="text-align:left;border-top:.05em solid grey;border-bottom:.05em solid grey;padding:8px;background:#c9c9c9;">Target Moves</th>
+                    <th style="text-align:left;border-top:.05em solid grey;border-bottom:.05em solid grey;padding:8px;background:#c9c9c9;">DELIVERY DATE</th>
+                    <th style="text-align:left;border-top:.05em solid grey;border-bottom:.05em solid grey;padding:8px;background:#c9c9c9;">PO</th>
+                    <th style="text-align:left;border-top:.05em solid grey;border-bottom:.05em solid grey;padding:8px;background:#c9c9c9;">SUPPLIER</th>
+                    <th style="text-align:left;border-top:.05em solid grey;border-bottom:.05em solid grey;padding:8px;background:#c9c9c9;">REJECTIONS</th>
+                </thead>
+                <tr>
+                    <td style="padding:8px;">xxxx</td>
+                    <td style="padding:8px;">xxxx</td>
+                    <td style="padding:8px;">xxxx</td>
+                    <td style="padding:8px;">xxxx</td>
+                    <td style="padding:8px;">xxxx</td>
+                    <td style="padding:8px;">xxxx</td>
+                </tr>
+            </table>
+            <table class="tab1" style="" width="100%">
+                <thead>
+                    <th style="text-align:left;border-top:.05em solid grey;border-bottom:.05em solid grey;padding:8px;background:#c9c9c9;">Date</th>
+                    <th style="text-align:left;border-top:.05em solid grey;border-bottom:.05em solid grey;padding:8px;background:#c9c9c9;">JRNL</th>
+                    <th style="text-align:left;border-top:.05em solid grey;border-bottom:.05em solid grey;padding:8px;background:#c9c9c9;">Ref</th>
+                    <th style="text-align:left;border-top:.05em solid grey;border-bottom:.05em solid grey;padding:8px;background:#c9c9c9;">Account</th>
+                    <th style="text-align:left;border-top:.05em solid grey;border-bottom:.05em solid grey;padding:8px;background:#c9c9c9;">Entry Label</th>
+                    <th style="text-align:left;border-top:.05em solid grey;border-bottom:.05em solid grey;padding:8px;background:#c9c9c9;">Debit</th>
+                    <th style="text-align:left;border-top:.05em solid grey;border-bottom:.05em solid grey;padding:8px;background:#c9c9c9;">Credit</th>
+                    <th style="text-align:left;border-top:.05em solid grey;border-bottom:.05em solid grey;padding:8px;background:#c9c9c9;">Balance</th>
+                </thead>
+                <tr>
+                    <td style="padding:8px;">xxxx</td>
+                    <td style="padding:8px;">xxxx</td>
+                    <td style="padding:8px;">xxxx</td>
+                    <td style="padding:8px;">xxxx</td>
+                    <td style="padding:8px;">xxxx</td>
+                    <td style="padding:8px;">xxxx</td>
+                    <td style="padding:8px;">xxxx</td>
+                    <td style="padding:8px;">xxxx</td>
+                </tr>
+            </table>
+
+        </div>
+    </template>
+
+
+    <template id="partner_ledger">
+        <t t-call="report.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="hatta_reports.partner_ledger_document"/>
+            </t>
+        </t>
+    </template>
+
+    <report
+    string="Partner Ledger"
+    id="hatta_partner_ledger"
+    report_type="qweb-pdf"
+    model="sale.order"
+    name="hatta_reports.partner_ledger"
+    file="hatta_reports.partner_ledger"
+    paperformat="paperformat_inventory_report"
+
+    />
+</odoo>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="report_pv_with_cheque_document">
+        <div class="header" style="height:200px">
+    <!-- company name -->
+            <div class="row">
+                <div class="col-xs-3">
+                    <img style="width:100% !important;" t-if="res_company.logo" t-att-src="'data:image/png;base64,%s' % res_company.logo" />
+                </div>
+                <div class="col-xs-9" style="text-align:right;font-size:15px;">
+                    <div style="font-weight:bold;">
+                            <h4 style="margin-bottom: 6px;padding-top: 6px;font-weight: bold;" t-esc="res_company.partner_id.name"/>
+                    </div>
+                    <div >
+                        <span t-field="res_company.partner_id.street"/><br/>
+                        <span t-field="res_company.partner_id.street2"/><br/>
+                        <span t-field="res_company.partner_id.city"/>
+                        <span t-field="res_company.partner_id.state_id"/>
+                        <span t-field="res_company.partner_id.zip"/><br/>
+                        <span t-field="res_company.partner_id.country_id"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+               
+                <div class="page" style="font-size:16px" width="100%">
+            <br/>
+            <div class="col-xs-12" style="font-weight:bold;">Ref : <span t-esc="o.name"/></div>
+            <div class="col-xs-12 mt4" style="font-weight:bold;">Date:<t t-esc="datetime.datetime.now().strftime('%d-%m-%Y')"/></div>
+            <div class="col-xs-12 mt16"><b>M/s <span t-field="o.partner_id"/>,</b></div>
+            <div class="col-xs-12 mt32" t-if="o.partner_id.phone">Tel: <span t-field="o.partner_id.phone"/></div>
+            <div class="col-xs-12" t-if="o.partner_id.fax">fax: <span t-field="o.partner_id.fax"/></div>
+            <div class="col-xs-12 mt16"> <strong><b>Attn: Accounts Department</b></strong></div>
+            <div class="col-xs-12 mt16"> Dear Sir/Madam, </div>
+            <div class="col-xs-12 mt8" style="text-indent:30px;">
+                <b><u>Sub:- CHEQUE READY FOR COLLECTION</u></b>
+            </div>
+
+            <div class="col-xs-12 mt8" style="text-indent:30px;">This is to inform you that your payment due with us is ready for collection.
+                Please arrange to pick up with the Original Official Receipt during our office hours
+                between 02:00 p.m to 5.00 p.m. (Saturday-Wednesday)
+                </div>
+                <div class="col-xs-12 mt16"><span t-if="o.cheque_id" style="padding-left:20px;">Cheque No: <span t-field="o.cheque_id.cheque_no"/> </span></div>
+                <div class="col-xs-12 mt8"><span t-if="o.cheque_id" style="padding-left:20px;">Cheque Date: <span t-field="o.cheque_id.cheque_date"/> </span></div>
+                <div class="col-xs-12 mt8"><span t-if="o.cheque_id" style="padding-left:20px;">Amount: <span t-field="o.amount"/> </span></div>
+                <div class="col-xs-12 mt8"><span t-if="o.cheque_id" style="padding-left:20px;">Bank Name: <span t-field="o.cheque_id.bank_name.name"/> </span></div>
+                <div class="col-xs-12 mt32">Yours Sincerely,
+            </div>
+            <div class="col-xs-12 mt16"><strong>For <span t-field="o.company_id.name"/> <br/>Finance Department</strong></div>
+            <div class="col-xs-12 mt16">Our Location: Sheikh Zayed Road, Business Central Towers, Office#1102B, Media City,
+P.O.Box:118784, Dubai, Tel:04-2413377, Fax:04-2427682, Email:financedubai@mecemirates.com</div>
+            <div class="col-xs-12">
+                <img src="/account_voucher_ft/static/src/images/location.png" style="max-width:80%"/>
+            </div>
+             <div class="col-xs-12">This is a computer-generated document, no signature is required</div>
+
+        </div>
+
+    </template>
+
+
+
+    <template id="report_pv_with_cheque">
+        <t t-call="report.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="account_voucher_ft.report_pv_with_cheque_document" t-lang="o.partner_id.lang"/>
+            </t>
+        </t>
+    </template>
+
+
+            <report
+            id="account_pv_with_cheque"
+            model="account.payment"
+            string="PV With Cheque"
+            report_type="qweb-pdf"
+            menu="False"
+            name="account_voucher_ft.report_pv_with_cheque"
+            file="account_voucher_ft.report_pv_with_cheque"
+            attachment_use="True"
+            attachment="(object.name+'.pdf')"
+        />
+
+
+</odoo>

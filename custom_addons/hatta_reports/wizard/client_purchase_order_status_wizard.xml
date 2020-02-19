@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="po_supplier" model="ir.ui.view">
+        <field name="name">purchase supplier</field>
+        <field name="model">purchase.order.supplier</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="po_id"/>
+                    <field name="partner_id"/>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                </group>
+                <footer>
+                    <button name="print_report" string="Print" type="object" class="oe_highlight" />
+                        or
+                    <button string="Cancel" class="oe_link" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="po_supplier_wise" model="ir.actions.act_window">
+        <field name="name">Purchase Order</field>
+        <field name="res_model">purchase.order.supplier</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="po_supplier_menu" name="Purchase Order" parent="stock.menu_warehouse_report" sequence="16"
+                  action="po_supplier_wise"/>
+
+</odoo>

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="report_tax_in_out_statement">
+    <t t-if="sale_tax_item">
+        <div class="page" style="font-size:10px;" >
+            <div class="col-xs-12" style="text-align:center;font-size:16px;font-weight:bold;margin-bottom:40px;">
+                <span>TAX PAYABLE(SALES INVOICE)</span>
+            </div>
+
+          <div class="col-xs-12" style="text-align:left;font-size:10px;font-weight:bold;"><span>From Date: <t t-esc="from_date"/></span></div>
+                <table class="table table-condensed" style="margin-top:0px;width:100%;text-align:center;border:solid .05em black;">
+                    <thead style="background:#cccccc;">
+                        <th height="20px;" style="text-align:center;border-left:.05em solid black;border-right:.05 solid black;border-top:.05em !important;vertical-align:middle;border-bottom:solid .05em black !important;">SL</th>
+                        <th style="text-align:center;vertical-align:middle;border-left:.05em solid black;border-right:.05 solid black;border-top:0px !important;border-bottom:solid .05em black !important;">CUSTOMER</th>
+                        <th style="text-align:center;vertical-align:middle;border-left:.05em solid black;border-right:.05 solid black;border-top:0px !important;border-bottom:solid .05em black !important;">CUSTOMER VAT NO.</th>
+                        <th style="text-align:center;vertical-align:middle;border-left:.05em solid black;border-right:.05 solid black;border-top:0px !important;border-bottom:solid .05em black !important;">Invoice DATE</th>
+                        <th style="text-align:center;vertical-align:middle;border-left:.05em solid black;border-right:.05 solid black;border-top:0px !important;border-bottom:solid .05em black !important;">INVOICE NO.</th>
+                        <th style="text-align:center;vertical-align:middle;border-left:.05em solid black;border-right:.05 solid black;border-top:0px !important;border-bottom:solid .05em black !important;">Product Description</th>
+                        <th style="text-align:center;vertical-align:middle;border-left:.05em solid black;border-right:.05 solid black;border-top:0px !important;border-bottom:solid .05em black !important;">AMOUNT</th>
+                        <th style="text-align:center;vertical-align:middle;border-left:.05em solid black;border-right:.05 solid black;border-top:0px !important;border-bottom:solid .05em black !important;">VAT(%)</th>
+                        <th style="text-align:center;vertical-align:middle;border-left:.05em solid black;border-right:.05 solid black;border-top:0px !important;border-bottom:solid .05em black !important;">VAT AMOUNT</th>
+                        <th style="text-align:center;vertical-align:middle;border-left:.05em solid black;border-right:.05 solid black;border-top:0px !important;border-bottom:solid .05em black !important;">AMOUNT WITH VAT</th>
+                    </thead>
+                    <t t-foreach="sale_tax_item" t-as="sale">
+                        <tr>
+                            <td style="border-left:solid .05em black;border-right:solid .05em black;vertical-align:middle;border-top:solid .05em black !important;"><span t-esc="sale_index+1"/></td>
+                            <td style="border-left:solid .05em black;border-right:solid .05em #bbb7b7vertical-align:middle;border-top:solid .05em black !important;"><span t-esc="sale.invoice_id.partner_id.name"/></td>
+                            <td style="border-left:solid .05em black;border-right:solid .05em black;vertical-align:middle;border-top:solid .05em black !important;"><span t-esc="sale.invoice_id.partner_id.vat"/></td>
+                            <td style="border-left:solid .05em black;border-right:solid .05em black;vertical-align:middle;border-top:solid .05em black !important;"><span t-esc="sale.invoice_id.date"/></td>
+                            <td style="border-left:solid .05em black;border-right:solid .05em black;vertical-align:middle;border-top:solid .05em black !important;"><span t-esc="sale.invoice_id.move_id.name"/></td>
+                            <td style="border-left:solid .05em black;border-right:solid .05em black;vertical-align:middle;border-top:solid .05em black !important;"><span t-esc="sale.name"/></td>
+                            <td style="border-left:solid .05em black;border-right:solid .05em black;vertical-align:middle;border-top:solid .05em black !important;"><span t-esc="'%.2f' % (sale.total_excluded_amount)"/></td>
+                            <td style="border-left:solid .05em black;border-right:solid .05em black;vertical-align:middle;border-top:solid .05em black !important;"><span t-esc="'%.2f' % (sale.tax_id_for_report.amount)"/></td>
+                            <td style="border-left:solid .05em black;border-right:solid .05em black;;vertical-align:middle;border-top:solid .05em black !important;"><span t-esc="'%.2f' % (sale.line_tax_amount)"/></td>
+                            <td style="border-left:solid .05em black;border-right:solid .05em black;;vertical-align:middle;border-top:solid .05em black !important;"><span t-esc="'%.2f' % (sale.line_tax_amount + sale.total_excluded_amount)"/></td>
+                        </tr>
+                    </t>
+                    <tr style="background:#cccccc;">
+                        <td colspan="3" style="border-left:solid .05em black;border-right:solid .05em black;vertical-align:middle;border-top:solid .05em black;">End Date: <span t-esc="to_date"/></td>
+                        <td colspan="3" style="border-left:solid .05em black;border-right:solid .05em black;vertical-align:middle;border-top:solid .05em black;">Total </td>
+                        <td style="border-left:solid .05em black;border-right:solid .05em black;vertical-align:middle;border-top:solid .05em black;"><span t-esc="'%.2f' % (sale_total)" /></td>
+                        <td style="border-left:solid .05em black;border-right:solid .05em black;vertical-align:middle;border-top:solid .05em black;"></td>
+                        <td style="border-left:solid .05em black;border-right:solid .05em black;vertical-align:middle;border-top:solid .05em black;"><span t-esc="'%.2f' % (sale_tax_total)" /></td>
+                        <td style="border-left:solid .05em black;border-right:solid .05em black;vertical-align:middle;border-top:solid .05em black;"><span t-esc="'%.2f' % (sale_total_with_tax)" /></td>
+                    </tr>
+                </table>
+        </div>
+    </t>
+
+    <t t-if="purchase_tax_item">
+        <div class="page" style="font-size:10px;" >
+        <div class="col-xs-12" style="text-align:center;font-size:16px;font-weight:bold;margin-bottom:40px;"><span>TAX PAID(PURCHASE INVOICE)</span></div>
+          <div class="col-xs-12" style="text-align:left;font-size:10px;font-weight:bold;"><span>From Date: <t t-esc="from_date"/></span></div>
+        <table class="table table-condensed" style="width:100%;text-align:center;border:solid .05em black;">
+            <thead style="background:#cccccc;">
+                <th height="20px;" style="text-align:center;border-left:.05em solid black;border-right:.05 solid black;border-top:.05em !important;vertical-align:middle;border-bottom:solid .05em black !important;">SL</th>
+                <th style="text-align:center;border-left:.05em solid black;border-right:.05 solid black;border-top:0px !important;border-bottom:solid .05em black !important;">NAME OF SUPPLIER</th>
+                <th style="text-align:center;border-left:.05em solid black;border-right:.05 solid black;border-top:0px !important;border-bottom:solid .05em black !important;">SUPPLIER VAT NO.</th>
+                <th style="text-align:center;border-left:.05em solid black;border-right:.05 solid black;border-top:0px !important;border-bottom:solid .05em black !important;">DATE</th>
+                <th style="text-align:center;border-left:.05em solid black;border-right:.05 solid black;border-top:0px !important;border-bottom:solid .05em black !important;">INVOICE NO.</th>
+                <th style="text-align:center;border-left:.05em solid black;border-right:.05 solid black;border-top:0px !important;border-bottom:solid .05em black !important;">Product Description</th>
+                <th style="text-align:center;border-left:.05em solid black;border-right:.05 solid black;border-top:0px !important;border-bottom:solid .05em black !important;">AMOUNT</th>
+                <th style="text-align:center;border-left:.05em solid black;border-right:.05 solid black;border-top:0px !important;border-bottom:solid .05em black !important;">VAT(%)</th>
+                <th style="text-align:center;border-left:.05em solid black;border-right:.05 solid black;border-top:0px !important;border-bottom:solid .05em black !important;">VAT AMOUNT</th>
+                <th style="text-align:center;border-left:.05em solid black;border-right:.05 solid black;border-top:0px !important;border-bottom:solid .05em black !important;">AMOUNT WITH VAT</th>
+            </thead>
+            <t t-if="purchase_tax_item" t-foreach="purchase_tax_item" t-as="purchase">
+                <tr>
+                    <td style="border-left:solid .05em black;border-right:solid .05em black;vertical-align:middle;border-top:solid .05em black !important;"><span t-esc="purchase_index+1"/></td>
+                    <td style="border-left:solid .05em black;border-right:solid .05em black;vertical-align:middle;border-top:solid .05em black !important;"><span t-esc="purchase.invoice_id.partner_id.name"/></td>
+                    <td style="border-left:solid .05em black;border-right:solid .05em black;vertical-align:middle;border-top:solid .05em black !important;"><span t-esc="purchase.invoice_id.partner_id.vat"/></td>
+                    <td style="border-left:solid .05em black;border-right:solid .05em black;vertical-align:middle;border-top:solid .05em black !important;"><span t-esc="purchase.invoice_id.date"/></td>
+                    <td style="border-left:solid .05em black;border-right:solid .05em black;vertical-align:middle;border-top:solid .05em black !important;"><span t-esc="purchase.invoice_id.move_id.name"/></td>
+                    <td style="border-left:solid .05em black;border-right:solid .05em black;vertical-align:middle;border-top:solid .05em black !important;"><span t-esc="purchase.name"/></td>
+                    <td style="border-left:solid .05em black;border-right:solid .05em black;vertical-align:middle;border-top:solid .05em black !important;"><span t-esc="'%.2f' % (purchase.total_excluded_amount)"/></td>
+                    <td style="border-left:solid .05em black;border-right:solid .05em black;vertical-align:middle;border-top:solid .05em black !important;"><span t-esc="'%.2f' % (purchase.tax_id_for_report.amount)"/></td>
+                    <td style="border-left:solid .05em black;border-right:solid .05em black;vertical-align:middle;border-top:solid .05em black !important;"><span t-esc="'%.2f' % (purchase.line_tax_amount)"/></td>
+                    <td style="border-left:solid .05em black;border-right:solid .05em black;vertical-align:middle;border-top:solid .05em black !important;"><span t-esc="'%.2f' % (purchase.line_tax_amount + purchase.total_excluded_amount)"/></td>
+                </tr>
+            </t>
+            <tr style="background:#cccccc;">
+                <td colspan="3" style="border-left:solid .05em black;border-right:solid .05em black;vertical-align:middle;border-top:solid .05em black;">End Date: <span t-esc="to_date"/></td>
+                <td colspan="3" style="border-left:solid .05em black;border-right:solid .05em black;vertical-align:middle;border-top:solid .05em black;">Total </td>
+                <td style="border-left:solid .05em black;border-right:solid .05em black;vertical-align:middle;border-top:solid .05em black;"><span t-esc="'%.2f' % (purchase_total)" /></td>
+                <td style="border-left:solid .05em black;border-right:solid .05em black;vertical-align:middle;border-top:solid .05em black;"></td>
+                <td style="border-left:solid .05em black;border-right:solid .05em black;vertical-align:middle;border-top:solid .05em black;"><span t-esc="'%.2f' % (purchase_tax_total)" /></td>
+                <td style="border-left:solid .05em black;border-right:solid .05em black;vertical-align:middle;border-top:solid .05em black;"><span t-esc="'%.2f' % (purchase_total_with_tax)" /></td>
+            </tr>
+        </table>
+        </div>
+    </t>
+</template>
+
+
+    <record id="paperformat_tax_in_out_report" model="report.paperformat">
+            <field name="name">Tax In Out Report</field>
+            <field name="default" eval="True"/>
+            <field name="format">custom</field>
+            <field name="page_height">297</field>
+            <field name="page_width">210</field>
+            <field name="orientation">Landscape</field>
+            <field name="margin_top">30</field>
+            <field name="margin_bottom">23</field>
+            <field name="margin_left">5</field>
+            <field name="margin_right">5</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">20</field>
+            <field name="dpi">90</field>
+        </record>
+
+         <report
+            string="Tax Report"
+            id="action_report_report_wizard_menu_tax_report"
+            model="report.account_tax_report_ft.report_tax_in_out_statement"
+            report_type="qweb-pdf"
+            name="account_tax_report_ft.report_tax_in_out_statement"
+            file="account_tax_report_ft.report_tax_in_out_statement"
+            paperformat="paperformat_tax_in_out_report"
+        />
+</odoo>

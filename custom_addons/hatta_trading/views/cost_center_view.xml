@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="cost_center_view_form" model="ir.ui.view">
+        <field name="name">account.analytic.tag.view.form</field>
+        <field name="model">account.analytic.tag</field>
+        <field name="priority">50</field>
+        <field name="arch" type="xml">
+            <form string="Cost Center">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" string="Name"/>
+                            <field name="code"/>
+                            <field name="tag_type" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="sequence"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="cost_center_view_tree" model="ir.ui.view">
+        <field name="name">account.analytic.tag.view.tree</field>
+        <field name="model">account.analytic.tag</field>
+        <field name="priority">50</field>
+        <field name="arch" type="xml">
+            <tree string="">
+                <field name="code"/>
+                <field name="name" string="Name"/>
+            </tree>
+        </field>
+    </record>
+
+        <record id="action_job_account" model="ir.actions.act_window">
+        <field name="name">Job Account</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">account.analytic.account</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('is_job_code', '=', True)]</field>
+        <field name="context">{"default_is_job_code":True}</field>
+        <field name="view_ids"
+               eval="[(5, 0, 0),
+                      (0, 0, {
+                        'sequence': 1,
+                        'view_mode': 'tree',
+                        'view_id': ref('analytic.view_account_analytic_account_list')}),
+                      (0, 0, {
+                      'sequence': 2,
+                      'view_mode': 'form', 'view_id': ref('view_account_analytic_account_job_code_form')})]"/>
+    </record>
+
+
+    <record id="cost_center_action" model="ir.actions.act_window">
+        <field name="name">Cost Center</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">account.analytic.tag</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('tag_type', '=', 'cost_center')]</field>
+        <field name="context">{"default_tag_type":'cost_center'}</field>
+        <field name="view_ids"
+               eval="[(5, 0, 0),
+                      (0, 0, {
+                        'sequence': 1,
+                        'view_mode': 'tree',
+                        'view_id': ref('cost_center_view_tree')}),
+                      (0, 0, {
+                      'sequence': 2,
+                      'view_mode': 'form', 'view_id': ref('cost_center_view_form')})]"/>
+    </record>
+
+    <record id="ir_sequence_inherit_view_form" model="ir.ui.view">
+        <field name="name">Sequence Inherited</field>
+        <field name="model">ir.sequence</field>
+        <field name="inherit_id" ref="base.sequence_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='implementation']" position="after">
+                <field name="is_cost_center"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

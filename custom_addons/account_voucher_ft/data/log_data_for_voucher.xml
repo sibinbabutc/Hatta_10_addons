@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data noupdate="1">
+        <record id="ft_account_payment_draft" model="mail.message.subtype">
+            <field name="name">Draft</field>
+            <field name="res_model">account.payment</field>
+            <field name="default" eval="False"/>
+            <field name="description">Draft Entry</field>
+        </record>
+        <record id="ft_account_payment_posted" model="mail.message.subtype">
+            <field name="name">Confirmed</field>
+            <field name="res_model">account.payment</field>
+            <field name="default" eval="False"/>
+            <field name="description">Confirmed</field>
+        </record>
+        <record id="ft_account_payment_accounted" model="mail.message.subtype">
+            <field name="name">Posted</field>
+            <field name="res_model">account.payment</field>
+            <field name="default" eval="False"/>
+            <field name="hidden" eval="True"/>
+            <field name="description">Posted</field>
+        </record>
+        <record id="ft_account_payment_sent" model="mail.message.subtype">
+            <field name="name">Sent</field>
+            <field name="res_model">account.payment</field>
+            <field name="default" eval="False"/>
+            <field name="description">Sent</field>
+        </record>
+        <record id="ft_account_payment_on_pdc" model="mail.message.subtype">
+            <field name="name">On PDC</field>
+            <field name="res_model">account.payment</field>
+            <field name="default" eval="False"/>
+            <field name="description">On PDC</field>
+        </record>
+        <record id="ft_account_payment_reconciled" model="mail.message.subtype">
+            <field name="name">Reconciled</field>
+            <field name="res_model">account.payment</field>
+            <field name="default" eval="False"/>
+            <field name="hidden" eval="True"/>
+            <field name="description">Reconciled</field>
+        </record>
+        
+    </data>
+</odoo>

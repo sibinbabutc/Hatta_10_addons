@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        
+        <record id="employee_leave_encashment_form_view" model="ir.ui.view">
+            <field name="name">employee.leave.encashment.form.view</field>
+            <field name="model">employee.leave.encashment</field>
+            <field name="arch" type="xml">
+            <form string="Employee Leave Encashment">
+                <header>
+                    <button string="Request" name="request_approval" states="draft" type="object" class="oe_highlight" groups="base.group_user"/>
+                    <button string="Approve by HR" name="get_apprv_hr" states="approval" type="object" groups="hr.group_hr_manager" class="oe_highlight"/>
+                    <button string="Confirm" name="get_confirm" states="approved_hr" type="object" class="oe_highlight" groups="hr.group_hr_manager"/>
+                    <button string="Pay" name="get_apprv_account" type="object" groups="account.group_account_user" class="oe_highlight" attrs="{'invisible': ['|',('pay_in_next_salary', '=', True),('state', 'in', ['draft','approval','approved_hr','paid','done'])]}"/>
+                    <!-- <button string="Done" class="oe_highlight" name="get_done" states="paid" type="object" groups="hr.group_hr_user"/> -->
+                    <button string="Reject" name="get_reject" states="approval" type="object" groups="hr.group_hr_user,base.group_hr_manager,employee_advance_salary.group_department_manager_for_salary_id,employee_advance_salary.group_director_manager_for_salary_id"/>
+                    <button string="Cancel" name="exit_cancel" states="draft" type="object"/>
+                    <button string="Set To Draft" name="request_set" states="reject" type="object"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirm,paid" colspan="2"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                            <h2>
+                             <group>
+                                <group>
+                                    <field name="employee_id" />
+                                </group>
+                                <group/>
+                             </group>
+                            </h2>
+                     </div>
+                    <group>
+                        <group>
+                            <field name="encashable_leaves"/>
+                            <field name="encashable_leave_amount"/>
+                            <field name="to_encash" context="{}"/>
+                            <field name="to_encash_amount"/>
+                            <field name="request_amount"/>
+                            <field name="pay_in_next_salary"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="request_date"/>
+                            <!--<field name="department_id" />-->
+                            <field name="job_id" />
+                            <!--<field name="manager_id" />-->
+                            <field name="user_id" />
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="hr_validate_date" />
+                            <field name="confirm_date" />
+                        </group>
+                        <group>
+                            <field name="approved_by_id" />
+                            <field name="confirm_by_id" />
+                            <field name="company_id" />
+                        </group>
+                     </group>
+                    
+                    <notebook>
+                        <page name="general" string="General Information">
+                            <group string="Comment">
+                                 <field name="comment" attrs="{'readonly': [('state', '=', 'done')]}" nolabel="1" placeholder="Comment"/>
+                            </group>
+                        </page>
+                        <page name="accounting" string="Accounting Information" groups="account.group_account_user">
+                            <group>
+                                <group>
+                                     <field name="partner_id" attrs="{'readonly': ['|', ('state', '=', 'done'), ('state', '=', 'paid')]}" groups="account.group_account_user"/>
+                                     <field name="journal_id"  attrs="{'readonly': ['|', ('state', '=', 'done'), ('state', '=', 'paid')]}" groups="account.group_account_user"/>
+                                     <field name="payment_id" groups="account.group_account_user"/>
+                                     <field name="paid_amount"  groups="account.group_account_user"/>
+                                </group>
+                                <group/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user" />
+                    <field name="message_ids" widget="mail_thread" />
+                </div>
+            </form>
+            </field>
+        </record>
+       
+        <record id="employee_leave_encashment_tree_view" model="ir.ui.view">
+            <field name="name">employee.leave.encashment.tree.view</field>
+            <field name="model">employee.leave.encashment</field>
+            <field name="arch" type="xml">
+                 <tree string="Employee Leave Encashment">
+                        <field name="employee_id" />
+                        <field name="request_amount" />
+                        <field name="request_date" />
+                        <field name="department_id" />
+                        <field name="job_id" />
+                        <field name="state" />
+                 </tree>
+            </field>
+        </record>
+        
+        <record id="employee_advance_salary_search_view" model="ir.ui.view">
+            <field name="name">employee.leave.encashment.tree.view</field>
+            <field name="model">employee.leave.encashment</field>
+            <field name="arch" type="xml">
+                <search string="Employee Leave Encashment" >
+                    <field name="employee_id"/>
+                    <field name="department_id" />
+                    <field name="job_id" />
+                    <field name="state" />
+                    <group expand="0" string="Group By">
+                        <filter string="Employee" domain="[]" context="{'group_by':'employee_id'}"/>
+                        <filter string="Department" domain="[]" context="{'group_by':'department_id'}"/>
+                        <filter string="Job" domain="[]" context="{'group_by':'job_id'}"/>
+                        <filter string="Request Date" domain="[]" context="{'group_by':'request_date'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="action_employee_leave_encashment">
+            <field name="name">Employee Leave Encashment</field>
+            <field name="res_model">employee.leave.encashment</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_type">form</field>
+            <field name="context">{'readonly_by_pass': True}</field>
+        </record>
+        
+        <!-- <record model="ir.actions.act_window" id="action_employee_advance_salary_account">
+            <field name="name">Employee Leave Encashmentt</field>
+            <field name="res_model">employee.leave.encashment</field>
+            <field name="domain">[('state', 'in', ['done', 'paid', 'approved_hr'])]</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_type">form</field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="action_department_approval">
+            <field name="name">Department Approval</field>
+            <field name="res_model">employee.leave.encashment</field>
+            <field name="domain">[('state', 'in', ['confirm'])]</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_type">form</field>
+        </record>
+        
+        
+        <record model="ir.actions.act_window" id="action_director_approval">
+            <field name="name">Director Approval</field>
+            <field name="res_model">employee.leave.encashment</field>
+            <field name="domain">[('state', 'in', ['approved_hr_manager'])]</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_type">form</field>
+        </record> -->
+        
+        <menuitem name="Leave Encashment" parent="hr.menu_hr_root" id="menu_leave_encashment" sequence="8" />
+        <menuitem name="Leave Encashment Requests" id="menu_leave_encashment_request" action="action_employee_leave_encashment" parent="menu_leave_encashment" sequence="1" />
+        <!-- <menuitem name="Department Approvals" id="menu_department_approval" groups="employee_advance_salary.group_department_manager_for_salary_id" action="action_department_approval" parent="menu_advance_salary" sequence="13" />
+        <menuitem name="HR Approvals" id="menu_hr_approval" action="action_hr_approval" groups="hr.group_hr_user" parent="menu_advance_salary" sequence="14" />
+        <menuitem name="Director Approvals" id="menu_director_approval" action="action_director_approval" groups="employee_advance_salary.group_director_manager_for_salary_id" parent="menu_advance_salary" sequence="15" />
+        <menuitem name="Advance Salary Requests" id="menu_advance_salary_request_account" action="action_employee_advance_salary_account" parent="account.menu_finance_payables" sequence="96" /> -->
+    </data>
+</odoo>

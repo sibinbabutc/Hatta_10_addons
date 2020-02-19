@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="po_summary_wizard" model="ir.ui.view">
+        <field name="name">hatta.po.summary.wizard</field>
+        <field name="model">purchase.order.summary</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="po_id"/>
+                    <field name="partner_id"/>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                    <field name="cost_center_id"/>
+                    <field name="job_id"/>
+                </group>
+                <footer>
+                    <button name="print_report" string="Print" type="object" class="oe_highlight" />
+                        or
+                    <button string="Cancel" class="oe_link" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="hatta_po_summary_1" model="ir.actions.act_window">
+        <field name="name">Purchase Order Summary</field>
+        <field name="res_model">purchase.order.summary</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <!--<field name="view_id" ref="hatta_reports.po_summary_report"/>-->
+        <field name="target">new</field>
+    </record>
+
+<menuitem id="po_summary_menu" name="Purchase Order Summary" parent="stock.menu_warehouse_report" sequence="3"
+          action="hatta_po_summary_1"/>
+
+
+</odoo>

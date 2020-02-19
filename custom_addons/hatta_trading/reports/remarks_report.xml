@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <template id="hatta_remarks_report_document">
+        <t t-call="report.external_layout">
+            <div class="page ft_font">
+                <b><div class="col-xs-2">Your RFQ Number</div>
+                <div class="col-xs-10"><span t-field="o.customer_rfq"/></div>
+                <div class="col-xs-2">Our Reference</div>
+                <div class="col-xs-10"><span t-field="o.reference"/></div>
+                </b>
+            </div>
+        </t>
+    </template>
+
+    <template id="hatta_remarks_report_title" inherit_id="report.external_layout_header">
+        <div class="report-title" position="inside">
+            <t t-if="xmlid == 'hatta_trading.hatta_remarks_report'">
+                REMARKS
+            </t>
+        </div>
+    </template>
+
+    <template id="hatta_remarks_report">
+        <t t-call="report.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="hatta_trading.hatta_remarks_report_document" t-lang="o.partner_id.lang"/>
+            </t>
+        </t>
+    </template>
+
+    <report
+        string="Remarks Report"
+        id="remarks_report_id"
+        model="enquiry.details"
+        report_type="qweb-pdf"
+        name="hatta_trading.hatta_remarks_report"
+        file="hatta_trading.hatta_remarks_report"
+    />
+</odoo>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="sales_return_report_document">
+        <t t-call="hatta_reports.simple_external_layout">
+        <div class="page ft_font">
+            <table class="tab2" width="100%" style="border-top:.05em solid grey;text-align:left;border-bottom:.05em solid grey;">
+                <tr>
+                    <td colspan="11" style="padding:8px;">CURRENCY</td>
+                </tr>
+            </table>
+            <table class="table tab1">
+                <thead>
+                    <th style="text-align:center;border-top:.05em solid grey;border-bottom:.05em solid grey;background:#c9c9c9;">SL NO</th>
+                    <th style="text-align:center;border-top:.05em solid grey;border-bottom:.05em solid grey;background:#c9c9c9;">SR NO</th>
+                    <th style="text-align:center;border-top:.05em solid grey;border-bottom:.05em solid grey;background:#c9c9c9;">SR DATE</th>
+                    <th style="text-align:center;border-top:.05em solid grey;border-bottom:.05em solid grey;background:#c9c9c9;">CUSTOMER</th>
+                    <th style="text-align:center;border-top:.05em solid grey;border-bottom:.05em solid grey;background:#c9c9c9;">DN NO</th>
+                    <th style="text-align:center;border-top:.05em solid grey;border-bottom:.05em solid grey;background:#c9c9c9;">SALES INV</th>
+                    <th style="text-align:center;border-top:.05em solid grey;border-bottom:.05em solid grey;background:#c9c9c9;">A/C NO</th>
+                    <th style="text-align:center;border-top:.05em solid grey;border-bottom:.05em solid grey;background:#c9c9c9;">VALUE</th>
+                    <th style="text-align:center;border-top:.05em solid grey;border-bottom:.05em solid grey;background:#c9c9c9;">VALUE</th>
+                </thead>
+                <t t-set="lc_total" t-value="0.0"/>
+                <t t-foreach="acc" t-as="o">
+                    <tr>
+                        <td style="border-top:.05em solid grey;text-align:center;"><t t-esc="o_index+1"/></td>
+                        <td style="border-top:.05em solid grey;text-align:center;"><t t-esc="o['number']"/></td>
+                        <td style="border-top:.05em solid grey;text-align:center;"><t t-esc="o['date_invoice']"/></td>
+                        <td style="border-top:.05em solid grey;text-align:center;"><t t-esc="o['partner_id'].name"/></td>
+                        <td style="border-top:.05em solid grey;text-align:center;"></td>
+                        <td style="border-top:.05em solid grey;text-align:center;"><t t-esc="o['origin']"/></td>
+                        <td style="border-top:.05em solid grey;text-align:center;"><t t-esc="o['partner_bank_id'].id"/></td>
+                        <td style="border-top:.05em solid grey;text-align:center;"><t t-esc="o['amount_total']"/></td>
+                        <td style="border-top:.05em solid grey;text-align:center;">ww</td>
+                        <t t-set="lc_total" t-value="lc_total + o['amount_total']"/>
+                    </tr>
+                </t>
+                <tr>
+                    <td colspan="7" style="border-top:.05em solid grey;text-align:left;">Total</td>
+                    <td style="border-top:.05em solid grey;text-align:center;"><t t-esc="(lc_total)"/></td>
+                    <td style="border-top:.05em solid grey;text-align:center;">XXXXX</td>
+                </tr>
+
+            </table>
+        </div>
+        </t>
+    </template>
+
+    <template id="sale_return_inventory_header" inherit_id="hatta_reports.simple_external_layout_header">
+        <div class="report-title" position="inside">
+            <t t-if="xmlid == 'hatta_reports.sales_return_report1'">
+                SALES RETURN REPORT
+            </t>
+        </div>
+    </template>
+
+    <template id="sales_return_report1">
+        <t t-foreach="docs" t-as="o">
+            <t t-call="hatta_reports.sales_return_report_document"/>
+        </t>
+    </template>
+
+    <report
+        string="Sales Return Report"
+        id="hatta_sales_return_inventory"
+        model="report.hatta_reports.sales_return_report1"
+        report_type="qweb-pdf"
+        name="hatta_reports.sales_return_report1"
+        file="hatta_reports.sales_return_report1"
+        paperformat="paperformat_purchase_report"
+    />
+</odoo>

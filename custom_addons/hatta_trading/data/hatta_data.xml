@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="purchase.seq_purchase_order" model="ir.sequence">
+        <field name="prefix">RFQ</field>
+    </record>
+
+    <record id="analytic_tag_ps" model="account.analytic.tag">
+        <field name="name">Principal Suppliable</field>
+        <field name="tag_type">operation_mode</field>
+    </record>
+
+    <record id="analytic_tag_nps" model="account.analytic.tag">
+        <field name="name">Non-Principal Suppliable</field>
+        <field name="tag_type">operation_mode</field>
+    </record>
+
+    <record id="analytic_tag_stockable" model="account.analytic.tag">
+        <field name="name">Stockable</field>
+    </record>
+
+    <record id="seq_hatta_enquiry_code" model="ir.sequence">
+        <field name="name">Reference</field>
+        <field name="code">hatta_enquiry_code</field>
+        <field name="prefix">HTS</field>
+<!--        <field name="suffix">-%(y)s-%(day)s%(month)s</field>-->
+        <field name="padding">4</field>
+    </record>
+
+    <record id="seq_hatta_shipping_quotation" model="ir.sequence">
+        <field name="name">Shipping Quotation</field>
+        <field name="code">hatta_shipping_quotation</field>
+        <field name="prefix">SQ-%(y)s-%(month)s-</field>
+        <field name="padding">4</field>
+    </record>
+
+    <record id="seq_hatta_shipping_invoice" model="ir.sequence">
+        <field name="name">Shipping Invoice</field>
+        <field name="code">hatta_shipping_invoice</field>
+        <field name="prefix">SI</field>
+        <field name="padding">5</field>
+    </record>
+
+    <record id="seq_hatta_job_account" model="ir.sequence">
+        <field name="name">Job Account</field>
+        <field name="code">hatta_job_account</field>
+        <field name="prefix">JA</field>
+        <field name="padding">4</field>
+    </record>
+
+    <record id="hatta_exchange_rate_dp" model="decimal.precision">
+        <field name="name">Exchange Rate Accuracy</field>
+        <field name="digits">2</field>
+    </record>
+
+    <record id="mail.mail_channel_menu_root_chat" model="ir.ui.menu">
+        <field name="active">False</field>
+    </record>
+
+    <record id="calendar.mail_menu_calendar" model="ir.ui.menu">
+        <field name="active">False</field>
+    </record>
+
+</odoo>

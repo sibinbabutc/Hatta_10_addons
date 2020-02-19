@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="credit_note_document">
+            <t t-call="hatta_reports.simple_external_layout">
+                <div class="page ft_font">
+                    <!--<div class="col-xs-12" style="text-align:center;font-size:14px;margin-bottom:15px;">-->
+                        <!--<span t-if="o.credit_debit_tax_ids">-->
+                            <!--TAX CREDIT NOTE-->
+                        <!--</span>-->
+                        <!--<span t-else="">-->
+                        <!--CREDIT NOTE-->
+                        <!--</span>-->
+                    <!--</div>-->
+                    <div t-if="o.credit_debit_tax_ids" class="col-xs-6" style="padding-left:0px;"><span t-field="o.move_id"/> </div>
+                    <div t-if="o.credit_debit_tax_ids" class="col-xs-6" style="text-align:right;">DATE:<span t-field="o.date_invoice"/></div>
+
+                    <table width="30%">
+                        <tr>
+                            <td style="padding-top:5px;padding-bottom:5px;">TO,</td>
+                        </tr>
+                        <tr t-if="o.partner_id.function">
+                            <td style="padding-bottom:5px;"><span t-field="o.partner_id.function"/></td>
+                        </tr>
+                        <tr t-if="o.partner_id.name">
+                            <td style="padding-bottom:5px;"><b><span t-field="o.partner_id.name"/></b></td>
+                        </tr>
+                        <tr t-if="o.partner_id.vat">
+                            <td style="padding-bottom:5px;"><b><span t-field="o.partner_id.vat"/></b></td>
+                        </tr>
+                        <tr>
+                            <td style="padding-bottom:5px;">
+                                <span t-if="o.partner_id.zip">PO BOX&#160;:&#160;<span t-field="o.partner_id.zip"/></span>
+                                <span t-if="o.partner_id.city"><span t-field="o.partner_id.city"/></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding-bottom:5px;">
+                                <span t-if="o.partner_id.phone">PH&#160;:&#160;<span t-field="o.partner_id.phone"/></span>
+                                <span t-if="o.partner_id.fax">FAX&#160;:&#160;<span t-field="o.partner_id.fax"/></span>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <table width="30%">
+                        <tr>
+                            <td width="20%" style="padding-bottom:15px;padding-top:15px;">Subject</td>
+                            <td style="padding-bottom:5px;">:</td>
+                            <td style="padding-bottom:5px;"></td>
+                        </tr>
+                        <tr>
+                            <td width="" style="padding-bottom:15px;padding-top:15px;">Our Ref</td>
+                            <td style="padding-bottom:5px;">:</td>
+                            <td style="padding-bottom:5px;"><span t-field="o.reference"/></td>
+                        </tr>
+                        <tr t-if="o.credit_debit_tax_ids">
+                            <td width="" style="padding-bottom:15px;padding-top:15px;">Your Ref</td>
+                            <td style="padding-bottom:5px;">:</td>
+                            <td style="padding-bottom:5px;"></td>
+                        </tr>
+                    </table>
+
+                    <table class="tab" width="100%" style="border:solid .05em black;">
+                        <t t-set="i" t-value="1"/>
+                        <tr>
+                            <td width="5%" style="border:solid .05em black;padding:10px;text-align:center;">Sl No</td>
+                            <td style="border:solid .05em black;padding:10px;text-align:center;">Particulars</td>
+                            <td style="border:solid .05em black;padding:10px;text-align:center;">Net Amount In Aed</td>
+                        </tr>
+                        <tr>
+                            <td style="border-left:solid .05em black;border-right:solid .05em black;padding:10px;text-align:center;"><span t-esc="i"/></td>
+                            <t t-set="i" t-value="i+1"/>
+
+                            <td t-if="not o.credit_debit_tax_ids" style="border-left:solid .05em black;border-right:solid .05em black;padding:10px;text-align:;">
+                                <span>In Line with the UAE VAT regulatory requirement, this is credit note for the services that relate to period post 01 January 2018.
+                                        Below are the details of the invoice that was earlier issued to you without VAT.<br/>
+                                        Property Name : <span t-field="o.partner_id.name"></span><br/>
+                                        Units :<br/>
+                                        Invoice No.<br/>
+                                        Invoice Amount:<br/>
+                                        Invoice Date :<br/>
+                                        CSD:<br/>
+                                        CED:<br/>
+                                </span>
+                            </td>
+                            <td t-if="o.credit_debit_tax_ids" style="border-left:solid .05em black;border-right:solid .05em black;padding:10px;text-align:;">
+                                <span>
+                                    We have credited your account towards ITEM # <br/>
+                                    Our Invoice Ref:
+
+                                </span>
+                            </td>
+                            <td style="border-left:solid .05em black;border-right:solid .05em black;padding:10px;text-align:center;"><span t-field="o.credit_debit_amount"/></td>
+                        </tr>
+
+
+
+                        <tr t-foreach="o.tax_line_ids" t-as="t">
+                            <td style="border-left:solid .05em black;border-right:solid .05em black;padding:10px;text-align:center;"/>
+                            <td style="border-left:solid .05em black;border-right:solid .05em black;padding:10px;text-align:;"><span t-esc="t.name"/></td>
+                            <td style="border-left:solid .05em black;border-right:solid .05em black;padding:10px;text-align:center;"><span t-esc="t.amount"/> </td>
+
+                        </tr>
+                        <tr>
+                            <td style="border:solid .05em black;padding:10px;text-align:center;"/>
+                            <td style="border:solid .05em black;padding:10px;"><span>Amount in AED:<span t-field="o.amount_in_words"/></span></td>
+                            <td style="border:solid .05em black;padding:10px;text-align:center;"><span t-esc="o.amount_total_signed"/></td>
+                        </tr>
+                    </table>
+
+                    <div class="col-xs-12" style="margin-top:10px;margin-bottom:10px;padding-left:0px;">
+                        For Hatta Trading &amp; Services Est.
+                    </div>
+                    <div class="col-xs-12" style="margin-bottom:20px;padding-left:0px;">
+                        [C T Hashim]<br/>
+                        C E O
+                    </div>
+                    <div t-if="o.credit_debit_tax_ids" class="col-xs-6" style="padding-left:0px;"><span t-field="o.move_id"/></div>
+                    <div t-if="o.credit_debit_tax_ids" class="col-xs-6" style="text-align:right;">DATE:</div>
+                </div>
+            </t>
+        <!--<div class="header" style=";">-->
+            <!--<div width="20%" height="35px;" style="">-->
+                <!--<img class="logo_img" t-if="res_company.logo" t-att-src="'data:image/png;base64,%s' % res_company.logo"-->
+                <!--width="200px !important"/>-->
+            <!--</div>-->
+    <!--</div>-->
+    <div class="footer" style="font-size:9px;">
+        <!--<div class="col-xs-12">-->
+            <div class="col-xs-12"><span style="color:#047cb6">TRN:</span> </div>
+            <div class="col-xs-12">
+                <span style="color:#047cb6;float:left;padding:2px;">T:</span>
+                <span style="padding:2px;">&#160;</span>
+                <span style="border-right:solid 1px grey;float:left;padding:2px" t-field="res_company.phone"/>
+                <span style="color:#047cb6;float:left;padding:2px">F:</span>
+                <span style="padding:2px;">&#160;</span>
+                <span style="float:left;padding:2px" t-field="res_company.fax"/>
+            </div>
+            <div class="col-xs-12">
+                <span style="color:#047cb6;padding:2px">PO BOX</span><span t-field="res_company.zip"/>
+                <span style="padding:2px" t-field="res_company.city"/>
+            </div>
+            <div class="col-xs-12">
+                <span style="color:#047cb6;float:left;padding:2px">E:</span>
+                <span style="padding:2px">&#160;</span>
+                <span style="border-right:solid 1px grey;float:left;padding:2px" t-field="res_company.email"/>
+                <span style="color:#047cb6;float:left;padding:2px">W:</span>
+                <span style="padding:2px;">&#160;</span>
+                <span style="float:left;padding:2px;" t-field="res_company.website"/>
+            </div>
+        <!--</div>-->
+    </div>
+    </template>
+
+    <template id="credit_note_header" inherit_id="hatta_reports.simple_external_layout_header">
+        <div class="report-title" position="inside">
+            <t t-if="xmlid == 'hatta_reports.credit_note_document'">
+                <span t-if="o.credit_debit_tax_ids">
+                    TAX CREDIT NOTE
+                </span>
+                <span t-else="">
+                    CREDIT NOTE
+                </span>
+            </t>
+        </div>
+    </template>
+
+    <template id="credit_note">
+        <t t-foreach="docs" t-as="o">
+            <t t-call="hatta_reports.credit_note_document"/>
+        </t>
+    </template>
+
+    <record id="paperformat_credit_note" model="report.paperformat">
+        <field name="name">Hatta Template</field>
+        <field name="default" eval="True"/>
+        <field name="format">custom</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">40</field>
+        <field name="header_spacing">35</field>
+        <field name="margin_bottom">25</field>
+        <field name="margin_left">10</field>
+        <field name="margin_right">10</field>
+    </record>
+
+    <report
+        string="Credit Note"
+        id="haatta_credit_note"
+        model="account.invoice"
+        report_type="qweb-pdf"
+        name="hatta_reports.credit_note"
+        file="hatta_reports.credit_note"
+        paperformat="paperformat_credit_note"
+    />
+
+</odoo>

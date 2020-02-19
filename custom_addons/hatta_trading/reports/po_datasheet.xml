@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="assets_common" name="hatta_pdf_reports" inherit_id="report.assets_common">
+        <xpath expr="." position="inside">
+            <link href="/hatta_trading/static/src/css/hatta.css" rel="stylesheet" type="text/css"/>
+        </xpath>
+    </template>
+
+    <template id="hatta_po_datasheet_report_document">
+        <t t-call="report.external_layout">
+            <div class="page ft_font">
+                <div class="col-xs-12" style="text-align:right">A/C&#160;<span t-field="docs.job_account.name"></span></div>
+                <div class="col-xs-12" style="border:solid 1px black;padding-bottom:25px;">
+                   <table class="po_table" width="100%;">
+                       <tr>
+                           <td width="25%" height="20px;">TOTAL NO. OF SUPPLIERS</td>
+                           <td width="25%" style="border-bottom:solid .05em black !important;text-align:center;"></td>
+                           <td width="25%">DATE</td>
+                           <td width="25%" style="border-bottom:solid .05em black !important;text-align:center;">
+                               <!--<span t-field="o.date_order"/>-->
+                               <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y')"/>
+                           </td>
+                       </tr>
+                       <tr>
+                           <td height="20px;">ITEM NO. IN THE PO</td>
+                           <td style="border-bottom:solid .05em black !important;text-align:center;"></td>
+                           <td/>
+                           <td/>
+                       </tr>
+                       <tr>
+                           <td width="25%" height="20px;">SUPPLIER NAME</td>
+                           <td width="25%" style="border-bottom:solid .05em black !important;text-align:center;">
+                               <span t-field="o.partner_id.name"/>
+                           </td>
+                           <td width="25%">CLIENT NAME</td>
+                           <td width="25%" style="border-bottom:solid .05em black !important;text-align:center;">
+                               <span t-field="o.customer_id.name"/>
+                           </td>
+                       </tr>
+                       <tr>
+                           <td width="25%" height="20px;">MFR NAME</td>
+                           <td width="25%" style="border-bottom:solid .05em black !important;text-align:center;">
+                               <span t-field="o.manufactures_id"/>
+                            </td>
+                           <td width="25%">RFQ NO.</td>
+                           <td width="25%" style="border-bottom:solid .05em black !important;text-align:center;">
+                               <span t-field="o.customer_rfq"/>
+                           </td>
+                       </tr>
+                       <tr>
+                           <td width="25%" height="20px;">P.O. NO (HTS)</td>
+                           <td width="25%" style="border-bottom:solid .05em black !important;text-align:center;">
+                               <span t-field="o.name"/>&#160;A/C&#160;<span t-field="o.job_account"/>
+                           </td>
+                           <td width="25%">P.O. NO (CLIENT)</td>
+                           <td width="25%" style="border-bottom:solid .05em black !important;text-align:center;">
+                               <span t-field="o.customer_rfq"/>
+                           </td>
+                       </tr>
+                       <tr>
+                           <td width="25%" height="20px;">ORDER PLACED DATE</td>
+                           <td width="25%" style="border-bottom:solid .05em black !important;text-align:center;">
+                               <span t-field="o.date_order" t-options ='{"format": "dd/MM/yyyy"}'/>
+                           </td>
+                           <td width="25%">ORDER RECEIVED DATE</td>
+                           <td width="25%" style="border-bottom:solid .05em black !important;text-align:center;">
+                               <span t-field="o.related_sale_order.date_order" t-options ='{"format": "dd/MM/yyyy"}'/>
+                           </td>
+                       </tr>
+                       <tr>
+                           <td width="25%" height="20px;">DATE ACK. BY SUPPLIER</td>
+                           <td width="25%" style="border-bottom:solid .05em black !important;text-align:center;"></td>
+                           <td width="25%">DATE ACK. BY HATTA</td>
+                           <td width="25%" style="border-bottom:solid .05em black !important;text-align:center;"></td>
+                       </tr>
+                       <tr>
+                           <td width="25%" height="20px;">CONTRACTUAL DELIVERY BY SUPPLIER</td>
+                           <td width="25%" style="border-bottom:solid .05em black !important;text-align:center;">
+                               <!--<span t-field="o.vendor_closing_date"/>-->
+                               <span t-field="o.delivery_date"/>
+                           </td>
+                           <td width="25%">CONTRACTUAL DELIVERY BY HTS</td>
+                           <td width="25%" style="border-bottom:solid .05em black !important;text-align:center;">
+                               <span t-field="o.related_sale_order.delivery_date"></span>
+                           </td>
+                       </tr>
+                       <tr>
+                           <td width="25%" height="20px;">CURRENCY</td>
+                           <td width="25%" style="border-bottom:solid .05em black !important;text-align:center;">
+                               <span t-field="o.company_id.currency_id"/>
+                           </td>
+                           <td width="25%">CERTIFICATES REQUIRED</td>
+                           <td width="25%" style="border-bottom:solid .05em black !important;text-align:center;">
+                               <span t-field="o.certificate_needed"/>
+                           </td>
+                       </tr>
+                       <tr>
+                           <td width="25%" height="20px;">TOTAL COST</td>
+                           <td width="25%" style="border-bottom:solid .05em black !important;text-align:center;">
+                               <span t-field="o.amount_total"/>
+                           </td>
+                           <td width="25%">IMPORTANT NOTE</td>
+                           <td width="25%" style="border-bottom:solid .05em black !important;text-align:center;">
+                               <span t-field="o.special_notes"/>
+                           </td>
+                       </tr>
+                       <tr>
+                           <td width="25%" height="20px;">TERMS OF PAYMENT</td>
+                           <td width="25%" style="border-bottom:solid .05em black !important;text-align:center;">
+                               <span t-field="o.payment_term_id.name"/>
+                           </td>
+                           <td width="25%"/>
+                           <td width="25%"/>
+                       </tr>
+                       <tr>
+                           <td width="25%" height="20px;">PAYMENT DATE</td>
+                           <td width="25%" style="border-bottom:solid .05em black !important;text-align:center;"></td>
+                           <td width="25%"/>
+                           <td width="25%"/>
+                       </tr>
+                       <tr>
+                           <td width="25%" height="20px;">DUTY EXEMPTION</td>
+                           <td width="25%" style="border-bottom:solid .05em black !important;text-align:center;">
+                               <!--<t t-if="o.cost_sheet_id.id ==true">-->
+                                    <!--<span>Yes</span>-->
+                                <!--</t>-->
+                               <!--<t t-if="o.cost_sheet_id.id ==false">-->
+                                    <!--<span>No</span>-->
+                                <!--</t>-->
+                               <span t-field="o.cost_sheet_id.is_duty_required"/>
+                           </td>
+                           <td width="25%"/>
+                           <td width="25%"/>
+                       </tr>
+                       <tr>
+                           <td width="25%" height="20px;">FREIGHT FWDR/COURIER</td>
+                           <td width="25%" style="border-bottom:solid .05em black !important;text-align:center;">
+                               <span t-field="o.cost_sheet_id.shipping_method_id.name"/>
+                           </td>
+                           <td width="25%"/>
+                           <td width="25%"/>
+                       </tr>
+                       <tr>
+                           <td width="25%" height="20px;">RFQ. FOR J.O. NO. TO FREIGHT FWDR/ONLINE</td>
+                           <td width="25%" style="text-align:center;vertical-align:bottom;" >
+                               <div class="col-xs-3" style="border-bottom:solid .05em black;padding:0px">&#160;</div>
+                               <div class="col-xs-3" style="padding:0px">YES</div>
+                               <div class="col-xs-3" style="border-bottom:solid .05em black;padding:0px">&#160;</div>
+                               <div class="col-xs-3" style="padding:0px">NO</div>
+                           </td>
+                           <td width="25%"/>
+                           <td width="25%"/>
+                       </tr>
+                       <tr>
+                           <td width="25%" height="20px;">D.O. NO. &amp; DATE</td>
+                           <td width="25%" style="border-bottom:solid .05em black !important;text-align:center;"></td>
+                           <td width="25%"/>
+                           <td width="25%"/>
+                       </tr>
+                       <tr>
+                           <td width="25%" height="20px;">INVOICE NO. &amp; DATE</td>
+                           <td width="25%" style="border-bottom:solid .05em black !important;text-align:center;"></td>
+                           <td width="25%"/>
+                           <td width="25%"/>
+                       </tr>
+                       <tr>
+                           <td width="25%" height="20px;" style="padding-top:20px;"><b>REMARKS:</b></td>
+                           <td width="25%"><span t-field="o.data_sheet_remarks"/></td>
+                           <td width="25%"/>
+                           <td width="25%"/>
+
+
+                       </tr>
+                   </table>
+                    <div class="col-xs-2" style="padding-left:0 px">PREPARED BY:</div>
+                    <div class="col-xs-2" style="border-bottom:solid .05em black;">&#160;</div>
+                    <div class="col-xs-2">ACCOUNTS:</div>
+                    <div class="col-xs-2" style="border-bottom:solid .05em black;">&#160;</div>
+                    <div class="col-xs-2">MANAGER:</div>
+                    <div class="col-xs-2" style="border-bottom:solid .05em black;">&#160;</div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="hatta_po_datasheet_report_title" inherit_id="report.external_layout_header">
+        <div class="report-title" position="inside">
+            <t t-if="xmlid == 'hatta_trading.hatta_po_datasheet'">
+                PO DATA SHEET
+            </t>
+        </div>
+    </template>
+
+    <template id="hatta_po_datasheet">
+        <t t-call="report.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="hatta_trading.hatta_po_datasheet_report_document" t-lang="o.partner_id.lang"/>
+            </t>
+        </t>
+    </template>
+
+    <report
+        string="P.O Data Sheet"
+        id="sale_po_data_report"
+        model="purchase.order"
+        report_type="qweb-pdf"
+        name="hatta_trading.hatta_po_datasheet"
+        file="hatta_trading.hatta_po_datasheet"
+        paperformat="paperformat_hatta_template"
+
+    />
+
+
+</odoo>

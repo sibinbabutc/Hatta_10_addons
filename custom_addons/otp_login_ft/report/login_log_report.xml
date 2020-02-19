@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="login_log_report">
+        <div class="header">
+            <div class="col-xs-12" style="text-align:left">
+                <b><span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y %I:%M %p ')"/></b>
+            </div>
+            <div class="col-xs-12" style="font-size:16px !important;text-align:center;">
+                <b>HATTA TRADING &amp; SERVICES EST</b><br/><br/>USER ACCESS LOG
+            </div>
+            <div class="col-xs-12" style="text-align:left">
+                <b>From Date :</b><span t-esc="form_date"/><br/>
+                <b>To Date :</b><span t-esc="to_date"/><br/>
+            </div>
+
+        </div>
+
+        <div class="page">
+                <table class="table" style="font-size:12px !important;">
+                    <thead style="font-size:12px !important;">
+                        <tr>
+                            <th width="6%"  style="text-align:center;padding-top:10px"><b>Login Date</b></th>
+                            <th width="6%"  style="text-align:center;padding-top:10px"><b>Logout Date</b></th>
+                            <th width="10%" style="text-align:center;padding-top:10px"><b>Logout Type</b></th>
+                        </tr>
+                    </thead>
+                        <t  t-foreach="users" t-as="user">
+                            <thead>
+                                <tr>
+                                    <th colspan="3"><span t-esc="user.name"/></th>
+                                </tr>
+                            </thead>
+                            <t t-foreach="dates" t-as="date">
+                                <t t-set="date_bool" t-value="0" />
+                                <t t-foreach="docs" t-as="line">
+                                    <t  t-if="line.user_id.id == user.id and  str(date) in str(line.login_date)">
+                                        <thead>
+
+                                            <tr t-if="not date_bool">
+                                                <th colspan="3"><span t-esc="date"/></th>
+                                                <t t-set="date_bool" t-value="1" />
+                                            </tr>
+                                        </thead>
+                                        <tbody style="page-break-inside: avoid;">
+                                            <tr style="page-break-inside: avoid;">
+                                                <td style="text-align:center;"><span t-esc="line.login_date"/></td>
+                                                <td style="text-align:center;"><span t-esc="line.logout_date"/></td>
+                                                <td style="text-align:center;"><span t-field="line.status"/></td>
+                                            </tr>
+                                        </tbody>
+                                    </t>
+                                </t>
+                            </t>
+                        </t>
+                </table>
+    </div>
+</template>
+
+         <report
+            string="Login Log Report"
+            id="action_report_report_wizard_login_log_report"
+            model="login.log.view"
+            report_type="qweb-pdf"
+            name="otp_login_ft.login_log_report"
+            file="otp_login_ft.login_log_report"
+        />
+
+</odoo>

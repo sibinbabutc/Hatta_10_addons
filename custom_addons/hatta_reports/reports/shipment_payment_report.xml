@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<report
+			id="hatta_shipment_payment"
+			model="purchase.order"
+			string="Shipment Payment"
+			report_type="xlsx"
+			name="hatta_reports.payment.xlsx"
+			file="hatta_reports.payment.xlsx"
+			attachment_use="False"
+		    menu="False"
+		/>
+	</data>
+</odoo>

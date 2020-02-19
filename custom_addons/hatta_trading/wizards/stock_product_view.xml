@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="stock_product_wizard_view_form" model="ir.ui.view">
+        <field name="name">stock.product.wizard.form</field>
+        <field name="model">stock.product.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Product">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="product_id"/>
+                            <field name="manufacturer_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Vendors">
+                            <field name="vendor_ids">
+                                <tree create="0">
+                                    <field name="name"/>
+                                    <field name="min_qty"/>
+                                    <field name="price"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                     <footer>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="stock_product_wizard_action"> <!-- Menu + python -->
+        <field name="name">Stock Product Wizard</field>
+        <field name="res_model">stock.product.wizard</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="stock_product_wizard_view_form"/>
+    </record>
+
+    <menuitem id="menu_stock_product" name="Product Details" parent="stock.menu_warehouse_report" sequence="150"
+              action="stock_product_wizard_action"/>
+
+
+</odoo>

@@ -1,0 +1,18 @@
+import enquiry_details
+import crm_lead
+import product_landed_cost
+import hatta_purchase_order
+import hatta_sale_order
+import hatta_product
+import cost_sheet
+import bid_comparison
+import hatta_partner
+# import mail_compose_message
+import shipping_invoice
+import purchase_for_enquiry
+import account_invoice
+import analytic_account
+import manufacturer
+import ir_attachment
+import res_config
+import stock

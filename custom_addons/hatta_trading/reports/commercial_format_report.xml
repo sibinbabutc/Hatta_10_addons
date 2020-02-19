@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+	<report
+        id="commercial_format_xlsx"
+        model="purchase.order"
+        string="Commercial Bid"
+        report_type="xlsx"
+        name="commercial.format.xlsx"
+        file="commercial.format.xlsx"
+        attachment_use="False"
+    />
+	<report
+        id="technical_format_xlsx"
+        model="purchase.order"
+        string="Technical offer"
+        report_type="xlsx"
+        name="technical.format.xlsx"
+        file="technical.format.xlsx"
+        attachment_use="False"
+    />
+	</data>
+</odoo>

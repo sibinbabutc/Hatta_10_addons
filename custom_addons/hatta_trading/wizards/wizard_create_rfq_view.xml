@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="hatta_create_rfq_view_form" model="ir.ui.view">
+        <field name="name">create.rfq.form</field>
+        <field name="model">create.rfq</field>
+        <field name="arch" type="xml">
+            <form string="Create Quotation Requests for Enquiry">
+                <div class="oe_title">
+                    <label for="reference" class="oe_edit_only"/>
+                    <h1><field name="reference" readonly="1"/></h1>
+                </div>
+                <group colspan="4" col="4">
+                    <field name="enquiry_date" readonly="1"/>
+                    <field name="customer_id" readonly="1"/>
+                    <field name="closing_date" readonly="1"/>
+                    <field name="detail_wise" widget="radio"/>
+                    <field name="enquiry_detail_id" invisible="1"/>
+                    <field name="enquiry_id" invisible="1"/>
+                </group>
+                <separator string="Supplier &amp; Product Details"/>
+                <field name="supplier_product_details"/>
+                <separator/>
+                <field name="add_more" widget="toggle_button_with_string" icon="fa-plus-circle"
+                       options="{'terminology':['More','Less']}"
+                       string="Add Suppliers" class="oe_edit_only"/>
+
+                <field name="supplier_product_lines" attrs="{'invisible': [('add_more', '=', False)]}">
+                    <tree editable="bottom">
+                        <field name="enquiry_line_id" string="Product" domain="[('enquiry_id', '=', parent.enquiry_id)]"/>
+                        <field name="supplier_id"/>
+                        <field name="product_qty"/>
+                        <field name="product_id" invisible="1"/>
+                        <field name="product_uom_id" invisible="0"/>
+                        <field name="enquiry_id" invisible="0"/>
+                    </tree>
+                </field>
+                <footer>
+
+                   <button name="create_multiple_rfqs" string="Verify and Create RFQs" type="object" default_focus="1"
+                           class="oe_highlight" />
+                   <button string="Cancel" type="object" special="cancel" class="oe_link"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

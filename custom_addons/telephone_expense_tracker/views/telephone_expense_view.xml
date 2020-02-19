@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<record model='ir.ui.view' id='view_telephone_expense_form'>
+		<field name="name">view.telephone.expense.form</field>
+		<field name="model">telephone.expense</field>
+		<field name="arch" type="xml">
+		<form string="Telephone Expense">
+			<header>
+				<button name="button_compare_prev_month" type="object" string="Compare with Previous Month" class="oe_highlight"
+					attrs="{'invisible': [('state','not in',['draft'])]}"/>
+				<button name="button_load_account_group_info" type="object" string="Load Account and Group Info" class="oe_highlight"
+					 attrs="{'invisible': [('state','not in',['draft'])]}"/>
+				<button name="button_action_confirm" type="object" string="Confirm" class="oe_highlight" states='draft'/>
+				<!--<button name="button_create_account_move" type="object" string="Create Account Entry" class="oe_highlight" states='confirm'/>-->
+				<!--<button name="button_print_expense_report" type="object" string="Print" class="oe_highlight" states='confirm,paid'/>-->
+				<!--<button name="action_paid" type="object" string="Paid"/>-->
+				<field name="state" widget="statusbar" statusbar_visible="draft,confirm,paid"/>
+			</header>
+			<div class="oe_button_box" name="expense_button_box">
+                <button name="action_view_bill"
+                        string="Bill"
+                        type="object"
+                        class="oe_stat_button"
+                        attrs="{'invisible': [('vendor_bill', '=', False)]}"
+                        icon="fa-list">
+                </button>
+			</div>
+				<h1>
+					<field name="name" class="oe_inline" readonly="1"/>
+				</h1>
+				<group>
+					<group>
+						<field name="service_provider_id" required="1"
+							attrs="{'readonly': [('state','not in',['draft'])]}"/>
+						<field name="partner_id"  context="{'default_customer': 0, 'search_default_supplier': 1, 'default_supplier': 1}"
+							  domain="[('supplier', '=', True)]" attrs="{'readonly': [('state','not in',['draft'])]}"/>
+						<field name="loaded_accounts_groups" invisible="1"/>
+						<field name="compared_prev_month" invisible="1"/>
+					</group>
+					<group>
+						<field name="year" required="1" attrs="{'readonly': [('state','not in',['draft'])]}"/>
+						<field name="month" required="1" attrs="{'readonly': [('state','not in',['draft'])]}"/>
+						<field name="prev_year" attrs="{'readonly': [('state','not in',['draft'])]}"/>
+						<field name="prev_month" attrs="{'readonly': [('state','not in',['draft'])]}"/>
+					</group>
+				</group>
+				<notebook>
+					<page string="Expense Details">
+						<group>
+							<field name="expense_line_ids" nolabel="1" attrs="{'readonly': [('state','not in',['draft'])]}">
+								<tree string="Expense Lines" editable="bottom">
+									<field name="sl_no"/>
+									<field name="directory_id" required="1"
+										domain="[('service_provider_id', '=', parent.service_provider_id)]"
+										context="{'default_service_provider_id': parent.service_provider_id}"/>
+									<field name="mobile" required="1"/>
+									<field name="total_amount" sum="Total"/>
+									<field name="allowed_amount"/>
+									<field name="deduction"/>
+									<field name="balance"/>
+									<field name="remarks"/>
+									<field name="prev_month_balance" sum="Total" readonly="0"/>
+									<field name="prev_month_increase" sum="Total"/>
+									<field name="prev_month_decrease" sum="Total"/>
+								</tree>
+							</field>
+						</group>
+						<group >
+							<group>
+
+<!-- 	            					<label for="net_prev_month_increase" class="oe_inline" /> -->
+								<field name="net_prev_month_increase" class="oe_inline" />
+							<div>
+								<button name="button_dummy" states='draft' string="(update)" type="object" class="oe_edit_only oe_link"/>
+							</div>
+							</group>
+							<group></group>
+						</group>
+						<group>
+						<group>
+                            <separator string="Accounting Information" colspan="4"/>
+<!-- 	            					<label for="account_allocation_ids" string="Accounting Information" colspan="2"/> -->
+                            <field name="account_allocation_ids" nolabel="1" readonly="1">
+                                <tree string="Account Allocation" editable="bottom">
+                                    <field name="account_id" required="True" />
+                                    <field name="analytic_account_id"/>
+                                    <field name="percentage"/>
+                                    <field name="value" sum="Total"/>
+                                </tree>
+                            </field>
+						</group>
+						<group>
+                            <separator string="Group Information" colspan="4"/>
+<!-- 				                	<label for="group_allocation_ids" string="Group Information" colspan="2"/> -->
+                            <field name="group_allocation_ids" nolabel="1" readonly="1">
+                                <tree string="Group Allocation" editable="bottom">
+                                    <field name="group_id" required="True"/>
+                                    <field name="percentage"/>
+                                    <field name="value" sum="Total"/>
+                                </tree>
+                            </field>
+						</group>
+						</group>
+					</page>
+					<page string="Other Information">
+						<group>
+							<group>
+								<field name="journal_id" required="True" attrs="{'readonly': [('state','not in',['draft'])]}"/>
+								<field name="account_id" required="True"  attrs="{'readonly': [('state','not in',['draft'])]}"/>
+								<field name="posted_move_id" readonly="1"/>
+-                                <field name="vendor_bill" invisible="1"/>
+							</group>
+							<group>
+								<field name="payment_move_id"/>
+								<field name="check_no" readonly="1"/>
+								<field name="bank_journal_id" readonly="1"/>
+								<field name="remarks"/>
+							</group>
+						</group>
+						<group clospan="4">
+							<separator string="Notes" colspan="4"/>
+							<field name="notes" nolabel="1"/>
+						</group>
+					</page>
+				</notebook>
+		</form>
+		</field>
+	</record>
+
+	<record model='ir.ui.view' id='view_telephone_expense_tree'>
+		<field name="name">view.telephone.expense.tree</field>
+		<field name="model">telephone.expense</field>
+		<field name="arch" type="xml">
+			<tree string="Telephone Expenses">
+				<field name="name"/>
+				<!--<field name="sequence" invisible="1"/>-->
+				<field name="service_provider_id"/>
+				<field name="partner_id"/>
+				<field name="state"/>
+			</tree>
+		</field>
+	</record>
+
+	<record id="view_telephone_expense_filter" model="ir.ui.view">
+		<field name="name">telephone.expense.select</field>
+		<field name="model">telephone.expense</field>
+		<field name="arch" type="xml">
+			<search string="Search Telephone Expenses">
+				<!--<field name="sequence" string="Expense sequence"/>-->
+				<field name="service_provider_id"/>
+				<field name="partner_id"/>
+				<field name="month"/>
+				<field name="year"/>
+				<field name="state"/>
+				<group expand="0" string="Group By...">
+					<filter string="Service Provider" icon="terp-personal" domain="[]" context="{'group_by':'service_provider_id'}"/>
+					<filter string="Status" icon="terp-personal" domain="[]" context="{'group_by':'state'}"/>
+					<filter string="Party" icon="terp-personal" context="{'group_by':'partner_id'}"/>
+					<filter string="Year" icon="terp-go-month" domain="[]" context="{'group_by':'year'}"/>
+				</group>
+		   </search>
+		</field>
+	</record>
+
+	<record model='ir.actions.act_window' id='view_telephone_expense_action'>
+		<field name="name">Telephone Expenses</field>
+		<field name="res_model">telephone.expense</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="search_view_id" ref="view_telephone_expense_filter"/>
+	</record>
+
+
+	<menuitem id="menu_telephone_expense_details" action="view_telephone_expense_action"
+		parent="menu_telephone_expense_tracker" sequence="1" groups="account.group_account_user"/>
+
+</odoo>

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="report_print_petty_cash_statement">
+        <div class="header" style="height:200px">
+            <!-- company name -->
+            <div class="company_name" style="width:75%;height:auto;float:right;">
+                <span style="width:100%;float: right;font-weight: bold;font-size: 25px;
+                text-align:right;padding-top:25px;">
+                   <span t-esc="res_company.name"/>
+                </span>
+                <span style="font-size: 15px;width:100%;float:right;text-align:right;margin-top: 10px;"><span t-esc="res_company.street"/><t t-if="res_company.street2">,<t t-esc="res_company.street2"/></t></span>
+                <span style="width:100%;float:right;font-size: 15px;text-align:right;"><t t-esc="res_company.city"/><t t-if="res_company.zip">,<t t-esc="res_company.zip"/></t>
+
+                </span>
+                <span style="width:100%;float:right;text-align:right;font-size: 15px;"><t t-esc="res_company.state_id.name"/><t t-if="res_company.country_id">,<t t-esc="res_company.country_id.name"/></t></span>
+                <span style="font-size: 15px;width:100%;float:right;text-align:right">Phone: <t t-esc="res_company.phone"/><t t-if="res_company.fax">,Fax:<t t-esc="res_company.fax"/></t></span>
+            </div>
+            <!-- image -->
+            <div class="header_img" style="width:24%;height:160px;float: left;">
+                <img t-if="res_company.logo" t-att-src="'data:image/png;base64,%s' % res_company.logo" style="max-width:100%;max-height: 100%;float:right;min-width:100%;"/>
+            </div>
+            <div class="col-xs-12" style="text-align:center;font-size:18px;">
+                <b><u>
+                    <t t-esc="petty_cash_user.name"/> Statement For The
+                <t t-foreach="from_to" t-as="f">
+                    <t  t-esc="f[0]"/>
+                </t>
+                </u>
+
+            </b>
+                        </div>
+
+        </div>
+
+        <div class="footer" style="padding-top:5px">
+            <div class="col-xs-4" style="font-size:10px;color:darkgrey;">Printed by:
+                <span t-esc="user.name"/>
+            </div>
+            <div class="col-xs-4" style="text-align:center;font-size:10px;color:darkgrey;">Printed on:
+                <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y %I:%M %p ')"/>
+            </div>
+
+            <div class="col-xs-4" style="text-align:right;color:darkgrey;">Page &#160;<span class="page" />&#160;of&#160;<span class="topage" /></div>
+        </div>
+        <div class="page">
+            <table class="table table-condensed">
+                <thead>
+                    <tr style="background-color:#000266 !important; color:white;">
+                        <td width="10%"  style="text-align:center;height:50px;padding-top:15px"><b>Reference</b></td>
+                        <td width="14%" style="text-align:center;padding-top:15px"><b>Date</b></td>
+                        <td width="50%" style="text-align:center;padding-top:15px"><b>Description</b></td>
+                        <!--<td width="5%" colspan="2" style="text-align:center;padding-top:15px;">&#160;</td>-->
+                        <td width="13%" style="text-align:center;padding-top:15px"><b>Dr.</b></td>
+                        <td width="13%" style="text-align:center;padding-top:15px"><b>Cr.</b></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr t-if="(payments_in_balance - voucher_in_balance)>0">
+                        <td ><b>&#160;</b></td>
+                        <td ><b><t t-esc="open_balance_date"/></b></td>
+                        <td ><b>Opening Balance</b></td>
+                        <td ><b>&#160;</b></td>
+                        <td style="text-align:right;"><b>
+                            <t  t-esc="'{0:,.2f}'.format(payments_in_balance - voucher_in_balance)"/></b>
+                        </td>
+                    </tr>
+
+                    <t t-foreach="move_items" t-as="item">
+                        <tr>
+                            <td ><t t-esc="item.move_id.name"/></td>
+                            <td ><span t-field="item.date" t-options ='{"format": "dd/MM/yyyy"}'/></td>
+                            <td ><t t-if="item.debit" >
+                                    <t t-if="item.ref" t-esc="item.ref"/>
+                                    <t t-if="not item.ref" t-esc="item.narration"/>
+                                </t>
+                                <t t-if="item.credit">
+                                    <t t-if="item.narration" t-esc="item.narration"/>
+                                    <t t-if="not item.narration" t-esc="item.ref"/>
+                                </t>
+                            </td>
+                            <td class="text-right"><t t-if="item.credit" t-esc="'{0:,.2f}'.format(item.credit)"/></td>
+                            <td class="text-right"><t t-if="item.debit" t-esc="'{0:,.2f}'.format(item.debit)"/></td>
+                        </tr>
+                    </t>
+                <tr>
+                    <td  ><b>&#160;</b></td>
+                    <td ><b>&#160;</b></td>
+                    <td style="padding-top:15px"><b>Total</b></td>
+                    <td style="text-align:right;padding-top:15px"><b><t  t-esc="'{0:,.2f}'.format(total_credit_in_period)"/></b></td>
+                    <td style="text-align:right;padding-top:15px"><b><t  t-esc="'{0:,.2f}'.format(total_debit_in_period + (payments_in_balance - voucher_in_balance))"/></b></td>
+                </tr>
+                                <tr>
+                    <td  ><b>&#160;</b></td>
+                    <td ><b>&#160;</b></td>
+                    <td ><b>Balance In Hand</b></td>
+                      <td style="text-align:right;"><b><t  t-esc="'{0:,.2f}'.format((total_debit_in_period + (payments_in_balance - voucher_in_balance))- total_credit_in_period)"/></b></td>
+                    <td style="text-align:right;"><b>&#160;</b></td>
+                </tr>
+                </tbody>
+
+            </table>
+            <table class="table" width="100%">
+                <tr style="background:#e6e6e6;border-bottom:2px solid white !important;">
+                    <td width="50%" style="text-align:right;border-bottom:2px solid white !important;">Opening Balance :</td>
+                    <td style="text-align:right;border-bottom:2px solid white !important;padding-right:40%"><b><t  t-esc="'{0:,.2f}'.format(payments_in_balance - voucher_in_balance)"/></b></td>
+                </tr>
+                <tr style="background:#e6e6e6;border-bottom:1px solid white !important">
+                    <td width="50%" style="text-align:right;border-bottom:2px solid white !important;">Receipts :</td>
+                    <td style="text-align:right;border-bottom:2px solid white !important;padding-right:40%"><b><t  t-esc="'{0:,.2f}'.format(total_debit_in_period)"/></b></td>
+                </tr>
+                <tr style="background:#e6e6e6;border-bottom:1px solid white !important">
+                    <td width="50%" style="text-align:right;border-bottom:2px solid white !important;">Total :</td>
+                    <td style="text-align:right;border-bottom:2px solid white !important;font-weight:bold;padding-right:40%">
+                        <span t-esc="'{0:,.2f}'.format(total_debit_in_period + (payments_in_balance - voucher_in_balance))"/></td>
+                </tr>
+                <tr style="background:#e6e6e6;border-bottom:1px solid white !important">
+                    <td width="50%" style="text-align:right;border-bottom:2px solid white !important;">Payments :</td>
+                    <td style="text-align:right;border-bottom:2px solid white !important;padding-right:40%"><b><t  t-esc="'{0:,.2f}'.format(total_credit_in_period)"/></b></td>
+                </tr>
+                <tr style="background:#e6e6e6;border-bottom:1px solid white !important">
+                    <td width="50%" style="text-align:right;border-bottom:2px solid white !important;">Balance In Hand :</td>
+                    <td style="text-align:right;border-bottom:2px solid white !important;font-weight:bold;padding-right:40%"><b>
+                        <span t-esc="'{0:,.2f}'.format((total_debit_in_period + (payments_in_balance - voucher_in_balance))- total_credit_in_period)"/></b></td>
+
+                </tr>
+            </table>
+                </div>
+
+
+</template>
+
+
+    <record id="paperformat_for_petty_reports_summary" model="report.paperformat">
+        <field name="name">Petty Cash Statement</field>
+        <field name="default" eval="True"/>
+        <field name="format">A4</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">45</field>
+        <field name="margin_bottom">15</field>
+        <field name="margin_left">7</field>
+        <field name="margin_right">7</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">45</field>
+        <!--<field name=""></field>-->
+    </record>
+
+
+         <report
+            string="Petty Cash Statement"
+            id="action_report_report_print_petty_cash_statement"
+            model="report.account_petty_cash_ft.report_print_petty_cash_statement"
+            report_type="qweb-pdf"
+            name="account_petty_cash_ft.report_print_petty_cash_statement"
+            file="account_petty_cash_ft.report_print_petty_cash_statement"
+            paperformat="paperformat_for_petty_reports_summary"
+        />
+
+</odoo>

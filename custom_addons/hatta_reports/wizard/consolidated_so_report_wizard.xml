@@ -1,0 +1,32 @@
+<odoo>
+    <record id="consolidated_so" model="ir.ui.view">
+        <field name="name">consolidated.sale.order.wizard</field>
+        <field name="model">consolidated.sale.order</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                    <field name="partner_id"/>
+                </group>
+                <footer>
+                    <button name="print_report" string="Print" type="object" class="oe_highlight" />
+                        or
+                    <button string="Cancel" class="oe_link" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="consolidated_so_report" model="ir.actions.act_window">
+        <field name="name">Consolidated Sale Order</field>
+        <field name="res_model">consolidated.sale.order</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <!--<field name="view_id" ref="hatta_reports.po_summary_report"/>-->
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="consolidated_so_report_menu1" name="Consolidated Sale Report" parent="stock.menu_warehouse_report" sequence="10"
+          action="consolidated_so_report"/>
+
+</odoo>

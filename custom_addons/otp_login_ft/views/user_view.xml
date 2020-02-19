@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <!-- <record id="view_user_form_view_inherit_login" model="ir.ui.view">
+            <field name="name">user.form.view.inherit.login</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook" position="inside">
+                    <page string="OTP Login Users">
+                        <field name="otp_user_ids">
+                        	<tree string="Otp" editable="bottom">
+                                  <field name="user_id"/>
+                                  <field name="user_otp" readonly="1"/>
+                                  <button name="reset_password" string="Reset Password" type="object" icon="terp-gtk-jump-to-ltr" />
+                                </tree>
+                         </field>
+                    </page>
+                </xpath>
+            </field>
+        </record> -->
+        <record id="group_hatta_password_man" model="res.groups">
+            <field name="name">Password Manager</field>
+            <field name="category_id" ref="base.module_category_hidden"/>
+        </record>
+
+        <record model='ir.ui.view' id='otp_login_form_view'>
+            <field name="name">otp.login.form</field>
+            <field name="model">hatta.login.otp</field>
+            <field name="arch" type="xml">
+            	<form string="Shipping Method Defaults" >
+            	<group>
+	            	<field name="user_id" required="True"/>
+	                <field name="user_otp" readonly="1"/>
+                    <field name="active"/>
+	             </group>
+	             <group>
+	             	<button name="reset_password" string="Reset Password" type="object"/>
+	             </group>
+	            </form>
+	        </field>
+        </record>
+        
+        <record model='ir.ui.view' id='otp_login_tree_view'>
+            <field name="name">otp.login.tree</field>
+            <field name="model">hatta.login.otp</field>
+            <field name="arch" type="xml">
+                <tree string="Shipping Method Defaults" >
+	            	<field name="user_id"/>
+	                <field name="user_otp"/>
+                    <field name="active"/>
+	            </tree>
+	        </field>
+        </record>
+        
+        <record model='ir.actions.act_window' id='otp_login_action'>
+            <field name="name">OTP Login</field>
+            <field name="res_model">hatta.login.otp</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        
+        
+        <menuitem name="OTP Login" id="menu_otp_login" 
+        		parent="base.menu_users" action="otp_login_action" sequence="24" groups="group_hatta_password_man"/>
+        
+    </data>
+</openerp>

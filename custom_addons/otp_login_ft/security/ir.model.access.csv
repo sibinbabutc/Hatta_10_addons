@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hatta_login_otp_man,hatta_login_otp_man,model_hatta_login_otp,group_hatta_password_man,1,1,1,1
+access_hatta_login_log,hatta_login_log,model_login_log_view,group_hatta_password_man,1,1,1,0
+access_hatta_login_log_emp,hatta_login_log_emp,model_login_log_view,base.group_user,1,1,1,0
+access_login_log_view,access_login_log_view,model_login_log_view,,1,1,1,1
+access_hatta_login_otp,access_hatta_login_otp,model_hatta_login_otp,,1,1,1,1

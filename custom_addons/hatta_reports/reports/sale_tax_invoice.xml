@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="assets_common" name="hatta_pdf_reports" inherit_id="report.assets_common">
+        <xpath expr="." position="inside">
+            <link href="/hatta_reports/static/src/css/hatta.css" rel="stylesheet" type="text/css"/>
+        </xpath>
+    </template>
+
+    <template id="sale_tax_return_document">
+        <div class="header ft_font">
+            <div class="row">
+                <div class="col-xs-4">
+                    <img style="width:100% !important;" t-if="res_company.logo" t-att-src="'data:image/png;base64,%s' % res_company.logo" />
+                </div>
+                <div class="col-xs-8" name="company_address" style="text-align:right;">
+                    <span style="font-weight:bold;" t-esc="res_company.partner_id.name"/><br/>
+                    <t t-if="res_company.phone">
+                        <span>Phone:</span>
+                        <span t-field="res_company.phone"/><br/>
+                    </t>
+                    <t t-if="res_company.fax">
+                        <span>Fax:</span>
+                        <span t-field="res_company.fax"/><br/>
+                    </t>
+                    <t t-if="res_company.zip">
+                        <span>P.O. BOX:</span>
+                        <span t-field="res_company.zip"/>
+                    </t>
+                    <t t-if="res_company.country_id">
+                        <span t-field="res_company.country_id"/><br/>
+                    </t>
+                    <t t-if="res_company.email">
+                        <span>Email:</span>
+                        <span t-field="res_company.email"/>
+                    </t>
+                </div>
+            </div>
+        </div>
+
+        <div class="page ft_font">
+            <div class="col-xs-12" style="text-align:center;margin-top:px;margin-bottom:20px;font-size:18px;;">
+                <span>رقم التسجىل ضريبية</span><span>TRN &#160;</span><span t-field="res_company.partner_id.vat"/>
+                <span>
+                    <b><div class="report-title"><u>فاتورة ضريبية</u><br/>TAX INVOICE</div></b>
+                </span>
+            </div>
+
+            <div class="col-xs-12" style="padding:0px !important" >
+                <div name="invoice_address" class="col-xs-5" style="padding:0px !important">
+                    <span style="font-weight:bold;" t-esc="o.partner_id.name"/><br/>
+                    <t t-if="o.partner_id.zip">
+                        <span>P.O. BOX:</span>
+                        <span t-field="o.partner_id.zip"/>,
+                    </t>
+                    <t t-if="o.partner_id.street">
+                        <span t-field="o.partner_id.street"/><br/>
+                    </t>
+                    <t t-if="o.partner_id.street2">
+                        <span t-field="o.partner_id.street2"/><br/>
+                    </t>
+                    <t t-if="o.partner_id.city">
+                        <span t-field="o.partner_id.city"/><br/>
+                    </t>
+                    <t t-if="o.partner_id.phone">
+                        <span>Phone:</span>
+                        <span t-field="o.partner_id.phone"/><br/>
+                    </t>
+                    <t t-if="o.partner_id.state_id">
+                        <span t-field="o.partner_id.state_id"/><br/>
+                    </t>
+                    <t t-if="o.partner_id.country_id">
+                        <span t-field="o.partner_id.country_id"/><br/>
+                    </t>
+                    <t t-if="o.partner_id.vat">
+                        <span>TRN:</span>
+                        <span t-field="o.partner_id.vat"/><br/>
+                    </t>
+                </div>
+                <div class="col-xs-7" >
+
+                    <table class="hatta_table" width="100%" style="font-size:12px;">
+                        <tr>
+                            <td width="20%" ><b>INVOICE NO:</b></td>
+                            <td width="28%" ><span t-field="o.number"/></td>
+                            <td width="22%" ><b>DATE:</b></td>
+                            <td width="30%" ><span t-field="o.date_invoice"/></td>
+                        </tr>
+                        <tr>
+                            <td ><b>LPO NO:</b></td>
+                            <td ><span t-field="o.purchase_order_id"/></td>
+                            <td ><b>S.PERSON:</b></td>
+                            <td ><span t-field="o.user_id"/></td>
+                        </tr>
+                        <tr>
+                            <td ><b>D.O NO:</b></td>
+                            <td ></td>
+                            <td><b>S.O No.</b></td>
+                            <td><span t-field="o.sale_order_id.name"/></td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" ><b>JOB A/C:</b><span style="padding-left:10px;" t-field="o.job_account"/></td>
+
+                        </tr>
+
+                    </table>
+                </div>
+            </div>
+        <t t-set="display_discount" t-value="any([l.discount for l in o.invoice_line_ids])"/>
+        <t t-set="display_discount_fixed" t-value="any([l.discount_fixed for l in o.invoice_line_ids])"/>
+
+
+        <table class="hatta_template_table1 table table-bordered">
+            <tr style="border-bottom:solid 1px grey;">
+                <td width="3%" style="vertical-align:middle;">S.N.</td>
+                <td width="35%" style="vertical-align:middle;">Description</td>
+                <td width="6%" style="vertical-align:middle;text-align:right;">Quantity</td>
+                <td width="5%" style="vertical-align:middle;">Unit</td>
+                <td width="9%" style="vertical-align:middle;text-align:right;">Rate</td>
+                <td width="11%" style="vertical-align:middle;text-align:right;">Amount</td>
+                <td width="5%" style="vertical-align:middle;text-align:right;" t-if="display_discount_fixed" >Disc</td>
+                <td width="5%" style="vertical-align:middle;">Vat %</td>
+                <td width="8%" style="vertical-align:middle;text-align:right;">Vat Amount</td>
+                <td width="13%" style="vertical-align:middle;text-align:right;">Net Amount</td>
+            </tr>
+            <tr t-foreach="o.invoice_line_ids" t-as="item" class="div_text_align_center">
+                <td style="vertical-align:middle;"><span t-field="item.serial_no"/></td>
+                <td style="text-align:left;"><span t-field="item.name"/></td>
+                <td style="vertical-align:middle;text-align:right;"><t t-esc="'%.1f'%(item.quantity)"/></td>
+                <td style="vertical-align:middle;"><span t-field="item.uom_id"/></td>
+                <td style="vertical-align:middle;text-align:right;"><span t-field="item.price_unit"/></td>
+                <td style="vertical-align:middle;text-align:right;"><span t-field="item.total_excluded_amount"/></td>
+                <td style="vertical-align:middle;text-align:right;" t-if="display_discount_fixed">
+<!--                    <span t-field="item.discount"/>-->
+                    <span t-field="item.discount_fixed"/>
+                </td>
+                <td style="vertical-align:middle;"><t t-foreach="item.invoice_line_tax_ids" t-as="tax">
+                    <span t-field="tax.description"/>,</t> </td>
+                <td style="vertical-align:middle;text-align:right;"><span t-field="item.line_tax_amount"/></td>
+                <td style="vertical-align:middle;text-align:right;"><span t-field="item.total_included_amount"/></td>
+            </tr>
+        </table>
+            <div class="col-xs-12" style="padding:0px !important">
+                <div class="col-xs-7" style="padding-left:0px !important">
+                    <table class="tab_bottom" width="100%" style="margin-top:20px;float:left;">
+                        <tr>
+                            <td style="border-top:solid .03em gray;border-bottom:solid .03em gray;padding:8px;"><b>Amount in words:</b>&#160;
+                                <span t-field="o.amount_in_words"/></td>
+                        </tr>
+                    </table>
+
+                </div>
+                <div class="col-xs-5" style="padding-right:0px !important">
+                    <table class="tab_bottom" width="100%" style="margin-top:20px;float:right;">
+                        <tr>
+                            <td style="border-top:solid .03em gray;border-bottom:solid .03em gray;padding:8px;text-align:right;">Sub Total:</td>
+                            <td style="border-top:solid .03em gray;border-bottom:solid .03em gray;padding:8px;text-align:right;">
+                                <span t-field="o.amount_untaxed"/></td>
+                        </tr>
+                        <tr>
+                            <td style="border-top:solid .03em gray;border-bottom:solid .03em gray;padding:8px;text-align:right;">VAT:</td>
+                            <td style="border-top:solid .03em gray;border-bottom:solid .03em gray;padding:8px;text-align:right;">
+                                <span t-field="o.amount_tax"/></td>
+                        </tr>
+                        <tr>
+                            <td style="border-top:solid .03em gray;border-bottom:solid .03em gray;padding:8px;text-align:right;">Total:</td>
+                            <td style="border-top:solid .03em gray;border-bottom:solid .03em gray;padding:8px;text-align:right;">
+                                <span t-field="o.amount_total"/></td>
+                        </tr>
+                    </table>
+
+                </div>
+            </div>
+
+            <table t-if="o.currency_id.name != o.company_id.currency_id.name">
+                <tr>
+                    <td >Conversion Rate:</td>
+
+                    <td >1 <span t-field="o.currency_id.name"/>&#160;=&#160;<t t-esc="'%.6f'%(1/o.exchange_rate)"/>&#160;<span t-field="o.company_id.currency_id.name"/> </td>
+                </tr>
+                <tr>
+                    <td >Amount Before Tax(<span t-field="o.company_id.currency_id.name"/>):</td>
+                    <td ><t t-esc="'%.2f'%((1/o.exchange_rate)*o.amount_untaxed)"/></td>
+                </tr>
+                <tr>
+                    <td >VAT(<span t-field="o.company_id.currency_id.name"/>):</td>
+                    <td ><t t-esc="'%.2f'%((1/o.exchange_rate)*o.amount_tax)"/></td>
+                </tr>
+                <tr>
+                    <td >Amount Including VAT (<span t-field="o.company_id.currency_id.name"/>):&#160;&#160;&#160;</td>
+                    <td ><t t-esc="'%.2f'%((1/o.exchange_rate)*o.amount_total)"/></td>
+                </tr>
+            </table>
+            <table t-if="o.type=='out_invoice'" class="col-xs-12" style="border:0px solid black;margin-top:20px;">
+                <tbody class="invoice_tbody">
+                    <tr t-foreach="o.partner_id.pay_bank_ids" t-as="l">
+                        <t t-if="l.currency_id.id==o.currency_id.id">
+                            <tr style="border-bottom:1px solid black;">
+                                <td style="border-right:1px solid black;padding-left:3px;"><span></span>
+                                </td>
+                            </tr>
+                            <tr t-if="l.partner_id">
+                                <td style="border-right:1px solid black;padding-left:3px;"><span>Account Name : </span><t t-esc="l.partner_id.name" ></t></td>
+                            </tr>
+                            <tr t-if="l.bank_id.name">
+                                <td style="border-right:1px solid black;padding-left:3px;"><span>Bank : </span><t t-esc="l.bank_id.name" ></t></td>
+                            </tr>
+                            <tr t-if="l.bank_id.street">
+                                <td style="border-right:1px solid black;padding-left:3px;"><span>Bank Branch: </span><t t-esc="l.bank_id.street" ></t></td>
+                            </tr>
+<!--                            <tr t-if="l.acc_number">-->
+<!--                                <td style="border-right:1px solid black;padding-left:3px;"><span>Account Number: </span><t t-esc="l.acc_number" ></t></td>-->
+<!--                            </tr>-->
+                            <tr t-if="l.bank_id.bic">
+                               <td style="border-right:1px solid black;padding-left:3px;"><span>SWIFT : </span><t t-esc="l.bank_id.bic" ></t></td>
+                            </tr>
+                             <tr t-if="l.bank_id.iban_code">
+                               <td style="border-right:1px solid black;padding-left:3px;"><span>IBAN Code : </span><t t-esc="l.bank_id.iban_code" ></t></td>
+                            </tr>
+                            <tr style="border-bottom:1px solid black;">
+                                <td style="border-right:1px solid black;padding-left:3px;"><span></span>
+                                </td>
+                            </tr>
+                       </t>
+                    </tr>
+                </tbody>
+            </table>
+
+        <div>
+            <t t-if="o.partner_bank_id">
+                <span style="font-weight:bold;font-size:15px;"><b>BANK DETAILS</b></span><br/>
+                <span> Bank Name : </span>
+                <span t-field="o.partner_bank_id.bank_id"/><br/>
+                <span> Bank Identification code/SWIFT : </span>
+                <span t-field="o.partner_bank_id.bic"/><br/>
+                <span> IBAN Code</span>
+                <span t-field="o.partner_bank_id.iban_code"/><br/>
+                <span>Account Number : </span>
+                <span t-field="o.partner_bank_id.acc_number"/><br/>
+            </t>
+        </div>
+        </div>
+    </template>
+
+    <template id="hatta_sale_tax_report_title" inherit_id="report.external_layout_header">
+<!--        <div class="report-title" position="inside">-->
+<!--            <t t-if="xmlid == 'hatta_reports.sale_tax__return'">-->
+<!--                TAX INVOICE-->
+<!--            </t>-->
+<!--        </div>-->
+    </template>
+
+    <template id="sale_tax__return">
+        <t t-foreach="docs" t-as="o">
+            <t t-call="hatta_reports.sale_tax_return_document"/>
+        </t>
+    </template>
+
+    <report
+        string="Tax Invoice"
+        id="hatta_sale_tax_return"
+        report_type="qweb-pdf"
+        model="account.invoice"
+        name="hatta_reports.sale_tax__return"
+        file="hatta_reports.sale_tax_return"
+    />
+
+            <record id="account.email_template_edi_invoice" model="mail.template">
+            <field name="name">Invoice - Send by Email</field>
+            <field name="email_from">${(object.user_id.email and '%s &lt;%s&gt;' % (object.user_id.name, object.user_id.email) or '')|safe}</field>
+            <field name="subject">${object.company_id.name} Invoice (Ref ${object.number or 'n/a'})</field>
+            <field name="partner_to">${object.partner_id.id}</field>
+            <field name="model_id" ref="account.model_account_invoice"/>
+            <field name="auto_delete" eval="True"/>
+            <field name="report_template" ref="hatta_reports.sale_tax__return"/>
+            <field name="report_name">Invoice_${(object.number or '').replace('/','_')}_${object.state == 'draft' and 'draft' or ''}</field>
+            <field name="lang">${object.partner_id.lang}</field>
+            <field name="body_html"><![CDATA[
+<p>Dear ${object.partner_id.name}
+% set access_action = object.get_access_action()
+% set access_url = access_action['type'] == 'ir.actions.act_url' and access_action['url'] or '/report/pdf/account.report_invoice/' + str(object.id)
+% set is_online = access_action and access_action['type'] == 'ir.actions.act_url'
+
+% if object.partner_id.parent_id:
+    (<i>${object.partner_id.parent_id.name}</i>)
+% endif
+,</p>
+<p>Here is your invoice <strong>${object.number}</strong>
+% if object.origin:
+(with reference: ${object.origin} )
+% endif
+amounting in <strong>${object.amount_total} ${object.currency_id.name}</strong>
+from ${object.company_id.name}.
+</p>
+
+% if is_online:
+    <br/><br/>
+    <center>
+      <a href="${access_url}" style="background-color: #1abc9c; padding: 20px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">View Invoice</a>
+    </center>
+% endif
+    <br/><br/>
+
+% if object.state=='paid':
+    <p>This invoice is already paid.</p>
+% else:
+    <p>Please remit payment at your earliest convenience.</p>
+% endif
+
+<p>Thank you,</p>
+% if object.user_id and object.user_id.signature:
+    ${object.user_id.signature | safe}
+% endif
+]]></field>
+        </record>
+
+<!--        paperformat="paperformat_sale_return_report"-->
+</odoo>

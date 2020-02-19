@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <template id="report.external_layout_footer_voucher_x" name="Report Layout Footer for Voucher">
+        <div class="footer">
+            <div class="text-center mb32">
+                <div class="row mb32 table table-bordered"><b>
+                    <div class="col-xs-3">Prepared By:<span t-esc="user.name"/></div>
+                    <div class="col-xs-3">Checked By:</div>
+                    <div class="col-xs-3">Passed By:</div></b>
+                    <div class="col-xs-3"><b>Receivers Name</b><br/>signature</div>
+                </div>
+                <div style="transform: rotate(-90deg);transform-origin: 0% 154%;text-align: left">
+                    MECD/FIN/FR-02,24/11/2017
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="report.external_layout_header_voucher_x" name="Report Layout Header for Voucher" >
+         <div class="header" style="height:200px">
+        <!-- company name -->
+        <div class="company_name" style="width:75%;height:auto;float:right;">
+            <span style="width:100%;float: right;font-weight: bold;font-size: 25px;
+            text-align:right;font-family: fantasy;padding-top:25px;">
+               <span t-esc="res_company.name"/>
+            </span>
+            <span style="font-size: 15px;width:100%;float:right;text-align:right;margin-top: 10px;"><span t-esc="res_company.street"/><t t-if="res_company.street2">,<t t-esc="res_company.street2"/></t></span>
+            <span style="width:100%;float:right;font-size: 15px;text-align:right;"><t t-esc="res_company.city"/><t t-if="res_company.zip">,<t t-esc="res_company.zip"/></t>
+
+            </span>
+            <span style="width:100%;float:right;text-align:right;font-size: 15px;"><t t-esc="res_company.state_id.name"/><t t-if="res_company.country_id">,<t t-esc="res_company.country_id.name"/></t></span>
+            <span style="font-size: 15px;width:100%;float:right;text-align:right">Phone: <t t-esc="res_company.phone"/><t t-if="res_company.fax">,Fax:<t t-esc="res_company.fax"/></t></span>
+        </div>
+        <!-- image -->
+        <div class="header_img" style="width:24%;height:200px;float: left;">
+            <img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="max-width:100%;max-height: 100%;float:right;min-width:100%;"/>
+        </div>
+    </div>
+    </template>
+    <template id="report.external_layout_voucher" inherit_id="report.external_layout"
+              primary="True" name="Report Layout for Voucher">
+        <t t-call="report.external_layout_header" position="replace">
+            <t t-call="report.external_layout_header_voucher_x" />
+        </t>
+        <t t-call="report.external_layout_footer" position="replace">
+            <t t-call="report.external_layout_footer_voucher_x" />
+        </t>
+    </template>
+
+</odoo>

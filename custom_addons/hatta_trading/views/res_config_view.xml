@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_shipping_config_settings" model="ir.ui.view">
+            <field name="name">Shipping Settings</field>
+            <field name="model">shipping.config.settings</field>
+            <field name="arch" type="xml">
+                <form string="Configure Shipping Settings" class="oe_form_configuration">
+                    <header>
+                        <button string="Apply" type="object" name="execute" class="oe_highlight"/>
+                        <button string="Cancel" type="object" name="cancel" class="oe_link"/>
+                    </header>
+                    <group string="Default Shipping Quotation">
+                        <label for="default_shipping_account">Account</label>
+                        <div>
+                            <div>
+                                <field name="default_shipping_account" class="oe_inline"/>
+                            </div>
+                        </div>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_shipping_setting_config" model="ir.actions.act_window">
+            <field name="name">Configure Shipping Settings</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">shipping.config.settings</field>
+            <field name="view_mode">form</field>
+            <field name="target">inline</field>
+        </record>
+
+        <!-- This Menu Item must have a parent and an action -->
+        <!-- This Menu Item Must have a parent -->
+        <menuitem id="shipping_configuration_menu" name="Configuration" parent="shipping_menu" sequence="6"/>
+        <menuitem id="shipping_config_settings_menu"
+                  name="Settings"
+                  parent="shipping_configuration_menu"
+                  action="action_shipping_setting_config"
+                  sequence="20"/>
+    </data>
+</odoo>

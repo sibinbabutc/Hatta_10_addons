@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data >
+        <record id="ft_petty_cash_voucher_draft" model="mail.message.subtype">
+            <field name="name">Draft</field>
+            <field name="res_model">pettycash.voucher</field>
+            <field name="default" eval="False"/>
+            <field name="description">Draft Entry</field>
+        </record>
+        <record id="ft_petty_cash_voucher_valid" model="mail.message.subtype">
+            <field name="name">Validated</field>
+            <field name="res_model">pettycash.voucher</field>
+            <field name="default" eval="False"/>
+            <field name="description">Voucher Validated</field>
+        </record>
+        <record id="ft_petty_cash_voucher_posted" model="mail.message.subtype">
+            <field name="name">Posted</field>
+            <field name="res_model">pettycash.voucher</field>
+            <field name="default" eval="False"/>
+            <field name="hidden" eval="True"/>
+            <field name="description">Posted</field>
+        </record>
+        
+    </data>
+</odoo>

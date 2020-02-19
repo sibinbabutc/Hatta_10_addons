@@ -1,0 +1,44 @@
+<odoo>
+
+    <menuitem id="hatta_config_sub_menu" name="Configuration" sequence="2" parent="enquiry_menu"/>
+
+    <menuitem id="hatta_config_country" name="Country" action="base.action_country"
+              sequence="1" parent="hatta_config_sub_menu" />
+
+    <menuitem id="hatta_config_currency" name="Currency" action="base.action_currency_form"
+              sequence="2" parent="hatta_config_sub_menu"/>
+
+    <menuitem id="hatta_config_location" name="Warehouse"
+             action="stock.action_warehouse_form" sequence="5" parent="hatta_config_sub_menu"/>
+
+    <menuitem id="hatta_config_salesman" name="Sales Person"
+             action="base.action_res_users" sequence="4" parent="hatta_config_sub_menu"/>
+
+    <menuitem id="hatta_config_vendor" name="Vendors"
+         parent="hatta_config_sub_menu" sequence="5" action="base.action_partner_supplier_form"/>
+
+    <menuitem id="hatta_config_customer" name="Customers"
+         parent="hatta_config_sub_menu" sequence="6" action="base.action_partner_form"/>
+
+    <menuitem id="hatta_config_product" name="Product"
+         parent="hatta_config_sub_menu" sequence="7" action="product.product_template_action"/>
+
+    <menuitem id="hatta_config_pay_term" name="Payment Terms"
+         parent="hatta_config_sub_menu" sequence="8" action="account.action_payment_term_form"/>
+
+    <menuitem id="hatta_config_pricelist" name="Pricelists"
+        parent="hatta_config_sub_menu" sequence="10" action="product.product_pricelist_action2"/>
+
+    <menuitem id="hatta_config_shipping_method" name="Shipping Method Defaults"
+        parent="hatta_config_sub_menu" sequence="11" action="hatta_shipment_method_action"/>
+
+    <menuitem id="hatta_config_charge_type" name="Charge Types"
+        parent="hatta_config_sub_menu" sequence="12" action="hatta_charge_type_action"/>
+
+    <menuitem id="hatta_config_product_certificate" name="Product Certificates"
+        parent="hatta_config_sub_menu" sequence="13" action="product_certificate_action"/>
+
+    <menuitem id="hatta_config_cost_center" name="Cost Center"
+        parent="hatta_config_sub_menu" sequence="14" action="cost_center_action"/>
+
+</odoo>

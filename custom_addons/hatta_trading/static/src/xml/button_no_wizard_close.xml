@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates>
+
+    <button t-name="ListView.row.button" type="button"
+        t-att-title="widget.string" t-att-disabled="disabled || undefined"
+        t-attf-class="o_icon_button #{disabled ? 'oe_list_button_disabled' : ''} #{widget.o_wizard_no_close ? 'o_wizard_no_close': ''}"
+        ><i t-attf-class="fa #{widget.icon}" t-att-title="widget.string"/>
+    </button>
+
+
+</templates>

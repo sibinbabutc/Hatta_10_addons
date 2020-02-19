@@ -1,0 +1,83 @@
+<odoo>
+  <!-- Inherit Form View to Modify it -->
+  <record id="hr_employee_form_inherit" model="ir.ui.view">
+      <field name="name">hr.employee.form.inherit</field>
+      <field name="model">hr.employee</field>
+      <field name="inherit_id" ref="hr.view_employee_form"/>
+      <field name="arch" type="xml">
+          <xpath expr="//div[@class='oe_title']/h1" position="after">
+            <label for="employee_number" class="oe_edit_only"/>
+            <field name="employee_number"/>
+          </xpath>
+          <xpath expr="//field[@name='department_id']" position="after">
+            <field name="join_date"/>
+            <field name="last_working_date"/>
+          </xpath>
+          <xpath expr="//field[@name='address_home_id']" position="attributes">
+                <attribute name="invisible">True</attribute>
+                <attribute name="string">Related Partner</attribute>
+<!--                <attribute name="required">True</attribute>-->
+                <attribute name="context">{'default_is_company': False, 'default_customer': False, 'default_supplier': False,}</attribute>
+         </xpath>
+
+          <xpath expr="//field[@name='address_home_id']" position="after">
+              <field name="home_address"/>
+              <field name="home_contact_no"/>
+            <field name="local_address"/>
+            <field name="local_contact_no"/>
+          </xpath>
+          <xpath expr="//field[@name='birthday']" position="before">
+            <field name="blood_group"/>
+          </xpath>
+          <xpath expr="//field[@name='passport_id']" position="replace">
+          </xpath>
+          <xpath expr="//group[@name='active_group']" position="after">
+              <group string="Accounting">
+                  <field name="sub_ledger_account"/>
+                  <field name="sal_transfer_mode" required="1"/>
+              </group>
+          </xpath>
+          <xpath expr="//notebook/page[2]" position="after">
+            <page string="Document Information">
+                <group>
+                  <group string="Passport Info">
+                    <field name="passport_id"/>
+                    <field name="passport_issue_date"/>
+                    <field name="passport_expiry_date"/>
+                    <field name="place_issue"/>
+                  </group>
+                  <group string="Insurance Info">
+                    <field name="insurance_no"/>
+                    <field name="insurance_issue_date"/>
+                    <field name="insurance_expiry_date"/>
+                  </group>
+                </group>
+                <group>
+                  <group string="Visa Info">
+                    <field name="visa_no"/>
+                    <field name="visa_issue_date"/>
+                    <field name="visa_expiry_date"/>
+                  </group>
+                  <group string="Emirates ID Info">
+                    <field name="emirates_id_no"/>
+                    <field name="emirates_id_issue_date"/>
+                    <field name="emirates_id_expiry_date"/>
+                  </group>
+                </group>
+                <group>
+                  <group string="Labour Card Info">
+                    <field name="labour_card_no"/>
+                    <field name="labour_card_issue_date"/>
+                    <field name="labour_card_expiry_date"/>
+                  </group>
+                  <group string="Driving License Info">
+                    <field name="license_no"/>
+                    <field name="license_issue_date"/>
+                    <field name="license_expiry_date"/>
+                  </group>
+                </group>
+            </page>
+          </xpath>
+      </field>
+  </record>
+</odoo>

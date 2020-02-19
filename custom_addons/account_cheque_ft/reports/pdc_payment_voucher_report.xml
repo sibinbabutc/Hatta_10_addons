@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+            <template id="report_pdc_payment_payment_voucher">
+            <div class="footer">
+                    <div class="row" style="margin-bottom:35px;padding-top:10px;"><b>
+                        <div class="col-xs-3 ntbold" style="font-style: italic;" >Prepared By</div>
+                        <div class="col-xs-3 ntbold" style="text-align:center;font-style: italic;">Checked By</div>
+                        <div class="col-xs-3 ntbold" style="text-align:center;font-style: italic;">Posted By</div>
+                        <div class="col-xs-3 ntbold" style="text-align:right;font-style: italic;">Approved By</div></b>
+                    </div>
+                    <div class="row" style="margin-bottom:20px;border-top:1px solid grey;">
+                        <div class="col-xs-12 text-left" style="padding-top:3px;" >Receivers Name:</div>
+                        <div class="col-xs-12 text-left" >Signature:</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-4" style="font-size:11px;color:grey;">MECD/FIN/FR-02 A,24/11/2017</div>
+                        <div class="col-xs-4" style="text-align:center;font-size:12px;">
+                            <span>Printed On: </span><span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y %I:%M %p ')"/></div>
+                        <div class="col-xs-4 text-right">
+                        <span style="font-size:12px;">&#160;</span>Page<span class="page" /> of <span class="topage" />
+                        </div>
+                    </div>
+                </div>
+
+
+        <div class="header" style="height:200px">
+            <!-- company name -->
+            <div class="row">
+                        <div class="col-xs-3">
+                            <img style="width:100% !important;" t-if="res_company.logo" t-att-src="'data:image/png;base64,%s' % res_company.logo" />
+                        </div>
+                        <div class="col-xs-9" style="text-align:right;font-size:15px;">
+                            <div style="font-weight:bold;">
+                                    <h4 style="margin-bottom: 6px;padding-top: 6px;font-weight: bold;" t-esc="res_company.partner_id.name"/>
+                            </div>
+                            <div >
+                                <span t-field="res_company.partner_id.street"/><br/>
+                                <span t-field="res_company.partner_id.street2"/><br/>
+                                <span t-field="res_company.partner_id.city"/>
+                                <span t-field="res_company.partner_id.state_id"/>
+                                <span t-field="res_company.partner_id.zip"/><br/>
+                                <span t-field="res_company.partner_id.country_id"/>
+                            </div>
+                        </div>
+                    </div>
+        </div>
+                <t t-set="o" t-value="o.with_context({'lang':o.partner_id.lang})" />
+                <div class="page" style="font-size:12px">
+                    <br/>
+                    <div class="header" style="text-align:center;margin-top:-30px;">
+                        <h2><strong>Payment Voucher (PDC)</strong></h2>
+                    </div>
+                    <div class="row mt8 mb16">
+                        <div name="partner_address" class="col-xs-6">
+                            <table class="table mt8" style="font-size:12px ">
+                                    <tr><td width="25%">Date : </td><td><b><span t-field="o.payment_id.payment_date"/></b></td></tr>
+                                <tr><td>
+                                        <span>Paid To:</span>
+                                </td><td><b><span t-field="o.payment_id.partner_id"/></b></td></tr>
+                                <tr t-if="o.payment_id.payee_name"><td>
+                                    Cheque Name:
+                                </td><td>
+                                    <b><span t-field="o.payment_id.payee_name"/></b>
+                                </td></tr>
+
+                                <tr t-if="o.payment_id.cheque_id">
+                                    <td>
+                                        Cheque Date:
+                                    </td>
+                                    <td>
+                                        <b>
+                                            <span t-if="(o.payment_id.mature_date and o.payment_id.payment_method_code in ['cheque_pdc_payment',
+                                                                          'cheque_pdc_receipt'])"
+                                                  t-field="o.payment_id.mature_date"/>
+                                            <span t-if="not (o.payment_id.mature_date and o.payment_id.payment_method_code in ['cheque_pdc_payment',
+                                                                          'cheque_pdc_receipt'])"
+                                                  t-field="o.payment_id.cheque_id.cheque_date"/>
+                                        </b>
+                                    </td>
+                                </tr>
+
+                                <tr t-if="o.payment_id.communication"><td>
+                                    <span>Narration:</span>
+                                </td><td>
+                                    <b><span t-if="o.payment_id.communication" t-field="o.payment_id.communication"/></b>
+                                </td></tr>
+                            </table>
+                        </div>
+                        <div class="col-xs-6">
+                            <table class="table mt8" style="font-size:12px">
+                                <tr t-if="o.name"><td>
+                                        Voucher No:
+                                </td><td><b><span t-field="o.name"/></b></td></tr>
+                                <tr><td>
+                                    Payment Method:
+                                </td><td>
+                                    <b><span t-field="o.payment_id.journal_id"/></b>
+                                </td></tr>
+                                <tr t-if="o.payment_id.cheque_id"><td>
+                                    Cheque No:
+                                </td><td>
+                                    <b><span t-field="o.payment_id.cheque_id.cheque_no"/></b>
+                                </td></tr>
+                                <tr><td>
+                                    <span>Amount:</span>
+                                </td><td>
+                                    <b><span t-field="o.payment_id.amount"
+                                          t-options='{"widget": "monetary", "display_currency": o.payment_id.currency_id}'/></b>
+                                </td></tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <t t-if="o.payment_id.have_bills">
+                        <div class="col-xs-12" style="margin-left:0px !important;padding-left:0px !important;">
+                            <t t-if="o.payment_id.payment_type == 'inbound'"><b>Reference</b></t>
+                            <t t-if="o.payment_id.payment_type == 'outbound'"><b>Bill Reference</b></t>
+                        </div>
+                    </t>
+
+                    <t t-if="o.payment_id.have_bills">
+                        <table class="table table-condensed" style="font-size:12px !important; margin-left:0px !important" t-if="o.payment_id.invoice_ids">
+                            <thead>
+                                <tr style="background-color:#000266 !important; color:white;">
+                                    <th>S No</th>
+                                    <th>
+                                        <t t-if="o.payment_id.payment_type == 'inbound'">Customer</t>
+                                        <t t-if="o.payment_id.payment_type == 'outbound'">Reference</t>
+                                    </th>
+                                    <th>Date</th>
+                                    <th><t t-if="o.payment_id.payment_type == 'inbound'">Invoice No</t>
+                                        <t t-if="o.payment_id.payment_type == 'outbound'">Vendor Bill No</t>
+                                    </th>
+                                    <th class="text-right">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody class="payment_tbody">
+                                <t t-set="bill_amount" t-value="0.00"/>
+                                <tr t-foreach="o.payment_id.invoice_ids" t-as="l">
+                                    <td class="text-center" ><span t-esc="l_index+1"/></td>
+                                    <td><span t-field="l.number"/></td>
+                                    <td><span t-field="l.date_invoice"/></td>
+                                    <td>
+                                        <t t-if="o.payment_id.payment_type == 'inbound'"><span t-field="l.partner_id"/></t>
+                                        <t t-if="o.payment_id.payment_type == 'outbound'"><span t-field="l.reference"/></t>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-field="l.amount_total"/>
+                                    </td>
+                                    <t t-set="bill_amount" t-value="bill_amount+l.amount_total"/>
+                                </tr>
+                                <tr style="border-top:2px solid black !important;">
+                                    <td class="text-right" colspan="4">
+                                        <b><span>
+                                            <t t-if="o.payment_id.payment_type == 'inbound'">Total Invoice Amount:</t>
+                                        <t t-if="o.payment_id.payment_type == 'outbound'">Total Bill Amount:</t>
+                                            </span></b>
+                                    </td>
+                                    <td class="text-right">
+                                        <b><span t-esc="bill_amount"
+                                                 t-options='{"widget": "monetary", "display_currency": o.payment_id.currency_id}'/></b>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </t>
+
+                    <t t-if="o.payment_id.have_lines">
+                        <table class="table table-condensed" style="font-size:12px !important; margin-left:0px !important" t-if="o.payment_id.voucher_lines">
+                            <thead>
+                                <tr style="background-color:#000266 !important; color:white;">
+                                    <th width="5%">S No</th>
+                                    <th width="10%">GL Code</th>
+                                    <th width="50%">Description</th>
+                                    <th width="10%" class="text-right">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody class="payment_tbody">
+                                <t t-set="voucher_line_amount" t-value="0.00"/>
+                                <tr t-foreach="o.payment_id.voucher_lines" t-as="l">
+                                    <td class="text-center" ><span t-esc="l_index+1"/></td>
+                                    <td><span t-field="l.account_id.code"/></td>
+                                    <td><span t-field="l.name"/></td>
+                                    <td class="text-right">
+                                        <span t-field="l.line_amount"/>
+                                    </td>
+                                    <t t-set="voucher_line_amount" t-value="voucher_line_amount+l.line_amount"/>
+                                </tr>
+                                <tr style="border-top:2px solid black !important;">
+                                    <td class="text-right" colspan="5">
+                                        <b><span>Total Voucher Amount:</span></b>
+                                    </td>
+                                    <td class="text-right">
+                                        <b><span t-esc="voucher_line_amount"
+                                                 t-options='{"widget": "monetary", "display_currency": o.payment_id.currency_id}'/></b>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </t>
+                    <p><b>Amount in Words : <span t-field="o.payment_id.amount_in_words"/></b></p>
+                </div>
+        </template>
+
+            <template id="report_pdc_payment_payment">
+            <t t-call="report.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="account_cheque_ft.report_pdc_payment_payment_voucher" t-lang="o.partner_id.lang"/>
+                </t>
+            </t>
+        </template>
+
+
+        <record id="paperformat_pdc_payment_payment_voucher" model="report.paperformat">
+                <field name="name">PDC Payment payment Voucher</field>
+                <field name="default" eval="True"/>
+                <field name="format">A4</field>
+                <field name="orientation">Portrait</field>
+                <field name="margin_top">40</field>
+                <field name="margin_bottom">35</field>
+                <field name="margin_left">7</field>
+                <field name="margin_right">7</field>
+                <field name="header_line" eval="False"/>
+                <field name="header_spacing">37</field>
+            </record>
+
+        <report
+            id="account_pdc_payment_payment_voucher_report"
+            model="cheque.category.cheques"
+            string="PDC Payment Payment Voucher"
+            report_type="qweb-pdf"
+            menu="False"
+            name="account_cheque_ft.report_pdc_payment_payment"
+            file="account_cheque_ft.report_pdc_payment_payment"
+            paperformat="paperformat_pdc_payment_payment_voucher"
+        />
+</odoo>

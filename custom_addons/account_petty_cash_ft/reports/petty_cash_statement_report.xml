@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<template id="report_pettycash_statement">
+    <t t-call="report.html_container">
+        <t t-set="data_report_margin_top" t-value="12"/>
+        <t t-set="data_report_header_spacing" t-value="9"/>
+        <t t-set="data_report_dpi" t-value="110"/>
+
+        <t t-call="report.internal_layout">
+            <t t-foreach="docs" t-as="doc">
+            <div class="page">
+                <h2><span t-esc="res_company.name"/>: PETTY CASH STATEMENT</h2>
+
+                <div class="row mt32">
+                    <div class="col-xs-4">
+                        <strong>Petty Cash Fund:</strong>
+                          <p t-esc="doc.pettycash_id.name"/>
+                    </div>
+                    <div class="col-xs-4">
+                        <strong>
+                            <t t-if="doc.month_daterange == 'month'">
+                                For the Month: <strong><t t-esc="doc.month"/> <t t-esc="doc.year"/></strong>
+                            </t>
+                            <t t-if="doc.month_daterange == 'range'">
+                                For the Period: <strong>
+                                    <t t-esc="doc.from_date"/> To <t t-esc="doc.to_date"/>
+                                </strong>
+                            </t>
+                        </strong>
+                    </div>
+                    <div class="col-xs-4">
+                        <t t-if="doc.types == 'draft'"><strong>Included UnPosted Vouchers</strong></t>
+                        <t t-if="doc.types == 'posted'"><strong>Posted Vouchers Only</strong></t>
+                        <t t-if="doc.transfer_type == 'debit_only'"><strong>Debit Entries Only</strong></t>
+                        <t t-if="doc.transfer_type == 'credit_only'"><strong>Credit Entries Only</strong></t>
+                    </div>
+                </div>
+            </div>
+            </t>
+        </t>
+    </t>
+</template>
+</odoo>

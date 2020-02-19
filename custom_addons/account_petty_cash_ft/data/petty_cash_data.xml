@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="sequence_petty_cash_fund" model="ir.sequence">
+        <field name="name">Petty Cash Fund sequence</field>
+        <field name="code">petty.cash.fund</field>
+        <field name="prefix">PC</field>
+        <field name="padding">2</field>
+    </record>
+
+    <record model="ir.sequence" id="seq_voucher_pettycash">
+        <field name="name">Pettycash Voucher Sequence</field>
+        <field name="code">voucher.pettycash</field>
+        <field name="prefix">PCV%(range_year)s</field>
+        <field name="padding">3</field>
+    </record>
+
+    <record model="ir.sequence" id="seq_voucher_pettycash_allocation">
+        <field name="name">Pettycash Allocation Voucher Sequence</field>
+        <field name="code">voucher.pettycash.allocation</field>
+        <field name="prefix">PAV%(range_year)s</field>
+        <field name="padding">3</field>
+    </record>
+
+    <record model="ir.sequence" id="seq_voucher_pettycash_topup">
+        <field name="name">Pettycash Topup Voucher Sequence</field>
+        <field name="code">voucher.pettycash.topup</field>
+        <field name="prefix">PTV%(range_year)s</field>
+        <field name="padding">3</field>
+    </record>
+
+    <!--<record model="ir.ui.menu" id="hr.main_hr_menu">-->
+            <!--<field name="groups_id"-->
+                   <!--eval="[(4, ref('hr.group_hr_user'))]"/>-->
+        <!--</record>-->
+
+
+</odoo>

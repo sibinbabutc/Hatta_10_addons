@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_hr_config_settings" model="ir.ui.view">
+            <field name="name">HR Settings</field>
+            <field name="model">hr.config.settings</field>
+            <field name="arch" type="xml">
+                <form string="Configure HR Settings" class="oe_form_configuration">
+                    <header>
+                        <button string="Apply" type="object" name="execute" class="oe_highlight"/>
+                        <button string="Cancel" type="object" name="cancel" class="oe_link"/>
+                    </header>
+                    <group string="Default Salary Journal">
+                        <label for="default_advance_salary_journal">Journal</label>
+                        <div>
+                            <div>
+                                <field name="default_advance_salary_journal" class="oe_inline"/>
+                            </div>
+                        </div>
+                    </group>
+                    <separator string="WPS Configuration"/>
+                    <group>
+                        <group>
+                            <field name="basic_salary_code"/>
+                            <field name="salary_earned_code"/>
+                            <field name="total_deduction_code"/>
+                            <field name="salary_advance_code"/>
+                            <field name="allowance_code"/>
+                            <field name="overtime_code"/>
+                            <field name="net_salary_code"/>
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_hr_setting_config" model="ir.actions.act_window">
+            <field name="name">Configure HR Settings</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">hr.config.settings</field>
+            <field name="view_mode">form</field>
+            <field name="target">inline</field>
+        </record>
+
+        <!-- This Menu Item must have a parent and an action -->
+        <menuitem id="hr_config_settings_menu"
+                  name="HR Settings"
+                  parent="hr.menu_human_resources_configuration"
+                  action="action_hr_setting_config"
+                  sequence="20"/>
+    </data>
+</odoo>

@@ -1,0 +1,41 @@
+<odoo>
+    <record id="wizard_bid_entry" model="ir.ui.view">
+        <field name="name">Enter Bids</field>
+        <field name="model">enquiry.details</field>
+        <field name="arch" type="xml">
+            <form string="Enter Supplier Bids">
+                <field name="purchase_order_lines">
+                    <tree string="RFQ Lines" editable="bottom" create="false" delete="false">
+                        <field name="sequence" widget="handle"/>
+                        <field name="order_id" readonly="1"/>
+                        <field name="partner_id" readonly="1"/>
+                        <field name="currency_id" invisible="1"/>
+                        <field name="serial_no" readonly="1"/>
+                        <field name="product_id" readonly="1"/>
+                        <field name="product_qty" string="Bid Qty"/>
+                        <field name="product_uom" string="UOM" readonly="1"/>
+                        <field name="price_unit" string="Bid Amount" widget="monetary"/>
+                    </tree>
+                </field>
+                <footer>
+                    <button name="button_dummy" string="Update Bids" type="object" class="oe_highlight"/>
+                    <button special="cancel" string="Cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="wizard_bid_view" model="ir.ui.view">
+        <field name="name">Suppliers Bid Details</field>
+        <field name="model">enquiry.details</field>
+        <field name="arch" type="xml">
+            <form string="View Supplier Bids">
+                <field name="bid_html"/>
+                <footer>
+                    <button special="cancel" string="Close" class="oe_right"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

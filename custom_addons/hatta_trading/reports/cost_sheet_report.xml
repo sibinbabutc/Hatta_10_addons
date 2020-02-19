@@ -1,0 +1,502 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <template id="assets_common" name="hatta_pdf_reports" inherit_id="report.assets_common">
+        <xpath expr="." position="inside">
+            <link href="/hatta_trading/static/src/css/hatta.css" rel="stylesheet" type="text/css"/>
+        </xpath>
+    </template>
+
+    <template id="hatta_cost_sheet_report_document">
+        <t t-set="report_heading"/>
+        <t t-call="report.external_layout" t-options="{'report_heading': 'Cost Sheet'}">
+            <div class="page ft_font">
+                <t t-set="res_company" t-value="o['cs'].purchase_order_id.company_id"/>
+                <!--<div class="col-xs-12" style="text-align:center;font-size:12px;margin-bottom:25px;"><b>COST SHEET</b></div>-->
+                <table class="hatta_cs_table_1" width="100%">
+                    <tr>
+                        <td><b>Cost Sheet Reference</b></td>
+                        <td colspan="3"><b><span t-field="o['cs'].name"/></b></td>
+                    </tr>
+                    <tr>
+                        <td width="25%"><b>Enquiry No</b></td>
+                        <td width="25%"><b><span t-field="o['cs'].purchase_order_id.enquiry_id"/></b></td>
+                        <td width="25%"><b>Client Name</b></td>
+                        <td width="25%"><b><span t-field="o['cs'].purchase_order_id.customer_id"/></b></td>
+                    </tr>
+                    <tr>
+                        <td><b>Closing Date</b></td>
+                        <td><b><span t-field="o['cs'].purchase_order_id.enquiry_closing_date"/></b></td>
+                        <td><b>Accn. Code</b></td>
+                        <td><b><span t-field="o['cs'].purchase_order_id.job_account"/></b></td>
+                    </tr>
+                    <tr>
+                        <td><b>Purchase Order</b></td>
+                        <td><b><span t-field="o['cs'].purchase_order_id"/></b></td>
+                        <td><b>Invoice</b></td>
+                        <td><b></b></td>
+                    </tr>
+                    <tr>
+                        <td><b>Product Quoted</b></td>
+                        <td colspan="3"><b><span t-field="o['cs'].purchase_order_id.product_type"/></b></td>
+                    </tr>
+                    <tr>
+                        <td><b>Manufacturer</b></td>
+                        <td><b><span t-field="o['cs'].purchase_order_id.manufactures_id.name"/></b></td>
+                        <td><b>Origin</b></td>
+                        <td><b><span t-field="o['cs'].purchase_order_id.partner_id.country_id.name"/></b></td>
+                    </tr>
+                    <tr>
+                        <td><b>Supplier</b></td>
+                        <td><b><span t-field="o['cs'].purchase_order_id.partner_id"/></b></td>
+                        <td><b>Exchange Rate</b></td>
+                        <td><b><span t-field="o['cs'].exchange_rate_view"/></b></td>
+                    </tr>
+                    <tr t-if="o['cs'].weight or o['cs'].volume or o['cs'].dimension or o['cs'].zone">
+                        <td colspan="4">
+                            <t t-if="o['cs'].weight">
+                                <div class="col-xs-3" style="padding-left:0px;"><b>Weight:<span t-field="o['cs'].weight"/></b></div>
+                            </t>
+                            <t t-if="o['cs'].volume">
+                                <div class="col-xs-3" style="padding-left:0px;"><b>Volume:<span t-field="o['cs'].volume"/> </b></div>
+                            </t>
+                            <t t-if="o['cs'].dimension">
+                                <div class="col-xs-3" style="padding-left:0px;"><b>Dimension:<span t-field="o['cs'].dimension"/> </b></div>
+                            </t>
+                            <t t-if="o['cs'].dimension">
+                                <div class="col-xs-3" style="padding-left:0px;"><b>Zone:<span t-field="o['cs'].zone"/></b></div>
+                            </t>
+                        </td>
+                    </tr>
+                    <!--<tr>-->
+                    <!--<td><b>Currency</b></td>-->
+                    <!--<td><b><span t-field="o['cs'].cost_sheet_currency_id"/></b></td>-->
+                    <!--<td>Currency</td>-->
+                    <!--<td><b><span t-field="o['cs'].currency_id"/></b></td>-->
+                    <!--</tr>-->
+                    <!--<tr>-->
+                    <!--<td>COST PRICE</td>-->
+                    <!--<td></td>-->
+                    <!--&lt;!&ndash;<td><span t-field="o.product_cost_fc"/></td>&ndash;&gt;-->
+                    <!--<td>COST PRICE</td>-->
+                    <!--<td></td>-->
+                    <!--&lt;!&ndash;<td><span t-field="o.product_cost_lc"/></td>&ndash;&gt;-->
+                    <!--</tr>-->
+                    <!--<tr>-->
+                    <!--<td>TOTAL COST</td>-->
+                    <!--<td><span t-field="o['cs'].total_cost"/></td>-->
+                    <!--<td>TOTAL COST</td>-->
+                    <!--<td><span t-field="o['cs'].total_cost_lc"/></td>-->
+                    <!--</tr>-->
+                </table>
+
+                <t t-if="o['cs'].currency_id != o['cs'].cost_sheet_currency_id">
+                    <div class="col-xs-6" style="margin-top:15px;padding-left:0px">
+                        <t t-if="o['cs'].currency_id != o['cs'].cost_sheet_currency_id">
+                            <table class="table table-bordered">
+                                <tr style="background: darkgrey;">
+                                    <th colspan="2" style="text-align:center;">Cost in Foreign Currency(<t t-esc="o['data']['foreign_currency'].name"/>)</th>
+                                </tr>
+                                <tr>
+                                    <td width="50%"><b>Product Cost</b></td>
+                                    <td><b><t t-esc="'{0:,.2f}'.format(float(o['data']['product_cost_fc']))"/></b></td>
+                                </tr>
+                                <tr>
+                                    <td width="50%"><b>Total Equipment Cost</b></td>
+                                    <td><b><t t-esc="'{0:,.2f}'.format(float(o['data']['total_equipment_cost_fc']))"/></b></td>
+                                </tr>
+                                <tr>
+                                    <td width="50%" style="padding-left:25px;">Freight Charge</td>
+                                    <td><t t-esc="o['data']['freight_charge_fc']"/></td>
+                                </tr>
+                                <tr>
+                                    <td width="50%" style="padding-left:25px;">FOB</td>
+                                    <td><t t-esc="o['data']['fob_charges_fc']"/></td>
+                                </tr>
+                                <t t-foreach="o['certificates']" t-as="cert">
+                                    <tr>
+                                        <td width="50%" style="padding-left:25px;"><t t-esc="cert.line_charge_id.name"/></td>
+                                        <td><t t-esc="cert.amount_fc"/></td>
+                                    </tr>
+                                </t>
+                                <tr>
+                                    <td width="50%" style="padding-left:25px;">Other Charges</td>
+                                    <td><t t-esc="o['data']['other_charges_fc']"/></td>
+                                </tr>
+                                <tr>
+                                    <td width="50%"><b>Total Cost</b></td>
+                                    <td><b><t t-esc="o['data']['total_cost_fc']"/></b></td>
+                                </tr>
+                            </table>
+                            <table class="table table-bordered" style="margin-top:-12px;">
+                                <tr>
+                                    <td width="50%" style="border-collapse:separate;border-spacing:10px;"><b>Agency Commission</b></td>
+                                    <td><b><t t-esc="o['data']['agency_commission_fc']"/></b></td>
+                                </tr>
+                                <tr>
+                                    <td width="50%"><b>Payable to Vendor</b></td>
+                                    <td><b><t t-esc="o['data']['net_payable_supplier_fc']"/></b></td>
+                                </tr>
+                            </table>
+
+                            <table class="table table-bordered" style="margin-top:-12px;">
+                                <tr>
+                                    <td width="50%"><b>Total Expense</b></td>
+                                    <td><b><t t-esc="'%.2f'%(o['data']['total_expense_line_fc'])"/></b></td>
+                                </tr>
+                                <t t-foreach="o['data']['expense_line_ids']" t-as="expense_line">
+                                    <tr>
+                                        <td width="50%" style="border-collapse:separate;border-spacing:10px;padding-left:25px;">
+                                            <span t-field="expense_line.line_charge_id.name"/></td>
+                                        <td><span t-field="expense_line.amount_fc"/></td>
+                                    </tr>
+                                </t>
+                            </table>
+
+                            <table class="table table-bordered" style="margin-top:-13px;font-size:15px">
+                                <tr>
+                                    <td width="50%"><b>Total</b></td>
+                                    <td><b><t t-esc="'%.2f'%(o['data']['final_total_fc'])"/></b></td>
+                                </tr>
+                            </table>
+                        </t>
+                        <table class="table table-bordered" style="margin-top:-12px;">
+                            <t t-set="total_sp" t-value="0.00"></t>
+                            <tr>
+                                <td width="50%"><b>Discount</b></td>
+                                <td><b><t t-esc="o['cs'].purchase_order_id.discount"/></b></td>
+                            </tr>
+
+                            <tr>
+                                <td width="50%"><b>Margin</b></td>
+                                <td><b><t t-esc="o['cs'].margin"/></b></td>
+                            </tr>
+                            <tr t-if="o['cs'].margin != 0.0">
+                                <td width="50%"><b>Total Selling Price</b></td>
+                                <td><b>
+                                    <t t-set="total_sp" t-value="total_sp + o['cs'].margin + o['data']['final_total_lc'] "/>
+                                    <t t-esc="round(total_sp)"/>
+                                </b></td>
+                            </tr>
+                            <tr>
+                                <td width="50%"><b>Quot.Validity</b></td>
+                                <td><b><t t-esc="o['cs'].purchase_order_id.quotation_validity"/></b></td>
+                            </tr>
+                            <tr>
+                                <td width="50%"><b>Total Price</b></td>
+                                <td><b><t t-esc="'%.2f'%(total_sp)"/>
+                                </b></td>
+                            </tr>
+                        </table>
+
+                        <table class="table table-bordered" style="margin-top:-12px;">
+                            <tr>
+                                <td width="50%"><b>Prepared By</b></td>
+                                <td><b><t t-esc="o['cs'].prepared_by.name"/></b></td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="col-xs-6" style="margin-top:15px;padding-right:0px">
+                        <table class="table table-bordered">
+                            <tr style="background: darkgrey;">
+                                <th colspan="2" style="text-align:center;">Cost in Local Currency(<t t-esc="o['data']['local_currency'].name"/>)</th>
+                            </tr>
+                            <tr>
+                                <td width="50%"><b>Product Cost</b></td>
+                                <td><b><t t-esc="o['data']['product_cost_lc']"/></b></td>
+                            </tr>
+                            <tr>
+                                <td width="50%"><b>Total Equipment Cost</b></td>
+                                <td><b><t t-esc="o['data']['total_equipment_cost_lc']"/></b></td>
+                            </tr>
+                            <tr>
+                                <td width="50%" style="padding-left:25px;">Freight Charge</td>
+                                <td><t t-esc="o['data']['freight_charge_lc']"/></td>
+                            </tr>
+                            <tr>
+                                <td width="50%" style="padding-left:25px;">FOB</td>
+                                <td><t t-esc="o['data']['fob_charges_lc']"/></td>
+                            </tr>
+                            <t t-foreach="o['certificates']" t-as="cert">
+                                <tr>
+                                    <td width="50%" style="padding-left:25px;"><t t-esc="cert.line_charge_id.name"/></td>
+                                    <td><t t-esc="cert.amount_lc"/></td>
+                                </tr>
+                            </t>
+                            <tr>
+                                <td width="50%" style="padding-left:25px;">Other Charges</td>
+                                <td><t t-esc="o['data']['other_charges_lc']"/></td>
+                            </tr>
+                            <tr>
+                                <td width="50%"><b>Total Cost</b></td>
+                                <td><b><t t-esc="o['data']['total_cost_lc']"/></b></td>
+                            </tr>
+                        </table>
+
+                        <table class="table table-bordered" style="margin-top:-12px;">
+                            <tr>
+                                <td width="50%" style="border-collapse:separate;border-spacing:10px;"><b>Agency Commission</b></td>
+                                <td><b><t t-esc="o['data']['agency_commission_lc']"/></b></td>
+                            </tr>
+                            <tr>
+                                <td width="50%"><b>Payable to Vendor</b></td>
+                                <td><b><t t-esc="o['data']['net_payable_supplier_lc']"/></b></td>
+                            </tr>
+                        </table>
+
+                        <table class="table table-bordered" style="margin-top:-12px;">
+                            <tr>
+                                <td width="50%"><b>Total Expense</b></td>
+                                <td><b><t t-esc="'%.2f'%(o['data']['total_expense_line_lc'])"/></b></td>
+                            </tr>
+                            <t t-foreach="o['data']['expense_line_ids']" t-as="expense_line">
+                                <tr>
+                                    <td width="50%" style="border-collapse:separate;border-spacing:10px;padding-left:25px;">
+                                        <span t-field="expense_line.line_charge_id.name"/></td>
+                                    <td><span t-field="expense_line.amount_lc"/></td>
+                                </tr>
+                            </t>
+                        </table>
+                        <!--total in local-->
+                        <table class="table table-bordered" style="margin-top:-12px;font-size:15px">
+                            <tr>
+                                <td width="50%"><b>Total</b></td>
+                                <td><b><t t-esc="'%.2f'%(o['data']['final_total_lc'])"/></b></td>
+                            </tr>
+                        </table>
+
+                        <table class="table table-bordered" style="margin-top:-12px;">
+                            <tr>
+                                <td width="50%"><b>Duty Required</b></td>
+                                <td>
+                                    <t t-if="o['cs'].is_duty_required == true">
+                                        <b>Yes</b>
+                                    </t>
+                                    <t t-if="o['cs'].is_duty_required == false">
+                                        <b>No</b>
+                                    </t>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="50%"><b>Selling Price</b></td>
+                                <td>
+                                    <b>
+                                        <t t-if="len(o['cs'].purchase_order_id.order_line.ids) > 1">
+                                            <b>*</b>
+                                        </t>
+                                        <t t-else=""><b><t t-esc="'%.2f'%(total_sp)"/></b></t>
+                                    </b>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="50%"><b>Delivery Weeks</b></td>
+                                <td><b><t t-esc="o['cs'].purchase_order_id.delivery_weeks"/></b></td>
+                            </tr>
+                            <tr>
+                                <td width="50%"><b>Date Of Revision</b></td>
+                                <td><b><t t-esc="o['cs'].revision_date"/></b></td>
+                            </tr>
+                        </table>
+
+                        <table class="table table-bordered" style="margin-top:-12px;">
+                            <tr>
+                                <td width="50%"><b>Checked By</b></td>
+                                <td><b><t t-esc="o['cs'].checked_by.name"/></b></td>
+                            </tr>
+                        </table>
+                    </div>
+                </t>
+                <t t-if="o['cs'].currency_id == o['cs'].cost_sheet_currency_id">
+                    <div class="col-xs-12">
+                        <div class="col-xs-12" style="background:#c9c9c9;text-align:center;font-weight:bold">
+                            <h4>Cost in Local Currency</h4>
+                        </div>
+                        <div class="col-xs-6" style="margin-top:15px;padding-left:0px">
+                            <table class="table table-bordered">
+                                <tr>
+                                    <td width="50%"><b>Product Cost</b></td>
+                                    <td><b><t t-esc="o['data']['product_cost_lc']"/></b></td>
+                                </tr>
+                                <tr>
+                                    <td width="50%"><b>Total Equipment Cost</b></td>
+                                    <td><b><t t-esc="o['data']['total_equipment_cost_lc']"/></b></td>
+                                </tr>
+                                <tr>
+                                    <td width="50%" style="padding-left:25px;">Freight Charge</td>
+                                    <td><t t-esc="o['data']['freight_charge_lc']"/></td>
+                                </tr>
+                                <tr>
+                                    <td width="50%" style="padding-left:25px;">FOB</td>
+                                    <td><t t-esc="o['data']['fob_charges_lc']"/></td>
+                                </tr>
+                                <t t-foreach="o['certificates']" t-as="cert">
+                                    <tr>
+                                        <td width="50%" style="padding-left:25px;"><t t-esc="cert.line_charge_id.name"/></td>
+                                        <td><t t-esc="cert.amount_lc"/></td>
+                                    </tr>
+                                </t>
+                                <tr>
+                                    <td width="50%" style="padding-left:25px;">Other Charges</td>
+                                    <td><t t-esc="o['data']['other_charges_lc']"/></td>
+                                </tr>
+                                <tr>
+                                    <td width="50%"><b>Total Cost</b></td>
+                                    <td><b><t t-esc="o['data']['total_cost_lc']"/></b></td>
+                                </tr>
+                            </table>
+
+                            <table class="table table-bordered" style="margin-top:-12px;">
+                                <tr>
+                                    <td width="50%" style="border-collapse:separate;border-spacing:10px;"><b>Agency Commission</b></td>
+                                    <td><b><t t-esc="o['data']['agency_commission_lc']"/></b></td>
+                                </tr>
+                                <tr>
+                                    <td width="50%"><b>Payable to Vendor</b></td>
+                                    <td><b><t t-esc="o['data']['net_payable_supplier_lc']"/></b></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-xs-6" style="margin-top:15px;padding-right:0px">
+                            <table class="table table-bordered">
+                                <tr>
+                                    <td width="50%"><b>Total Expense</b></td>
+                                    <td><b><t t-esc="'%.2f'%(o['data']['total_expense_line_lc'])"/></b></td>
+                                </tr>
+                                <t t-foreach="o['data']['expense_line_ids']" t-as="expense_line">
+                                    <tr>
+                                        <td width="50%" style="border-collapse:separate;border-spacing:10px;padding-left:25px;">
+                                            <span t-field="expense_line.line_charge_id.name"/></td>
+                                        <td><span t-field="expense_line.amount_lc"/></td>
+                                    </tr>
+                                </t>
+                            </table>
+                            <!--total in local-->
+                            <table class="table table-bordered" style="margin-top:-12px;font-size:15px">
+                                <tr>
+                                    <td width="50%"><b>Total</b></td>
+                                    <td><b><t t-esc="'%.2f'%(o['data']['final_total_lc'])"/></b></td>
+                                </tr>
+                            </table>
+                        </div>
+
+                    </div>
+
+                    <div class="col-xs-6" style="margin-top:15px;padding-left:0px">
+                        <table class="table table-bordered" style="margin-top:-12px;">
+                            <t t-set="total_sp" t-value="0.00"></t>
+                            <tr>
+                                <td width="50%"><b>Discount</b></td>
+                                <td><b><t t-esc="o['cs'].purchase_order_id.discount"/></b></td>
+                            </tr>
+                            <tr>
+                                <td width="50%"><b>Margin</b></td>
+                                <td><b><t t-esc="o['cs'].margin"/></b></td>
+                            </tr>
+                            <tr t-if="o['cs'].margin != 0.0">
+                                <td width="50%"><b>Total Selling Price</b></td>
+                                <td><b>
+                                    <t t-set="total_sp" t-value="total_sp + o['cs'].margin + o['data']['final_total_lc'] "/>
+                                    <t t-esc="round(total_sp)"/>
+                                </b></td>
+                            </tr>
+                            <tr>
+                                <td width="50%"><b>Quot.Validity</b></td>
+                                <td><b><t t-esc="o['cs'].purchase_order_id.quotation_validity"/></b></td>
+                            </tr>
+                            <tr>
+                                <td width="50%"><b>Total Price</b></td>
+                                <td><b><t t-esc="'%.2f'%(total_sp)"/>
+                                </b></td>
+                            </tr>
+                        </table>
+                        <table class="table table-bordered" style="margin-top:-12px;">
+                            <tr>
+                                <td width="50%"><b>Prepared By</b></td>
+                                <td><b><t t-esc="o['cs'].prepared_by.name"/></b></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-xs-6" style="margin-top:15px;padding-right:0px">
+                        <table class="table table-bordered" style="margin-top:-12px;">
+                            <tr>
+                                <td width="50%"><b>Duty Required</b></td>
+                                <td>
+                                    <t t-if="o['cs'].is_duty_required == true">
+                                        <b>Yes</b>
+                                    </t>
+                                    <t t-if="o['cs'].is_duty_required == false">
+                                        <b>No</b>
+                                    </t>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="50%"><b>Selling Price</b></td>
+                                <td>
+                                    <b>
+                                        <t t-if="len(o['cs'].purchase_order_id.order_line.ids) > 1">
+                                            <b>*</b>
+                                        </t>
+                                        <t t-else=""><b><t t-esc="'%.2f'%(total_sp)"/></b></t>
+                                    </b>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="50%"><b>Delivery Weeks</b></td>
+                                <td><b><t t-esc="o['cs'].purchase_order_id.delivery_weeks"/></b></td>
+                            </tr>
+                            <tr>
+                                <td width="50%"><b>Date Of Revision</b></td>
+                                <td><b><t t-esc="o['cs'].revision_date"/></b></td>
+                            </tr>
+                        </table>
+
+                        <table class="table table-bordered" style="margin-top:-12px;">
+                            <tr>
+                                <td width="50%"><b>Checked By</b></td>
+                                <td><b><t t-esc="o['cs'].checked_by.name"/></b></td>
+                            </tr>
+                        </table>
+                    </div>
+                </t>
+            </div>
+        </t>
+        <t t-if="o['cs'].cost_sheet_notes">
+            <div class="col-xs-12" style="text-align:left;font-size:10px;margin-top:5px;"><pre><t t-esc="o['cs'].cost_sheet_notes"/></pre></div>
+        </t>
+        <t t-if="len(o['cs'].purchase_order_id.order_line.ids) > 1">
+            <div class="col-xs-12">
+                <b>* Refer itemwise worksheet attached</b>
+            </div>
+        </t>
+    </template>
+
+    <template id="hatta_cost_sheet_report_title" inherit_id="report.external_layout_header">
+        <div class="report-title" position="inside">
+            <t t-if="xmlid == 'hatta_trading.hatta_cost_sheet_report'">
+                COST SHEET &#160;<span t-field="o['cs'].purchase_order_id.complete_name"/>
+                <span><t t-esc="len(o['cs'].purchase_order_id.order_line.ids)"></t>&#160;Items</span>
+
+            </t>
+        </div>
+    </template>
+
+    <template id="hatta_cost_sheet_report">
+        <t t-call="report.html_container">
+            <t t-foreach="cost_sheets" t-as="o">
+                <t t-call="hatta_trading.hatta_cost_sheet_report_document" t-lang="o['cs'].purchase_order_id.partner_id.lang"/>
+            </t>
+        </t>
+    </template>
+
+    <report
+            string="CostSheet"
+            id="costsheet_report"
+            model="report.hatta_trading.hatta_cost_sheet_report"
+            report_type="qweb-pdf"
+            name="hatta_trading.hatta_cost_sheet_report"
+            file="hatta_trading.hatta_cost_sheet_report"
+            paperformat="paperformat_hatta_template"
+    />
+
+</odoo>

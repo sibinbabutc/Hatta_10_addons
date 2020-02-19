@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record model='ir.ui.view' id='view_telephone_directory_form'>
+        <field name="name">view.telephone.directory.form</field>
+        <field name="model">telephone.directory</field>
+        <field name="arch" type="xml">
+        <form string="Telephone Directory" version="7.0">
+        <sheet>
+            <group>
+                <group>
+                    <field name="name" required="1"/>
+                    <field name="mobile" required="1"/>
+                </group>
+                <group>
+                    <field name="service_provider_id" required="1"/>
+                    <field name="allowed_amount"/>
+                </group>
+            </group>
+            <notebook>
+                <page string="Account Allocation">
+                    <field name="account_allocation_ids" nolabel="1">
+                        <tree string="Account Allocation" editable="bottom">
+                            <field name="account_id" required="True"/>
+                            <field name="analytic_account_id"/>
+                            <field name="percentage" required="1"/>
+                        </tree>
+                    </field>
+                </page>
+                <page string="Group Allocation">
+                    <field name="group_allocation_ids" nolabel="1">
+                        <tree string="Group Allocation" editable="bottom">
+                            <field name="group_id" required="True"/>
+                            <field name="percentage" required="1"/>
+                        </tree>
+                    </field>
+                </page>
+            </notebook>
+        </sheet>
+        </form>
+        </field>
+    </record>
+
+    <record model='ir.ui.view' id='view_telephone_directory_tree'>
+        <field name="name">view.telephone.directory.tree</field>
+        <field name="model">telephone.directory</field>
+        <field name="arch" type="xml">
+            <tree string="Telephone Directory">
+                <field name="name"/>
+                <field name="mobile"/>
+                <field name="service_provider_id"/>
+                <field name="allowed_amount"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_telephone_directory_filter" model="ir.ui.view">
+        <field name="name">telephone.directory.select</field>
+        <field name="model">telephone.directory</field>
+        <field name="arch" type="xml">
+            <search string="Search Telephone Expenses">
+                <field name="name"/>
+                <field name="service_provider_id"/>
+                <field name="mobile"/>
+                <field name="allowed_amount"/>
+                <group expand="0" string="Group By...">
+                    <filter string="Service Provider" icon="terp-personal" domain="[]" context="{'group_by':'service_provider_id'}"/>
+                </group>
+           </search>
+        </field>
+    </record>
+
+    <record model='ir.actions.act_window' id='view_telephone_directory_action'>
+        <field name="name">Telephone Directory</field>
+        <field name="res_model">telephone.directory</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_telephone_directory_filter"/>
+    </record>
+
+    <record model='ir.ui.view' id='view_tel_service_provider_form'>
+        <field name="name">view.tel.service.provider.form</field>
+        <field name="model">tel.service.provider</field>
+        <field name="arch" type="xml">
+        <form string="Service Provider">
+        <sheet>
+            <group>
+                <group>
+                    <field name="name" required="1"/>
+                </group>
+                <group>
+                    <field name="partner_id" context="{'default_supplier': 1}" required="1"/>
+                </group>
+            </group>
+        </sheet>
+        </form>
+        </field>
+    </record>
+
+    <record model='ir.ui.view' id='view_tel_service_provider_tree'>
+        <field name="name">view.tel.service.provider.tree</field>
+        <field name="model">tel.service.provider</field>
+        <field name="arch" type="xml">
+            <tree string="Service Provider">
+                <field name="name"/>
+                <field name="partner_id" context="{'default_customer': 0, 'search_default_supplier': 1, 'default_supplier': 1}"
+                          domain="[('supplier', '=', True)]"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model='ir.actions.act_window' id='view_tel_service_provider_action'>
+        <field name="name">Service Provider</field>
+        <field name="res_model">tel.service.provider</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record model='ir.ui.view' id='view_telephone_group_form'>
+        <field name="name">view.telephone.group.form</field>
+        <field name="model">telephone.group</field>
+        <field name="arch" type="xml">
+        <form string="Telephone Group" version="7.0">
+        <sheet>
+            <group>
+                <field name="name" required="1"/>
+            </group>
+        </sheet>
+        </form>
+        </field>
+    </record>
+
+    <record model='ir.ui.view' id='view_telephone_group_tree'>
+        <field name="name">view.telephone.group.tree</field>
+        <field name="model">telephone.group</field>
+        <field name="arch" type="xml">
+            <tree string="Telephone Group">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model='ir.actions.act_window' id='view_telephone_group_action'>
+        <field name="name">Telephone Group</field>
+        <field name="res_model">telephone.group</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_telephone_expense_tracker" name="Telephone Expense Tracker"
+        parent="account.menu_finance" sequence="3" groups="account.group_account_user"/>
+    <menuitem id="telephone_config" name="Telephone Expense Configuration" parent="menu_telephone_expense_tracker" sequence="2"
+       groups="account.group_account_user"/>
+    <menuitem action="view_telephone_directory_action" id="menu_telephone_directory"
+        parent="telephone_config"
+        sequence="1" groups="account.group_account_user"/>
+    <menuitem action="view_tel_service_provider_action" id="menu_tel_service_provider"
+        parent="telephone_config"
+        sequence="2" groups="account.group_account_user"/>
+     <menuitem action="view_telephone_group_action" id="menu_telephone_group"
+        parent="telephone_config"
+        sequence="3" groups="account.group_account_user"/>
+        
+</odoo>

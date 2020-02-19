@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="inherit_view_picking_form" model="ir.ui.view">
+        <field name="name">inherit.stock.picking.form</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='origin']" position="after">
+                    <field name="package"/>
+            </xpath>
+            <xpath  expr="//sheet/notebook" position="after">
+                <group>
+                    <field name="show_return_note" invisible="1"/>
+                    <field name="return_note" attrs="{'invisible':[('show_return_note','!=', True)]}"/>
+                </group>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="view_stock_return_picking_form" model="ir.ui.view">
+        <field name="name">Return lines</field>
+        <field name="model">stock.return.picking</field>
+        <field name="inherit_id" ref="stock.view_stock_return_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='location_id']" position="after">
+                    <field name="return_note"/>
+            </xpath>
+
+        </field>
+    </record>
+
+
+</odoo>

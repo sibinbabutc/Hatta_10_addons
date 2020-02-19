@@ -1,0 +1,12 @@
+<odoo>
+    <data>
+
+        <template id="assets_backend" name="widget_color assets" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <link rel="stylesheet" href="/ft_custom_list_boolean/static/src/css/ft_list_boolean_button.css"/>
+                <script type="text/javascript" src="/ft_custom_list_boolean/static/src/js/ft_list_boolean_button.js"></script>
+            </xpath>
+        </template>
+
+    </data>
+</odoo>

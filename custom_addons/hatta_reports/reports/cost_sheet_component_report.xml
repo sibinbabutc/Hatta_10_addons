@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="cost_sheet_component_report_document">
+        <t t-call="hatta_reports.simple_external_layout">
+        <div class="page ft_font">
+            <table class="table table-condensed" style="" width="100%">
+                <thead>
+                    <tr>
+                        <th colspan="4" style="padding-bottom:10px;"><b>From:</b><t t-esc="from_date"/></th>
+                        <th colspan="3" style="padding-bottom:10px;text-align:right;"><b>To:</b><t t-esc="to_date"/></th>
+                    </tr>
+                    <tr>
+                        <th style="text-align:left;border-top:.05em solid grey;border-bottom:.05em solid grey;padding:8px;background:#c9c9c9;">Sl No</th>
+                        <th style="text-align:left;border-top:.05em solid grey;border-bottom:.05em solid grey;padding:8px;background:#c9c9c9;">PO Number</th>
+                        <th style="text-align:left;border-top:.05em solid grey;border-bottom:.05em solid grey;padding:8px;background:#c9c9c9;">Supplier</th>
+                        <th style="text-align:left;border-top:.05em solid grey;border-bottom:.05em solid grey;padding:8px;background:#c9c9c9;">Acc</th>
+                        <th style="text-align:left;border-top:.05em solid grey;border-bottom:.05em solid grey;padding:8px;background:#c9c9c9;">Currency</th>
+                        <th style="text-align:left;border-top:.05em solid grey;border-bottom:.05em solid grey;padding:8px;background:#c9c9c9;">Amount FC</th>
+                        <th style="text-align:left;border-top:.05em solid grey;border-bottom:.05em solid grey;padding:8px;background:#c9c9c9;">Amount LC</th>
+                    </tr>
+                    <tr>
+                        <th colspan="7" style="padding-top:10px;"><t t-esc="component.name" /></th>
+                    </tr>
+                </thead>
+                <t t-set="lc_total" t-value="0.0"/>
+                <t t-foreach="items" t-as="o">
+                    <tr>
+                        <td style="padding:8px;"><t t-esc="o_index+1"/></td>
+                        <td style="padding:8px;"><t t-esc="o['po_number']"/></td>
+                        <td style="padding:8px;"><t t-esc="o['supplier']"/></td>
+                        <td style="padding:8px;"><t t-esc="o['jobcode']"/></td>
+                        <td style="padding:8px;"><t t-esc="o['currency']"/></td>
+                        <td style="padding:8px;"><t t-esc="'%.2f'%(o['amount_fc'])"/></td>
+                        <td style="padding:8px;"><t t-esc="'%.2f'%(o['amount_lc'])"/></td>
+                        <t t-set="lc_total" t-value="lc_total + o['amount_lc']"/>
+                    </tr>
+                </t>
+                <tr>
+                    <td colspan="4" style="border-top:.05em solid grey;border-bottom:.05em solid grey;padding:8px;">Total</td>
+                    <td colspan="3" style="border-top:.05em solid grey;border-bottom:.05em solid grey;padding:8px;text-align:right;"><t t-esc="'%.2f'%(lc_total)"/> </td>
+                </tr>
+                <tr>
+                    <td colspan="7" style="text-align:right;padding:8px;"><t t-esc="user.name"/></td>
+                </tr>
+            </table>
+
+        </div>
+        </t>
+    </template>
+
+    <template id="cost_sheet_header" inherit_id="hatta_reports.simple_external_layout_header">
+        <div class="report-title" position="inside">
+            <t t-if="xmlid == 'hatta_reports.cost_sheet_component_report'">
+               COST SHEET COMPONENT REPORT
+            </t>
+        </div>
+    </template>
+
+    <template id="cost_sheet_component_report">
+            <t t-call="hatta_reports.cost_sheet_component_report_document"/>
+    </template>
+
+    <record id="paperformat_cs_report" model="report.paperformat">
+        <field name="name">Hatta CS</field>
+        <field name="default" eval="True"/>
+        <field name="format">custom</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">40</field>
+        <field name="header_spacing">35</field>
+        <field name="margin_bottom">10</field>
+        <field name="margin_left">5</field>
+        <field name="margin_right">5</field>
+    </record>
+
+    <report
+        string="CS component"
+        id="hatta_costsheet_component"
+        model="report.hatta_reports.cost_sheet_component_report"
+        report_type="qweb-pdf"
+        name="hatta_reports.cost_sheet_component_report"
+        file="hatta_reports.cost_sheet_component_report"
+        paperformat="paperformat_cs_report"
+    />
+
+</odoo>

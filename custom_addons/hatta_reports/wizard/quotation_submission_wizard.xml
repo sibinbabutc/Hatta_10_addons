@@ -1,0 +1,32 @@
+<odoo>
+    <record id="quotation_sub_report" model="ir.ui.view">
+        <field name="name">quotation submision report wizard</field>
+        <field name="model">quotation.submission.report</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                    <field name="partner_id"/>
+                </group>
+                <footer>
+                    <button name="print_report" string="Print" type="object" class="oe_highlight" />
+                        or
+                    <button string="Cancel" class="oe_link" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="quotation_submission_report" model="ir.actions.act_window">
+        <field name="name">Quotation Submission Report</field>
+        <field name="res_model">quotation.submission.report</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <!--<field name="view_id" ref="hatta_reports.po_summary_report"/>-->
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="quotation_submission_menu" name="Quotation Submission Report" parent="stock.menu_warehouse_report" sequence="11"
+          action="quotation_submission_report"/>
+
+</odoo>

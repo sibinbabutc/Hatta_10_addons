@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- TR Tree View -->
+    <record model='ir.ui.view' id='view_tr_account_tree'>
+        <field name="name">tr.account.tree</field>
+        <field name="model">tr.account</field>
+        <field name="arch" type="xml">
+            <tree string="TR Bank Account">
+                <field name="name"/>
+                <field name="account_id" required="True"
+                        domain="[('type', '!=', 'view')]"/>
+                <field name="limit" sum="Limit Total"/>
+                <field name="balance"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- TR Form View -->
+    <record model='ir.ui.view' id='tr_account_form_view'>
+        <field name="name">tr.account.form</field>
+        <field name="model">tr.account</field>
+        <field name="arch" type="xml">
+            <form string="TR Bank Account">
+                <header>
+                    <button name="action_confirm" class="oe_highlight" states="draft" type="object" string="Confirm"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active" />
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" required="1" class="oe_edit_only"/>
+                        <h1><field name="name" required="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="bank_account"/>
+                            <field name="bank_acc_number"/>
+                            <field name="account_id" required="True"/>
+                        </group>
+                        <group>
+                            <field name="limit"/>
+                            <field name="balance"/>
+                        </group>
+                    </group>
+                    <notebook states="active">
+                        <page string="Trust Receipts">
+                            <field name="trust_receipts"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- TR Action -->
+    <record id="action_tr_account" model="ir.actions.act_window">
+        <field name="name">TR Bank Account</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">tr.account</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- TR Details Tree View -->
+    <record model='ir.ui.view' id='view_tr_details_tree'>
+        <field name="name">tr.details.tree</field>
+        <field name="model">tr.details</field>
+        <field name="arch" type="xml">
+            <tree string="Trust Receipts">
+                <field name="tr_account_id"/>
+                <field name="name"/>
+                <field name="voucher_id"/>
+                <field name="amount"/>
+                <field name="start_date"/>
+                <field name="closing_date"/>
+                <field name="duration"/>
+                <field name="interest_rate"/>
+                <field name="final_interest"/>
+                <field name="interest_today"/>
+                <field name="note"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model='ir.ui.view' id='tr_details_form_view'>
+        <field name="name">tr.details.form</field>
+        <field name="model">tr.details</field>
+        <field name="arch" type="xml">
+            <form string="Trust Receipts">
+                <header>
+                    <button name="action_confirm" type="object" states="draft" string="Confirm" class="oe_highlight"/>
+                    <button name="action_settlement" type="object" class="oe_highlight"
+                            states="open" string="Register Settlement"/>
+                    <!--<button name="action_cancel" type="object" states="draft,open" string="Cancel"/>-->
+                    <button name="action_draft" type="object" states="cancel" string="Set to Draft" invisible="1"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,open"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="expense_button_box">
+                        <button name="action_view_voucher"
+                                type="object"
+                                string="Voucher"
+                                attrs="{'invisible': [('voucher_id', '=', False)]}"
+                                class="oe_stat_button"
+                                icon="fa-pencil-square-o">
+                        </button>
+                        <button name="action_view_journal_entries"
+                                type="object"
+                                string="Journal Entries"
+                                attrs="{'invisible': [('voucher_id', '=', False)]}"
+                                class="oe_stat_button"
+                                icon="fa-pencil-square-o">
+                        </button>
+                        <button name="action_view_settlements"
+                                type="object"
+                                string="Settlements"
+                                attrs="{'invisible': [('settle_ids', '=', [])]}"
+                                class="oe_stat_button"
+                                icon="fa-list">
+                                <!--<field name="active" widget="boolean_button" options='{"terminology": "archive"}'/>-->
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name" required="1" class="oe_edit_only"/>
+                        <h1><field name="name" required="1"/></h1>
+                    </div>
+                    <group>
+                         <group>
+                             <field name="tr_account_id"/>
+                             <field name="amount"/>
+                             <field name="interest_rate"/>
+                             <field name="is_supplier"/>
+                             <field name="partner_id" attrs="{'invisible': [('is_supplier', '=', False)]}"/>
+                             <field name="account_id"/>
+                         </group>
+                         <group>
+                             <field name="start_date"/>
+                             <field name="duration"/>
+                             <field name="closing_date"/>
+                             <field name="notify_before"/>
+                             <field name="voucher_id" attrs="{'invisible': [('voucher_id', '=', False)]}"/>
+                         </group>
+                    </group>
+                    <separator string="Purpose" colspan="4"/>
+                    <field name="note" colspan="4" nolabel="1"/>
+                    <separator string="Interest Details" colspan="4" attrs="{'invisible':[('state','=','settle')]}"/>
+                    <group>
+                      <group>
+                          <field name="final_interest" readonly="True" attrs="{'invisible':[('state','=','settle')]}"/>
+                          <field name="interest_today" readonly="True" attrs="{'invisible':[('state','=','settle')]}"/>
+                          <field name="settled_amount" />
+                      </group>
+                    </group>
+
+                    <notebook attrs="{'invisible': ['&amp;', ('settle_ids', '=', []), ('account_move_line', '=', [])]}">
+                        <page string="Settlement Details" attrs="{'invisible': [('settle_ids', '=', [])]}">
+                            <field name="settle_ids" nolabel="1" readonly="1">
+                                <!--<tree string="Settlement Details" editable="bottom">-->
+                                    <!--<field name="settle_date" />-->
+                                    <!--<field name="amt_cleared" />-->
+                                    <!--<field name="settle_voucher_id" />-->
+                                    <!--<field name="settle_note"/>-->
+                                    <!--<field name="state"/>-->
+                                <!--</tree>-->
+                            </field>
+
+                            <!--<group class="oe_subtotal_footer oe_right" colspan="2" name="sale_total">-->
+                                <!--<div class="oe_subtotal_footer_separator oe_inline">-->
+                                    <!--<label for="amount_total" />-->
+                                    <!--<button name="button_dummy" string="(update)" type="object" class="oe_edit_only oe_link"/>-->
+                                <!--</div>-->
+                                <!--<field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator" widget='monetary'/>-->
+                                <!--<field name="due_amount" nolabel="1" class="oe_subtotal_footer_separator" widget='monetary' invisible="1"/>-->
+                            <!--</group>-->
+                        </page>
+                        <page string="Journal Items" attrs="{'invisible': [('account_move_line', '=', [])]}">
+                            <field name="account_move_line"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- TR Details Action -->
+    <record id="action_tr_details" model="ir.actions.act_window">
+        <field name="name">Trust Receipts</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">tr.details</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_tr_management" name="TR Management" parent="account.menu_finance" sequence="3"/>
+    <!-- TR Details Menu -->
+    <menuitem id="menu_tr_details" name="Trust Receipts" parent="menu_tr_management"
+              action="action_tr_details" sequence="1"/>
+    <!-- This Menu Item must have a parent and an action -->
+    <menuitem id="menu_tr_account" name="TR Bank Account" parent="menu_tr_management" action="action_tr_account" sequence="2"/>
+
+    <!-- Inherit Form View to Modify it -->
+    <record id="account_payment_receipt_voucher_form_inherit_tr" model="ir.ui.view">
+        <field name="name">account.payment.receipt.voucher.form.inherit.tr</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='communication']" position="after" invisible="1">
+                <field name="tr_details_id" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Inherit Form View to Modify it -->
+    <record id="account_move_form_inherit_tr" model="ir.ui.view">
+        <field name="name">account.move.form.inherit.tr</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='date']" position="after">
+                <field name="is_a_tr"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

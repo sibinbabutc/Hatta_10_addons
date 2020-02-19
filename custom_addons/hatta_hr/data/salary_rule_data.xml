@@ -1,0 +1,466 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="hr_payroll.ALW" model="hr.salary.rule.category">
+            <field name="name">Earnings</field>
+            <field name="code">ALW</field>
+        </record>
+
+        <record model="hr.salary.rule.category" id="categ_hra">
+            <field name="name">HRA</field>
+            <field name="code">HRA</field>
+            <field name="note">House Rent Allowance</field>
+            <field name="parent_id" ref="hr_payroll.ALW"/>
+        </record>
+
+        <record model="hr.salary.rule.category" id="categ_ta">
+            <field name="name">Travel Allowance</field>
+            <field name="code">TA</field>
+            <field name="note">Transportation Allowance</field>
+            <field name="parent_id" ref="hr_payroll.ALW"/>
+        </record>
+
+        <record model="hr.salary.rule.category" id="categ_fa">
+            <field name="name">Food Allowance</field>
+            <field name="code">FA</field>
+            <field name="note">Food Allowance</field>
+            <field name="parent_id" ref="hr_payroll.ALW"/>
+        </record>
+
+        <record model="hr.salary.rule.category" id="categ_oa">
+            <field name="name">Other Allowance</field>
+            <field name="code">OA</field>
+            <field name="note">Other Allowance</field>
+            <field name="parent_id" ref="hr_payroll.ALW"/>
+        </record>
+
+        <record model="hr.salary.rule.category" id="categ_spi">
+            <field name="name">Special Incentive</field>
+            <field name="code">SPI</field>
+            <field name="note">Special Incentive</field>
+            <field name="parent_id" ref="hr_payroll.GROSS"/>
+        </record>
+
+
+        <record model="hr.salary.rule.category" id="categ_sa">
+            <field name="name">Special Allowance</field>
+            <field name="code">SPI</field>
+            <field name="note">Other Allowances</field>
+            <field name="parent_id" ref="hr_payroll.ALW"/>
+        </record>
+
+        <record model="hr.salary.rule.category" id="categ_totinc">
+            <field name="name">Total Salary</field>
+            <field name="code">TOTINC</field>
+            <field name="note">Total Income</field>
+        </record>
+
+        <record model="hr.salary.rule.category" id="categ_totdec">
+            <field name="name">Total Deduction</field>
+            <field name="code">TDED</field>
+        </record>
+
+        <record model="hr.salary.rule.category" id="categ_palw">
+            <field name="name">Petrol Allowance</field>
+            <field name="code">PALW</field>
+            <field name="parent_id" ref="hr_payroll.ALW"/>
+        </record>
+
+        <record model="hr.salary.rule.category" id="categ_lsalw">
+            <field name="name">Leave Salary</field>
+            <field name="code">LSALW</field>
+            <field name="parent_id" ref="hr_payroll.ALW"/>
+        </record>
+
+        <record model="hr.salary.rule.category" id="categ_leave_encashed">
+            <field name="name">Leave Encashment</field>
+            <field name="code">LENC</field>
+            <field name="parent_id" ref="hr_payroll.ALW"/>
+        </record>
+
+        <record model="hr.salary.rule.category" id="categ_increment">
+            <field name="name">Salary Increment</field>
+            <field name="code">Increment</field>
+            <field name="parent_id" ref="hr_payroll.ALW"/>
+        </record>
+
+        <!--<function model="hr.salary.rule"-->
+                  <!--name="unlink" eval="[ref('hr_payroll.hr_rule_taxable'), ref('hr_payroll.hr_rule_net')], {'install_mode': True}"/>-->
+
+        <record id="hr_payroll.hr_rule_taxable" model="hr.salary.rule">
+            <field name="name">Salary Earned</field>
+            <field name="sequence" eval="9"/>
+            <field name="code">GROSS</field>
+            <field name="category_id" ref="hr_payroll.GROSS"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+total = categories.BASIC + categories.HRA + categories.TA + categories.OA + categories.FA + categories.PALW
+salary_per_day = total / 30.00
+days_leave = payslip.leave_days
+if days_leave == payslip.total_days :
+    days_leave = 30.00
+leave_reduction = days_leave * salary_per_day
+result = round(total - leave_reduction) + categories.LSALW
+            </field>
+        </record>
+
+        <record id="hr_payroll.hr_rule_net" model="hr.salary.rule">
+            <field name="name">Net Salary Paid</field>
+            <field name="sequence" eval="18"/>
+            <field name="code">NET</field>
+            <field name="category_id" ref="hr_payroll.NET"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+alw = categories.GROSS + categories.ADV + categories.SA + categories.OT
+result = alw - categories.DED
+            </field>
+            <field name="register_id" ref="hr_payroll.contrib_register_employees"/>
+        </record>
+
+        <record id="hr_rule_hra" model="hr.salary.rule">
+            <field name="name">HRA</field>
+            <field name="sequence" eval="2"/>
+            <field name="code">HRA</field>
+            <field name="category_id" ref="hatta_hr.categ_hra"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python">
+amount = 0.0
+for sal in contract.sal_ids:
+    if sal.categ_id.code == 'HRA':
+        amount += sal.amount
+
+result = amount > 0.0
+            </field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+amount = 0.0
+for sal in contract.sal_ids:
+    if sal.categ_id.code == 'HRA':
+        amount += sal.amount
+
+result = amount
+            </field>
+        </record>
+
+        <record id="hr_rule_ta" model="hr.salary.rule">
+            <field name="name">Travel Allowance</field>
+            <field name="sequence" eval="3"/>
+            <field name="code">TA</field>
+            <field name="category_id" ref="hatta_hr.categ_ta"/>
+            <field name="amount_select">code</field>
+            <field name="condition_select">python</field>
+            <field name="condition_python">
+amount = 0.0
+for sal in contract.sal_ids:
+    if sal.categ_id.code == 'TA':
+        amount += sal.amount
+
+result = amount > 0.0
+            </field>
+            <field name="amount_python_compute">
+amount = 0.0
+for sal in contract.sal_ids:
+    if sal.categ_id.code == 'TA':
+        amount += sal.amount
+
+result = amount
+            </field>
+        </record>
+
+        <record id="hr_rule_oa" model="hr.salary.rule">
+            <field name="name">Other Allowance</field>
+            <field name="sequence" eval="4"/>
+            <field name="code">OA</field>
+            <field name="category_id" ref="hatta_hr.categ_oa"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python">
+amount = 0.0
+for sal in contract.sal_ids:
+    if sal.categ_id.code == 'OA':
+        amount += sal.amount
+
+result = amount > 0.0
+            </field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+amount = 0.0
+for sal in contract.sal_ids:
+    if sal.categ_id.code == 'OA':
+        amount += sal.amount
+
+result = amount
+            </field>
+        </record>
+
+        <record id="hr_rule_fa" model="hr.salary.rule">
+            <field name="name">Food Allowance</field>
+            <field name="sequence" eval="5"/>
+            <field name="code">FA</field>
+            <field name="category_id" ref="hatta_hr.categ_fa"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python">
+amount = 0.0
+for sal in contract.sal_ids:
+    if sal.categ_id.code == 'FA':
+        amount += sal.amount
+result = amount > 0.0
+            </field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+amount = 0.0
+for sal in contract.sal_ids:
+    if sal.categ_id.code == 'FA':
+        amount += sal.amount
+
+result = amount
+            </field>
+        </record>
+
+        <record id="hr_rule_palw" model="hr.salary.rule">
+            <field name="name">Petrol Allowance</field>
+            <field name="sequence" eval="6"/>
+            <field name="code">PALW</field>
+            <field name="category_id" ref="hatta_hr.categ_palw"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python">
+amount = 0.0
+for sal in contract.sal_ids:
+    if sal.categ_id.code == 'PALW':
+        amount += sal.amount
+
+result = amount > 0.0
+            </field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+amount = 0.0
+for sal in contract.sal_ids:
+    if sal.categ_id.code == 'PALW':
+        amount += sal.amount
+
+result = amount
+            </field>
+        </record>
+
+        <record id="hr_rule_spi" model="hr.salary.rule">
+            <field name="name">Special Incentive</field>
+            <field name="sequence" eval="7"/>
+            <field name="code">SPI</field>
+            <field name="category_id" ref="hatta_hr.categ_spi"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python">
+amount = 0.0
+for sal in contract.sal_ids:
+    if sal.categ_id.code == 'SPI':
+        amount += sal.amount
+
+result = amount > 0.0
+            </field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+amount = 0.0
+for sal in contract.sal_ids:
+    if sal.categ_id.code == 'SPI':
+        amount += sal.amount
+
+result = amount
+            </field>
+        </record>
+
+        <record id="hr_rule_lsalw" model="hr.salary.rule">
+            <field name="name">Leave Salary</field>
+            <field name="sequence" eval="8"/>
+            <field name="code">LSALW</field>
+            <field name="category_id" ref="hatta_hr.categ_lsalw"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python">
+total = categories.BASIC + categories.HRA + categories.TA + categories.OA + categories.FA + categories.PALW
+salary_per_day = total / 30.00
+leave_salary = salary_per_day * payslip.paid_leaves
+result = (employee.get_leave_salary_amount() + leave_salary) > 0.0
+
+            </field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+total = categories.BASIC + categories.HRA + categories.TA + categories.OA + categories.FA + categories.PALW
+salary_per_day = total / 30.00
+leave_salary = salary_per_day * payslip.paid_leaves
+result = employee.get_leave_salary_amount() + leave_salary
+            </field>
+        </record>
+
+        <record id="hr_rule_lenc" model="hr.salary.rule">
+            <field name="name">Leave Encashment</field>
+            <field name="sequence" eval="20"/>
+            <field name="code">LENC</field>
+            <field name="category_id" ref="hatta_hr.categ_leave_encashed"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python">
+total = categories.BASIC + categories.HRA + categories.TA + categories.OA + categories.FA + categories.PALW
+salary_per_day = total / 30.00
+result = (salary_per_day * employee.get_encashable_leave_days(payslip.date_from, payslip.date_to)) > 0.0
+            </field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+total = categories.BASIC + categories.HRA + categories.TA + categories.OA + categories.FA + categories.PALW
+salary_per_day = total / 30.00
+result = salary_per_day * employee.get_encashable_leave_days(payslip.date_from, payslip.date_to)
+            </field>
+        </record>
+
+        <record id="hr_rule_spa" model="hr.salary.rule">
+            <field name="name">Special Allowances</field>
+            <field name="sequence" eval="11"/>
+            <field name="code">SA</field>
+            <field name="category_id" ref="hatta_hr.categ_sa"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python">
+amount = 0.0
+for line in payslip.other_allow_ids or []:
+    amount += line.amount
+if payslip.payslip_run_id != False:
+    for rec in payslip.payslip_run_id.gen_allowance_ids or []:
+        amount += rec.amount
+result = amount > 0.0
+            </field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+amount = 0.0
+for line in payslip.other_allow_ids or []:
+    amount += line.amount
+if payslip.payslip_run_id != False:
+    for rec in payslip.payslip_run_id.gen_allowance_ids or []:
+        amount += rec.amount
+result = amount
+            </field>
+        </record>
+
+        <record id="hr_rule_totinc" model="hr.salary.rule">
+            <field name="name">Total Salary</field>
+            <field name="sequence" eval="13"/>
+            <field name="code">TOTINC</field>
+            <field name="category_id" ref="hatta_hr.categ_totinc"/>
+            <field name="condition_select">none</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = categories.GROSS+ categories.ADV + categories.SA + categories.OT
+            </field>
+        </record>
+
+        <record id="hr_rule_tcded" model="hr.salary.rule">
+            <field name="name">Tel Charge Ded</field>
+            <field name="sequence" eval="16"/>
+            <field name="code">TCDED</field>
+            <field name="category_id" ref="hr_payroll.DED"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python">
+result = payslip.tel_deduction > 0.0
+            </field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = payslip.tel_deduction
+            </field>
+        </record>
+
+        <record id="hr_rule_totdec" model="hr.salary.rule">
+            <field name="name">Total Deduction</field>
+            <field name="sequence" eval="17"/>
+            <field name="code">TOTDED</field>
+            <field name="category_id" ref="hatta_hr.categ_totdec"/>
+            <field name="condition_select">python</field>
+            <field name="condition_python">
+result = categories.DED > 0.0
+            </field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">result = categories.DED
+            </field>
+            <!--<field name="amount_python_compute">result = payslip.advance_ded + payslip.tel_deduction-->
+            <!--</field>-->
+        </record>
+
+        <!-- Salary Structure -->
+        <function model="hr.payroll.structure"
+                  name="unlink" eval="[ref('hr_payroll.structure_base')], {'install_mode': True}"/>
+
+    <record model="hr.salary.rule.category" id="categ_overtime">
+        <field name="name">Overtime</field>
+        <field name="code">OT</field>
+        <field name="note">Overtime</field>
+        <field name="parent_id" ref="hr_payroll.ALW"/>
+    </record>
+
+    <record id="hr_salary_rule_overtime" model="hr.salary.rule">
+        <field name="code">OT</field>
+        <field name="name">Overtime Allowance</field>
+        <field name="category_id" ref="categ_overtime"/>
+        <field name="condition_select">python</field>
+        <field name="condition_python">
+n_ot = payslip.overtime_normal
+h_ot = payslip.holiday_overtime
+f_ot = payslip.holiday_worked
+
+basic = contract.wage
+hra = 0.00
+for rec in contract.sal_ids or []:
+    if rec.categ_id.code == 'HRA':
+        hra += rec.amount
+
+basic_hra_sum = basic + hra
+basic_hra_sum_perhr = (basic_hra_sum / 30.00) / 8.00
+
+normal_overtime = basic_hra_sum_perhr * n_ot
+holiday_overtime = (basic_hra_sum_perhr * 1.5) * h_ot
+friday_overtime = 25.00 * f_ot
+
+result = round(normal_overtime + holiday_overtime + friday_overtime) > 0.0
+        </field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+n_ot = payslip.overtime_normal
+h_ot = payslip.holiday_overtime
+f_ot = payslip.holiday_worked
+
+basic = contract.wage
+hra = 0.00
+for rec in contract.sal_ids or []:
+    if rec.categ_id.code == 'HRA':
+        hra += rec.amount
+
+basic_hra_sum = basic + hra
+basic_hra_sum_perhr = (basic_hra_sum / 30.00) / 8.00
+
+normal_overtime = basic_hra_sum_perhr * n_ot
+holiday_overtime = (basic_hra_sum_perhr * 1.5) * h_ot
+friday_overtime = 25.00 * f_ot
+
+result = round(normal_overtime + holiday_overtime + friday_overtime)
+        </field>
+        <field name="sequence" eval="12"/>
+    </record>
+
+        <record id="hr_payroll.structure_base" model="hr.payroll.structure">
+            <field name="code">BASE</field>
+            <field name="name">Hatta Salary Structure</field>
+            <field eval="[(6, 0, [ref('hr_payroll.hr_rule_basic'),
+                                  ref('hr_payroll.hr_rule_taxable'),
+                                  ref('hr_payroll.hr_rule_net'),
+                                  ref('hr_rule_hra'),
+                                  ref('hr_rule_ta'),
+                                  ref('hr_rule_oa'),
+                                  ref('hr_rule_fa'),
+                                  ref('hr_rule_palw'),
+                                  ref('hr_rule_spi'),
+                                  ref('hr_rule_lsalw'),
+                                  ref('hr_rule_spa'),
+                                  ref('hr_rule_totinc'),
+                                  ref('hr_rule_tcded'),
+                                  ref('hr_rule_totdec'),
+                                  ref('hr_salary_rule_overtime'),
+                                  ref('employee_advance_salary.hr_salary_rule_advance_salary'),
+                                  ref('employee_advance_salary.hr_salary_rule_advance_salary_deduction'),
+                                  ref('employee_advance_salary.hr_salary_rule_advance_salary_pending'),
+                                  ])]" name="rule_ids"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+    </data>
+</odoo>

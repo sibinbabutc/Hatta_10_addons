@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<report
+			id="hatta_shipment_insurance"
+			model="purchase.order"
+			string="Shipment Insurance"
+			report_type="xlsx"
+			name="hatta_reports.insurance.xlsx"
+			file="hatta_reports.insurance.xlsx"
+			attachment_use="False"
+		    menu="False"
+		/>
+	</data>
+</odoo>

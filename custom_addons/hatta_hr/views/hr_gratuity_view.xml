@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="hr_gratuity_view_form" model="ir.ui.view">
+        <field name="name">hr.gratuity.form</field>
+        <field name="model">hr.gratuity</field>
+        <field name="arch" type="xml">
+            <form string="Gratuity">
+                <header>
+                    <button name="action_confirm" type="object" class="oe_highlight" string="Confirm" states="draft"/>
+                    <button name="action_paid" type="object" class="oe_highlight" string="Mark as Paid" states="confirm"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirm,paid"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Employee Details">
+                            <field name="employee_id" required="1"/>
+                            <field name="joining_date" required="1"/>
+                            <field name="last_working_date" required="1"/>
+                        </group>
+                        <group string="Contract Details">
+                            <field name="contract_id" required="1"/>
+                            <field name="salary"/>
+                            <field name="contract_type"/>
+                            <field name="no_of_years" required="1"/>
+                        </group>
+                        <group></group>
+                        <group>
+                            <group>
+                                <button name="action_calculate_gratuity" type="object" class="oe_highlight"
+                                        string="Calculate Gratuity" attrs="{'invisible': [('state','!=','confirm')]}"/>
+                            </group>
+                            <group>
+                                <field name="total_gratuity" readonly="1" attrs="{'invisible': [('state','=','draft')]}"/>
+                            </group>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="hr_gratuity_view_tree" model="ir.ui.view">
+        <field name="name">hr.gratuity.tree</field>
+        <field name="model">hr.gratuity</field>
+        <field name="arch" type="xml">
+            <tree string="Gratuity">
+                <field name="employee_id"/>
+                <field name="contract_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_hr_gratuity" model="ir.actions.act_window">
+        <field name="name">Gratuity</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hr.gratuity</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+            No Gratuity Details Created.
+          </p><p>
+            No Gratuity Details Created.
+          </p>
+        </field>
+    </record>
+
+    <!-- This Menu Item must have a parent and an action -->
+    <menuitem id="menu_hr_gratuity" name="Gratuity" parent="hr_management_menu_root" action="action_hr_gratuity"
+              sequence="10" groups="hatta_hr.group_gratuity_user"/>
+
+</odoo>

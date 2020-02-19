@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="send_quotation_status_document">
+        <t t-call="hatta_reports.simple_external_layout">
+        <div class="page ft_font">
+            <!--<div class="row">(TR:<t t-esc="tr_name"/>)</div>-->
+            <table class="table table-bordered" style="border:solid .05em black;">
+                <thead>
+                    <th style="border:solid .05em black;">NO</th>
+                    <th style="border:solid .05em black;">DATE RCVD.</th>
+                    <th style="border:solid .05em black;">OUR REF NO.</th>
+                    <th style="border:solid .05em black;">CLIENT REF NO.</th>
+                    <th style="border:solid .05em black;">CLIENT NAME</th>
+                    <th style="border:solid .05em black;">SUPPLIER</th>
+                    <th style="border:solid .05em black;">C.L. DATE</th>
+                    <th style="border:solid .05em black;">REMARKS</th>
+                    <th style="border:solid .05em black;">SUBMITTED BY</th>
+                    <th style="border:solid .05em black;">AMOUNT</th>
+                </thead>
+                <t t-foreach="o.line_ids" t-as="item">
+                    <tr>
+                        <td style="border:solid .05em black;"><t t-esc="item_index+1"/></td>
+                        <td style="border:solid .05em black; text-align:center;"><t t-esc="item.received_date"/></td>
+                        <td style="border:solid .05em black; text-align:left;"><t t-esc="item.ref_no"/></td>
+                        <td style="border:solid .05em black; text-align:left;"><t t-esc="item.client_ref_no"/></td>
+                        <td style="border:solid .05em black; text-align:left;"><t t-esc="item.client_name.name"/></td>
+                        <td style="border:solid .05em black; text-align:left;">
+                            <span t-esc="', '.join(map(lambda x: (x.partner_id.name), item.enquiry_id.purchase_orders))"/></td>
+                        <td style="border:solid .05em black; text-align:center;"><t t-esc="item.closing_date"/></td>
+                        <td style="border:solid .05em black; text-align:left;"><t t-esc="item.remark"/></td>
+                        <td style="border:solid .05em black; text-align:left;"><t t-esc="item.quotation_status.user_id.name"/></td>
+                        <td style="border:solid .05em black; text-align:right;"><t t-esc="item.enquiry_id.amount_total"/></td>
+                    </tr>
+                </t>
+            </table>
+        </div>
+        </t>
+    </template>
+
+    <template id="send_quotation_status_report_header" inherit_id="hatta_reports.simple_external_layout_header">
+        <div class="report-title" position="inside">
+            <t t-if="xmlid == 'hatta_reports.send_quotation_status'">
+                QUOTATION SUBMISSION REPORT
+            </t>
+        </div>
+    </template>
+
+    <template id="send_quotation_status">
+        <t t-call="report.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="hatta_reports.send_quotation_status_document" t-lang="o.user_id.lang"/>
+            </t>
+        </t>
+    </template>
+
+    <report
+        string="Status Report"
+        id="hatta_send_quotation_status"
+        report_type="qweb-pdf"
+        model="quotation.status"
+        name="hatta_reports.send_quotation_status"
+        file="hatta_reports.send_quotation_status"
+    />
+
+</odoo>

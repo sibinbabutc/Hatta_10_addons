@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <template id="sale_return_sale_document">
+     <t t-call="hatta_reports.simple_external_layout">
+        <div class="page ft_font">
+            <table class="hatta_table" width="100%" style="font-size:10px;margin-top:25px;margin-bottom:25;">
+                <tr>
+                    <td width="15%" style="padding-left:15px;background:#e5dada;"><b>Sr No:</b></td>
+                    <td width="35%" style="background:#e5dada;"></td>
+                    <td width="15%" style="background:#e5dada;"><b>Date:</b></td>
+                    <td width="35%" style="background:#e5dada;"></td>
+                </tr>
+                <tr>
+                    <td style="padding-left:15px;background:#e5dada;"><b>Inv No:</b></td>
+                    <td style="background:#e5dada;"></td>
+                    <td style="background:#e5dada;"><b>Lpo No:</b></td>
+                    <td style="background:#e5dada;"></td>
+                </tr>
+                <tr>
+                    <td style="padding-left:15px;background:#e5dada;"><b>DO.No:</b></td>
+                    <td style="background:#e5dada;"></td>
+                    <td style="background:#e5dada;"><b>S.O No:</b></td>
+                    <td style="background:#e5dada;"></td>
+                </tr>
+                <tr>
+                    <td style="padding-left:15px;background:#e5dada;"><b>CURRENCY:</b></td>
+                    <td style="background:#e5dada;"></td>
+                    <td style="background:#e5dada;"><b>AC CODE:</b></td>
+                    <td style="background:#e5dada;"></td>
+                </tr>
+                <tr>
+                    <td style="padding-left:15px;background:#e5dada;"><b>LOCATION:</b></td>
+                    <td style="background:#e5dada;"></td>
+                    <td style="background:#e5dada;"><b>S. PERSON:</b></td>
+                    <td style="background:#e5dada;"></td>
+                </tr>
+            </table>
+
+        <table class="hatta_template_table1">
+            <tr>
+                <td style="border-bottom:solid 2px #db0202;vertical-align:middle;line-height:25px;">&#160;</td>
+                <td style="background:#db0202;border-bottom:solid 2px #db0202;vertical-align:middle;text-align:center;
+                          color:white;">
+                    <div class="col-xs-12" style="background:#db0202;height:25px;line-height:25px;">Description</div>
+                </td>
+                <td style="border-bottom:solid 2px #db0202;vertical-align:middle;text-align:center;color:white;">
+                    <div class="col-xs-12" style="background:#303030;height:25px;line-height:25px;">Taxes</div>
+                </td>
+                <td style="border-bottom:solid 2px #db0202;vertical-align:middle;text-align:center;color:white;">
+                    <div class="col-xs-12" style="background:#303030;height:25px;line-height:25px;">Quantity</div>
+                </td>
+                <td style="border-bottom:solid 2px #db0202;vertical-align:middle;text-align:center;color:white;">
+                    <div class="col-xs-12" style="background:#303030;height:25px;line-height:25px;">Unit Price</div>
+                </td>
+                <td style="border-bottom:solid 2px #db0202;vertical-align:middle;text-align:center;color:white;">
+                    <div class="col-xs-12" style="background:#303030;height:25px;line-height:25px;">Discount</div>
+                </td>
+                <td style="border-bottom:solid 2px #db0202;vertical-align:middle;text-align:center;color:white;">
+                    <div class="col-xs-12" style="background:#303030;height:25px;line-height:25px;">Price</div>
+                </td>
+                <td style="border-bottom:solid 2px #db0202;vertical-align:middle;line-height:25px;">&#160;</td>
+            </tr>
+            <tr t-foreach="o.order_line" t-as="item" class="text_align_center">
+                <td style="border-bottom:solid 1px grey;"/>
+                <td style="border-bottom:solid 1px grey;">xxxx</td>
+                <td style="border-bottom:solid 1px grey;">xxxx</td>
+                <td style="border-bottom:solid 1px grey;">xxxx</td>
+                <td style="border-bottom:solid 1px grey;">xxxx</td>
+                <td style="border-bottom:solid 1px grey;">xxxx</td>
+                <td style="border-bottom:solid 1px grey;">xxxx</td>
+                <td style="border-bottom:solid 1px grey;"/>
+            </tr>
+        </table>
+        <table class="tab_bottom" width="35%" style="margin-top:20px;float:left;">
+                    <tr>
+                        <td colspan="2" style="border-top:solid .05em black;border-bottom:solid .05em black;padding:8px;">Amt in words</td>
+                    </tr>
+                    <tr>
+                        <td style="border-top:solid .05em black;border-bottom:solid .05em black;padding:8px;">BANK</td>
+                        <td style="border-top:solid .05em black;border-bottom:solid .05em black;padding:8px;">xxxx</td>
+                    </tr>
+                    <tr>
+                        <td style="border-top:solid .05em black;border-bottom:solid .05em black;padding:8px;">SWIFT CODE</td>
+                        <td style="border-top:solid .05em black;border-bottom:solid .05em black;padding:8px;">xxxx</td>
+                    </tr>
+                    <tr>
+                        <td style="border-top:solid .05em black;border-bottom:solid .05em black;padding:8px;">IBAN</td>
+                        <td style="border-top:solid .05em black;border-bottom:solid .05em black;padding:8px;">xxxx</td>
+                    </tr>
+        </table>
+        <table class="tab_bottom" width="25%" style="margin-left:40%;margin-top:20px;float:left;">
+            <tr>
+                <td style="border-top:solid .05em black;border-bottom:solid .05em black;padding:8px;">Total Untaxed:</td>
+                <td style="border-top:solid .05em black;border-bottom:solid .05em black;padding:8px;">xxxx</td>
+            </tr>
+            <tr>
+                <td style="border-top:solid .05em black;border-bottom:solid .05em black;padding:8px;">VAT:</td>
+                <td style="border-top:solid .05em black;border-bottom:solid .05em black;padding:8px;">xxxx</td>
+            </tr>
+            <tr>
+                <td style="border-top:solid .05em black;border-bottom:solid .05em black;padding:8px;">Total:</td>
+                <td style="border-top:solid .05em black;border-bottom:solid .05em black;padding:8px;">xxxx</td>
+            </tr>
+        </table>
+            <div class="col-xs-12" style="margin-bottom:35px;"/>
+            <div class="col-xs-4" style="border-top:solid .05em black;padding-top:15px;text-align:center;">RECEIVED BY</div>
+            <div class="col-xs-4"/>
+            <div class="col-xs-4" style="border-top:solid .05em black;padding-top:15px;text-align:center;">FOR HATTA TRADING SERVICES</div>
+        </div>
+        </t>
+    </template>
+
+    <template id="hatta_sale_return_report_title" inherit_id="hatta_reports.external_layout_header">
+        <div class="report-title" position="inside">
+            <t t-if="xmlid == 'hatta_reports.sale_tax__return'">
+                SALES RETURN
+            </t>
+        </div>
+    </template>
+
+    <template id="sale_return_sale">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="hatta_reports.sale_return_sale_document"/>
+            </t>
+    </template>
+
+
+    <report
+        string="Sale Return"
+        id="hatta_sale_return"
+        report_type="qweb-pdf"
+        model="sale.order"
+        name="hatta_reports.sale_return_sale"
+        file="hatta_reports.sale_return_sale"
+        paperformat="paperformat_sale_return_report"
+    />
+</odoo>

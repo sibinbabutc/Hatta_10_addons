@@ -1,0 +1,32 @@
+<odoo>
+    <record id="upcoming_quotation" model="ir.ui.view">
+        <field name="name">upcoming quotation wizard</field>
+        <field name="model">upcoming.quotation.submission</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                    <field name="partner_id"/>
+                </group>
+                <footer>
+                    <button name="print_report" string="Print" type="object" class="oe_highlight" />
+                        or
+                    <button string="Cancel" class="oe_link" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="upcoming_quotation_report" model="ir.actions.act_window">
+        <field name="name">Quotation Submission Report</field>
+        <field name="res_model">upcoming.quotation.submission</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <!--<field name="view_id" ref="hatta_reports.po_summary_report"/>-->
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="upcoming_quotation_menu" name="Upcoming Quotation Report" parent="stock.menu_warehouse_report" sequence="12"
+          action="upcoming_quotation_report"/>
+
+</odoo>

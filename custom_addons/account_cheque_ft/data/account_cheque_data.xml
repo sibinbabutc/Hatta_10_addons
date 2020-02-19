@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.sequence" id="seq_sl_no">
+            <field name="name">MS Number</field>
+            <field name="code">cheque_sl_no</field>
+            <field name="padding">4</field>
+        </record>
+
+        <record id="action_server_cancel_cheques" model="ir.actions.server">
+            <field name="name">Cancel Cheques of Cheque Book</field>
+             <field name="model_id" ref="model_cheque_book"/>
+            <field name="state">code</field>
+            <field name="code">action = model.browse(context.get('active_id')).cancel_cheques()</field>
+        </record>
+
+        <record id="account_payment_method_cheque" model="account.payment.method">
+            <field name="name">Cheque</field>
+            <field name="code">cheque_payment</field>
+            <field name="payment_type">outbound</field>
+        </record>
+
+        <record id="account_receipt_method_cheque" model="account.payment.method">
+            <field name="name">Cheque</field>
+            <field name="code">cheque_receipt</field>
+            <field name="payment_type">inbound</field>
+        </record>
+
+        <record id="account_payment_method_pdc" model="account.payment.method">
+            <field name="name">Post-Dated Cheque</field>
+            <field name="code">cheque_pdc_payment</field>
+            <field name="payment_type">outbound</field>
+            <field name="payment_method_type">delayed</field>
+        </record>
+
+        <record id="account_receipt_method_pdc" model="account.payment.method">
+            <field name="name">Post-Dated Cheque</field>
+            <field name="code">cheque_pdc_receipt</field>
+            <field name="payment_type">inbound</field>
+            <field name="payment_method_type">delayed</field>
+        </record>
+
+        <record model="ir.sequence" id="pdc_cheque_payment_sequence">
+            <field name="name">Post Dated Cheque</field>
+            <field name="code">cheque.pdc.payment</field>
+            <field name="prefix">PDP/%(y)s/</field>
+            <field name="padding">3</field>
+        </record>
+        <record model="ir.sequence" id="pdc_cheque_receipt_sequence">
+            <field name="name">Post Dated Cheque</field>
+            <field name="code">cheque.pdc.receipt</field>
+            <field name="prefix">PDR/%(y)s/</field>
+            <field name="padding">3</field>
+        </record>
+
+    </data>
+    <function name="enable_cheque_on_journals" model="account.journal"/>
+</odoo>

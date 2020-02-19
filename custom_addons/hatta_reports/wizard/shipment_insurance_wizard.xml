@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<record id="shipment_insurance_report" model="ir.ui.view">
+        <field name="name">shipment.insurance.wizard</field>
+        <field name="model">shipment.insurance</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="carrier_id"/>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+
+                </group>
+                <footer>
+                    <button name="print_report" string="Print" type="object" class="oe_highlight" />
+                        or
+                    <button string="Cancel" class="oe_link" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="shipment_insurance_wizard" model="ir.actions.act_window">
+        <field name="name">Shipment Insurance</field>
+        <field name="res_model">shipment.insurance</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <!--<field name="view_id" ref="hatta_reports.po_summary_report"/>-->
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="ship_insu"
+			  name="Shipment Insurance Report"
+			  parent="stock.menu_warehouse_report"
+			  sequence="15"
+			  action="shipment_insurance_wizard"/>
+
+</odoo>

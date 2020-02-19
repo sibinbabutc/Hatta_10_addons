@@ -1,0 +1,274 @@
+.oe_kanban_content .enquiry {
+    background: #d8d4d4;
+    padding: 10px;
+    margin: 10px 0px;
+    border-radius: 3px;
+}
+.no_pad
+{
+padding:0px;
+}
+.hatta_table_2 > tbody > tr > td
+{
+    border:solid .05em black !important;
+    text-align:center;
+    height:23px;
+}
+.hatta_table td
+{
+    padding:5px;
+}
+.hatta_table_2
+{
+    border:solid .05em black !important;
+}
+.ft_font
+{
+    font-size:14px;
+    font-family:"Times New Roman" !important;
+}
+.letter_font
+{
+    font-size:14px;
+    line-height:25px;
+}
+
+.hatta_rfq_table td
+{
+    padding:5px;
+}
+.hatta_rfq_table2
+{
+    border-top:solid .05em black !important;
+    border-bottom:solid .05em black !important;
+    text-align:center;
+}
+.hatta_purchase_table2 > tbody > tr > td
+{
+    border-top:solid .05em black !important;
+    border-bottom:solid .05em black !important;
+    text-align:center;
+    height:23px;
+}
+.hatta_purchase_table2
+{
+    border-top:solid .05em black !important;
+    border-bottom:solid .05em black !important;
+}
+
+.po_table
+{
+    margin-top:20px;
+    margin-bottom:20px;
+    margin-left:-5px;
+}
+.po_table td
+{
+    padding:10px;
+    padding-bottom:5px;
+}
+.hatta_cs_table_1
+{
+    border:solid 1px #dedede !important;
+}
+.hatta_cs_table_1 td
+{
+    border:solid 1px #dedede !important;
+    height:15px;
+    padding:7px;
+}
+.hatta_cs_table_2
+{
+    border:solid 1px black;
+    margin-top:20px;
+}
+.hatta_cs_table_2 td
+{
+    border:solid 1px black;
+    height:15px;
+    padding:7px;
+}
+.hatta_cs_table_3
+{
+    border:solid 1px black;
+    margin-top:20px;
+}
+.hatta_cs_table_3 td
+{
+    border:solid 1px black;
+    height:15px;
+    padding:7px;
+}
+.hatta_cs_table_4
+{
+    border:solid 1px black;
+    margin-top:20px;
+    float:left;
+}
+.hatta_cs_table_4 td
+{
+    border:solid 1px black;
+    height:15px;
+    padding:7px;
+}
+.hatta_cs_table_5
+{
+    border:solid 1px black;
+    margin-top:20px;
+    float:left;
+}
+.hatta_cs_table_5 td
+{
+    border:solid 1px black;
+    height:15px;
+    padding:7px;
+}
+.hatta_ws_table
+{
+    border:solid 1px black;
+    margin-top:10px;
+    float:left;
+    text-align:center;
+}
+.hatta_ws_table td
+{
+    border:solid 1px black;
+    height:15px;
+    padding:7px;
+}
+.hatta_qs_table
+{
+    border:solid .05em black !important;
+    margin-top:10px;
+    float:left;
+    text-align:center;
+}
+.hatta_qs_table td
+{
+    border:solid .05em black !important;
+    height:15px;
+    padding:7px;
+}
+.arrow-down
+{
+  width: 0;
+  height: 0;
+  border-left:30px solid transparent;
+  border-right:30px solid transparent;
+  border-top:30px solid #303030;
+  float:left;
+   margin-left:20%;
+}
+.arrow-down_1
+{
+  width: 0;
+  height: 0;
+  border-left:30px solid transparent;
+  border-right:30px solid transparent;
+  border-top:30px solid #303030;
+  float:left;
+  margin-left:-30px;
+
+}
+.hatta_template_table1
+{
+width:100%;
+text-align:center;
+margin-top:10px;
+}
+
+.hatta_template_table1 td
+{
+height:20px;
+text-align:center;
+padding:2px !important;
+}
+.hatta_purchase_table1
+{
+width:100%;
+text-align:center;
+margin-top:10px;
+}
+.hatta_purchase_table1 td
+{
+height:20px;
+text-align:center;
+padding:2px !important;
+}
+.hatta_template_table2
+{
+width:100%;
+margin-top:10px;
+}
+.hatta_template_table2 td
+{
+padding:3px;
+}
+.hatta_rfq_table1
+{
+width:100%;
+text-align:center;
+margin-top:10px;
+
+}
+.hatta_rfq_table1 td
+{
+height:20px;
+text-align:center;
+padding:4px !important;
+}
+
+ .hatta_sale_tab1 td
+    {
+        padding:2px;
+    }
+
+.ft-button button.oe_link {
+    display: inline-block; */
+    margin-bottom: 0;
+    font-weight: normal;
+    text-align: center;
+    vertical-align: middle;
+    touch-action: manipulation;
+    cursor: pointer;
+    background-image: none;
+    border: 1px solid;
+    white-space: nowrap;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    padding: 5px 10px;
+    font-size: 12px;
+    line-height: 1.5;
+    border-radius: 3px;
+    color: white;
+    background-color: #7c7bad;
+    border-color: #7c7bad;
+}
+.ft-button button.oe_link:hover {
+    color: white;
+    background-color: #5f5e97;
+    border-color: #5b5a91
+}
+.table .with-rfq {
+    color: #a20000;
+}
+.table .percentage-full {
+    color: red;
+}
+.table .percentage-not {
+    color: green;
+}
+.o_form_view .o_form_field.oe_exchange_rate {
+    font-weight: bolder;
+    color: #2c9688;
+}
+.hatt_sale .table-bordered td
+{
+border:solid .05em black;
+}
+.hatt_sale .table-bordered
+{
+border:solid .05em black;
+}

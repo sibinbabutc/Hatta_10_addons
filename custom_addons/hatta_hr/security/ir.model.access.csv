@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hr_gratuity,access_hr_gratuity,model_hr_gratuity,,1,1,1,1
+access_employee_salary_structure,access_employee_salary_structure,model_employee_salary_structure,,1,1,1,1
+access_employee_other_allowances,access_employee_other_allowances,model_employee_other_allowances,,1,1,1,1
+access_gen_employee_allowances,access_gen_employee_allowances,model_gen_employee_allowances,,1,1,1,1
+access_payroll_emp_line,access_payroll_emp_line,model_payroll_emp_line,,1,1,1,1
+access_other_deductions,access_other_deductions,model_other_deductions,,1,1,1,1

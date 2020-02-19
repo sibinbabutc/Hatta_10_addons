@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Inherit Form View to Modify it -->
+    <record id="analytic_analytic_account_form_inherit_jobcode" model="ir.ui.view">
+        <field name="name">analytic.analytic.account.form.inherit.jobcode</field>
+        <field name="model">account.analytic.account</field>
+        <field name="inherit_id" ref="analytic.view_account_analytic_account_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='tag_ids']" position="after">
+                <field name="is_job_code"/>
+                <field name="type"/>
+                <field name="parent_id"/>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="manager_id"/>
+                <field name="default"/>
+                <field name="send_quote_mail"/>
+                <field name="register_payment_invoice"/>
+                <field name="consider_quotation_status_report"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Inherit Form View to Modify it -->
+    <record id="view_account_analytic_tag_form_inherit_type" model="ir.ui.view">
+        <field name="name">account.analytic.tag.form.inherit.type</field>
+        <field name="model">account.analytic.tag</field>
+        <field name="inherit_id" ref="analytic.account_analytic_tag_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="tag_type" invisible="1"/>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="view_account_analytic_account_job_code_form" model="ir.ui.view">
+        <field name="name">analytic.analytic.account.job.code.form</field>
+        <field name="model">account.analytic.account</field>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <form string="Job Account">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h2>
+                            <field name="name" required="1"/>
+                        </h2>
+                    </div>
+                    <group>
+                        <field name="enquiry_id"/>
+                        <field name="is_job_code"/>
+                    </group>
+                    <notebook>
+                        <page string="Accounting">
+                            <field name="move_line_ids"/>
+                        </page>
+                        <page string="Analytic Entries">
+                            <field name="analytic_entries"/>
+                        </page>
+                        <page string="Sale,Purchase,Invoices">
+                            <group string="Sale Order(s)">
+                                <field name="sale_order_ids" nolabel="1"/>
+                            </group>
+                            <group string="Purchase Order(s)">
+                                <field name="purchase_order_ids" nolabel="1"/>
+                            </group>
+                            <!--<group string="Invoice(s)">-->
+                                <!--<field name="account_invoice_ids" nolabel="1"/>-->
+                            <!--</group>-->
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_job_account" model="ir.actions.act_window">
+        <field name="name">Job Account</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">account.analytic.account</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('is_job_code', '=', True)]</field>
+        <field name="context">{"default_is_job_code":True}</field>
+        <field name="view_ids"
+               eval="[(5, 0, 0),
+                      (0, 0, {
+                        'sequence': 1,
+                        'view_mode': 'tree',
+                        'view_id': ref('analytic.view_account_analytic_account_list')}),
+                      (0, 0, {
+                      'sequence': 2,
+                      'view_mode': 'form', 'view_id': ref('view_account_analytic_account_job_code_form')})]"/>
+    </record>
+
+
+    <!-- This Menu Item must have a parent and an action -->
+    <menuitem id="hatta_config_job_account_analytic" name="Job Account"
+        parent="hatta_trading.hatta_config_sub_menu" sequence="9" action="action_job_account"/>
+
+    <!-- Inherit Form View to Modify it -->
+    <record id="account_move_hatta_view_form" model="ir.ui.view">
+        <field name="name">account.move.hatta.view.form</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='line_ids']" position="replace">
+                <field name="line_ids" widget="one2many_list"
+                    context="{'line_ids': line_ids, 'journal_id': journal_id }">
+                    <tree editable="bottom" string="Journal Items">
+                        <field name="account_id" domain="[('company_id', '=', parent.company_id), ('deprecated', '=', False)]"/>
+                        <field name="partner_id"
+                            domain="['|', ('parent_id', '=', False), ('is_company', '=', True)]"/>
+                        <field name="name"/>
+                        <field name="analytic_account_id" string="Job Account"
+                               domain="[('is_job_code', '=', True)]" context="{'default_is_job_code': True}"
+                               groups="analytic.group_analytic_accounting"/>
+                        <field name="analytic_tag_ids" string="Cost Center"
+                               domain="[('tag_type', '=', 'cost_center')]" context="{'default_tag_type': 'cost_center'}"
+                               groups="analytic.group_analytic_accounting" widget="many2many_tags"/>
+                        <field name="amount_currency" groups="base.group_multi_currency"/>
+                        <field name="company_currency_id" invisible="1"/>
+                        <field name="currency_id" options="{'no_create': True}" groups="base.group_multi_currency"/>
+                        <field name="debit" sum="Total Debit"/>
+                        <field name="credit" sum="Total Credit"/>
+                        <field name="date_maturity" required="0"/>
+                    </tree>
+                </field>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="account_analytic_tag_inherit_view_form" model="ir.ui.view">
+        <field name="name">Account Analytic Tag</field>
+        <field name="model">account.analytic.tag</field>
+        <field name="inherit_id" ref="analytic.account_analytic_tag_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="code" attrs="{'invisible': [('tag_type', '!=', 'cost_center')]}"/>
+                <field name="tag_type" invisible="1"/>
+                <field name="sequence" attrs="{'invisible': [('tag_type', '!=', 'cost_center')]}"
+                       context="{'default_is_cost_center': True}"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

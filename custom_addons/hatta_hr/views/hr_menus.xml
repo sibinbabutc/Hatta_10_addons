@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <menuitem id="hr_management_menu_root" name="HR Management"/>
+
+    <menuitem
+            id="hr.menu_hr_root"
+            name="Human Resources"
+            parent="hr_management_menu_root"
+            groups="hr.group_hr_manager,hr.group_hr_user,base.group_user"
+            web_icon="hr,static/description/icon.png"
+            sequence="2"/>
+
+    <menuitem id="hr_timesheet_menu_root"
+              name="Timesheets"
+              parent="hr_management_menu_root"
+              sequence="5"
+              groups="base.group_user"
+              web_icon="hr_timesheet,static/description/icon_timesheet.png"/>
+
+
+    <menuitem id="hr_timesheet.timesheet_menu_root"
+              name="Timesheets"
+              parent="hr_timesheet_menu_root"
+              sequence="5"
+              groups="base.group_user"
+              web_icon="hr_timesheet,static/description/icon_timesheet.png"/>
+
+    <menuitem id="hr_menu_hr_expense_root"
+              name="Expenses"
+              sequence="10"
+              parent="hr_management_menu_root"
+              web_icon="hr_expense,static/description/icon.png"/>
+
+    <menuitem id="hr_expense.menu_hr_expense_root"
+              name="Expenses"
+              sequence="10"
+              parent="hr_menu_hr_expense_root"
+              web_icon="hr_expense,static/description/icon.png"/>
+
+    <menuitem
+            name="Leaves"
+            id="hr_menu_hr_holidays_root"
+            sequence="15"
+            parent="hr_management_menu_root"
+            web_icon="hr_holidays,static/description/icon.png"
+            groups="base.group_user"/>
+
+    <menuitem
+            name="Leaves"
+            id="hr_holidays.menu_hr_holidays_root"
+            sequence="15"
+            parent="hr_menu_hr_holidays_root"
+            web_icon="hr_holidays,static/description/icon.png"
+            groups="base.group_user"/>
+
+    <menuitem id="hr_menu_hr_payroll_root"
+              name="Payroll"
+              sequence="45"
+              parent="hr_management_menu_root"
+              web_icon="hr_payroll,static/description/icon.png"/>
+
+    <menuitem id="hr_payroll.menu_hr_payroll_root"
+              name="Payroll"
+              sequence="45"
+              parent="hr_menu_hr_payroll_root"
+              web_icon="hr_payroll,static/description/icon.png"/>
+
+
+</odoo>

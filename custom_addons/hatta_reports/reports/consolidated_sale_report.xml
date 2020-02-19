@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="consolidated_sale_document">
+        <t t-call="hatta_reports.simple_external_layout">
+        <div class="page ft_font">
+            <div class="col-xs-12" style="padding-left:0px;margin-bottom:10px;"><b>Customer Name:</b></div>
+            <table class="tab1" style="" width="100%">
+                <!--<tr>-->
+                    <!--<td colspan="2" style="padding:15px;padding-left:0px;">Customer Name:</td>-->
+                <!--</tr>-->
+                <tr>
+                    <td style="text-align:left;border-top:.05em solid black;border-bottom:.05em solid black;padding:8px;background:#c9c9c9;"><b>MONTH</b></td>
+                    <td style="text-align:left;border-top:.05em solid black;border-bottom:.05em solid black;padding:8px;background:#c9c9c9;"><b>AMOUNT</b></td>
+                </tr>
+                <tr>
+                    <td style="text-align:left;border-top:.05em solid black;border-bottom:.05em solid black;padding:8px;"><b>TOTAL AMOUNT</b></td>
+                    <td style="text-align:left;border-top:.05em solid black;border-bottom:.05em solid black;padding:8px;"><b>XXXXXX</b></td>
+                </tr>
+            </table>
+        </div>
+        </t>
+    </template>
+
+        <template id="consolidated_sale_header" inherit_id="hatta_reports.simple_external_layout_header">
+        <div class="report-title" position="inside">
+            <t t-if="xmlid == 'hatta_reports.consolidated_sale'">
+                CONSOLIDATED SALE REPORT
+            </t>
+        </div>
+    </template>
+
+    <template id="consolidated_sale">
+        <t t-foreach="docs" t-as="o">
+            <t t-call="hatta_reports.consolidated_sale_document"/>
+        </t>
+    </template>
+
+    <report
+        string="Consolidated Sale Report"
+        id="hatta_consolidated_sale_report"
+        model="report.hatta_reports.consolidated_sale"
+        report_type="qweb-pdf"
+        name="hatta_reports.consolidated_sale"
+        file="hatta_reports.consolidated_sale"
+        paperformat="paperformat_purchase_report"
+    />
+</odoo>

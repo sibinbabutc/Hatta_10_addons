@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="sale_purchase_analysis1" model="ir.ui.view">
+        <field name="name">hatta.sale.purchase.analysis.wizard</field>
+        <field name="model">sale.purchase.analysis</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="job_id"/>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                </group>
+                <footer>
+                    <button name="print_report" string="Print" type="object" class="oe_highlight" />
+                        or
+                    <button string="Cancel" class="oe_link" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="sale_purchase_analysis_wizard" model="ir.actions.act_window">
+        <field name="name">Sale Purchase Invoice</field>
+        <field name="res_model">sale.purchase.analysis</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <!--<field name="view_id" ref="hatta_reports.po_summary_report"/>-->
+        <field name="target">new</field>
+    </record>
+
+<menuitem id="so_invoice_summary_menu1" name="Sale Purchase Analysis" parent="stock.menu_warehouse_report" sequence="9"
+          action="sale_purchase_analysis_wizard"/>
+
+
+</odoo>

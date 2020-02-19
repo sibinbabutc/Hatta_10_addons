@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="purchase_order_status" model="ir.ui.view">
+        <field name="name">hatta.po.status.report.wizard</field>
+        <field name="model">purchase.order.status</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="po_id"/>
+                    <field name="partner_id"/>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                    <field name="cost_center_id"/>
+                    <field name="job_id"/>
+                    <field name="sort_supp"/>
+                    <field name="sort_del_date"/>
+                    <field name="pending_only"/>
+                    <field name="disp_cust_del_date"/>
+                </group>
+                <footer>
+                    <button name="print_report" string="Print" type="object" class="oe_highlight" />
+                        or
+                    <button string="Cancel" class="oe_link" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="hatta_po_status" model="ir.actions.act_window">
+        <field name="name">Purchase Order Status</field>
+        <field name="res_model">purchase.order.status</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <!--<field name="view_id" ref="hatta_reports.purchase_order_status"/>-->
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="po_status_menu" name="Purchase Order Status" parent="stock.menu_warehouse_report" sequence="2"
+                  action="hatta_po_status"/>
+
+</odoo>

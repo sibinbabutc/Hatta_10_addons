@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!--Report Statement of Pettycash-->
+        <template id="report_voucher">
+            <t t-call="report.html_container">
+                <t t-set="o" t-value="docs.with_context({'lang':docs.partner_id.lang})" />
+                <div class="page ft_font">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <img style="width:100% !important;" t-if="res_company.logo" t-att-src="'data:image/png;base64,%s' % res_company.logo" />
+                        </div>
+                        <div class="col-xs-9" style="text-align:right;font-size:px;">
+                            <div style="font-weight:bold;">
+                                    <div style="margin-bottom: 6px;padding-top: 6px;font-size:16px;" t-esc="res_company.partner_id.name"/>
+                            </div>
+                            <div >
+                                <!--<div t-field="res_company.partner_id"-->
+                                      <!--t-field-options='{"widget": "contact", "fields": ["address"], "no_marker": true}'-->
+                                     <!--style="display:inline-block; "/>-->
+                                <t t-if="res_company.partner_id.street">
+                                <span t-field="res_company.partner_id.street"/><br/>
+                                </t>
+                                <t t-if="res_company.partner_id.street2">
+                                <span t-field="res_company.partner_id.street2"/><br/>
+                                </t>
+                                <t t-if="res_company.partner_id.city">
+                                <span t-field="res_company.partner_id.city"/>
+                                </t>
+                                <t t-if="res_company.partner_id.state_id">
+                                <span t-field="res_company.partner_id.state_id"/>
+                                </t>
+                                <t t-if="res_company.partner_id.zip">
+                                <span t-field="res_company.partner_id.zip"/><br/>
+                                </t>
+                                <t t-if="res_company.partner_id.country_id">
+                                <span t-field="res_company.partner_id.country_id"/>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                    <br/>
+                    <div class="col-xs-12" style="text-align:center;margin-top:-30px;">
+                        <div style="padding-top:20px;font-size:16px;"><strong>
+                            Petty Cash Voucher
+                        </strong></div>
+                    </div>
+                    <div class="row mt8 mb16" style="font-size:px;">
+                        <div name="partner_address" class="col-xs-6">
+                            <table class="table mt8">
+                                <tr>
+                                    <td>Date:</td>
+                                    <td><b><span t-field="o.date"/></b></td>
+                                </tr>
+                                <tr>
+                                    <td>Paid To:</td>
+                                    <td>
+                                        <b>
+                                            <span t-if="o.paid_to_type == 'internal'"  t-field="o.paid_to_in"/>
+                                            <span t-if="o.paid_to_type == 'external'"  t-field="o.paid_to_out"/>
+                                            <span t-if="o.paid_to_type == False"  t-field="o.paid_to_char"/>
+                                        </b>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Amount:</td>
+                                    <td><b><span t-field="o.amount"
+                                          t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></b></td>
+                                </tr>
+                                <tr>
+                                    <td>Narration: </td>
+                                    <td><b><span t-if="o.narration" t-field="o.narration"/></b></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-xs-6">
+                            <table class="table mt8">
+                                <tr>
+                                    <td>Voucher No: </td>
+                                    <td><b><span t-field="o.number"/></b></td>
+                                </tr>
+                                <tr>
+                                    <td>Petty Cash Fund: </td>
+                                    <td><b><span t-field="o.pettycash_id.name"/></b></td>
+                                </tr>
+                                <tr>
+                                    <td>Journal:</td>
+                                    <td><b><span t-field="o.journal_id"/></b></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <table width="100%;" class="table table-condensed"  style="margin-left:0px !important;" t-if="o.voucher_lines">
+                        <thead>
+                            <tr style="background-color:#000266 !important; color:white;">
+                                <th>S No</th>
+                                <th>WP Code</th>
+                                <th>GL Code</th>
+                                <th>Description</th>
+                                <th class="text-right">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody class="payment_tbody">
+                            <tr t-foreach="o.voucher_lines" t-as="l">
+                                <td class="text-center" ><span t-esc="l_index+1"/></td>
+                                <td><span t-field="l.account_id.code"/></td>
+                                <td><span t-field="o.number"/></td>
+                                <td><span t-field="l.description"/></td>
+                                <td class="text-right">
+                                    <span t-field="l.amount"
+                                          t-options='{"widget": "monetary", "display_currency": l.currency_id}'/>
+                                </td>
+                            </tr>
+                            <tr style="border-top:2px solid black !important;">
+                                <td class="text-right" colspan="4">
+                                    <b><span>Total Voucher Amount:</span></b>
+                                </td>
+                                <td class="text-right">
+                                    <b><span t-field="o.amount"
+                                          t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></b>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p><b>Amount in Words : <span t-field="o.amount_in_words"/></b></p>
+                </div>
+                <div class="footer">
+                    <div class="row" style="margin-bottom:20px;padding-top:px;"><b>
+                        <div class="col-xs-4 ntbold" style="font-style: italic;" >Prepared By</div>
+                        <div class="col-xs-4 ntbold" style="text-align:center;font-style: italic;">Checked By</div>
+                        <div class="col-xs-4 ntbold" style="text-align:right;font-style: italic;">Approved By</div></b>
+                        <div class="col-xs-4"><span t-esc="o.prepared_by"/></div>
+                        <div class="col-xs-4" style="text-align:center"><span t-esc="o.checked_by"/></div>
+                        <div class="col-xs-4" style="text-align:right"><span t-esc="o.passed_by"/></div>
+                    </div>
+                    <div class="row" style="margin-bottom:20px;border-top:1px solid grey;">
+                        <div class="col-xs-12 text-left" style="padding-top:3px;" >Receivers Name:</div>
+                        <div class="col-xs-12 text-left" >Signature:</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-4" style="font-size:px;color:grey;">MECD/FIN/FR-01,31/07/2017</div>
+                        <div class="col-xs-4" style="text-align:center;font-size:px;">
+                            <span>Printed On: </span><t t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d %H:%M:%S')"/></div>
+                        <div class="col-xs-4 text-right">
+                        <span style="font-size:px;">&#160;</span><span class="page" /> / <span class="topage" />
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <template id="report.external_layout_header_voucher_x" name="Report Layout Header for Voucher" >
+         <div class="header" style="height:200px">
+                            <div class="row">
+                        <div class="col-xs-3">
+                            <img style="width:100% !important;" t-if="res_company.logo" t-att-src="'data:image/png;base64,%s' % res_company.logo" />
+                        </div>
+                        <div class="col-xs-9" style="text-align:right;font-size:px;">
+                            <div style="margin-bottom: 6px;padding-top: 6px;font-size:16px;" t-esc="res_company.partner_id.name"></div>
+                            <div >
+                                <!--<div t-field="res_company.partner_id"-->
+                                      <!--t-field-options='{"widget": "contact", "fields": ["address"], "no_marker": true}'-->
+                                     <!--style="display:inline-block; "/>-->
+                                <t t-if="res_company.partner_id.street">
+                                <span t-field="res_company.partner_id.street"/><br/>
+                                </t>
+                                <t t-if="res_company.partner_id.street2">
+                                <span t-field="res_company.partner_id.street2"/><br/>
+                                </t>
+                                <t t-if="res_company.partner_id.city">
+                                <span t-field="res_company.partner_id.city"/>
+                                </t>
+                                <t t-if="res_company.partner_id.state_id">
+                                <span t-field="res_company.partner_id.state_id"/>
+                                </t>
+                                <t t-if="res_company.partner_id.zip">
+                                <span t-field="res_company.partner_id.zip"/><br/>
+                                </t>
+                                <t t-if="res_company.partner_id.country_id">
+                                <span t-field="res_company.partner_id.country_id"/>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+    </div>
+    </template>
+            <!--<template id="report.external_layout_voucher" inherit_id="report.external_layout"-->
+              <!--primary="True" name="Report Layout for Voucher">-->
+        <!--<t t-call="report.external_layout_header" position="replace">-->
+            <!--<t t-call="report.external_layout_header_voucher_x" />-->
+        <!--</t>-->
+        <!--<t t-call="report.external_layout_footer" position="replace">-->
+            <!--<t t-call="report.external_layout_footer_voucher_x" />-->
+        <!--</t>-->
+    <!--</template>-->
+
+
+    </data>
+</odoo>

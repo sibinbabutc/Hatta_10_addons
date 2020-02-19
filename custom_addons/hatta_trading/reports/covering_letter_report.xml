@@ -1,0 +1,98 @@
+<odoo>
+    <template id="assets_common" name="hatta_pdf_reports" inherit_id="report.assets_common">
+        <xpath expr="." position="inside">
+            <link href="/hatta_trading/static/src/css/hatta.css" rel="stylesheet" type="text/css"/>
+        </xpath>
+    </template>
+
+    <template id="hatta_covering_letter_document">
+        <t t-call="report.external_layout">
+            <div class="page letter_font">
+
+                <div class="col-xs-6">Ref :&#160;<span t-field="o.enquiry_id"/></div>
+                <div class="col-xs-6" style="text-align:right;">Date :&#160;<span t-field="o.enquiry_id.date_deadline" t-options ='{"format": "dd/MM/yyyy"}'/></div>
+                    <div class="col-xs-12" style="margin-top:10px;line-height:15px;padding-left:0px;">
+                    <div class="col-xs-12" t-field="o.enquiry_id.partner_procure_id"/>
+                    <div class="col-xs-12" t-field="o.enquiry_id.partner_id.parent_id"/>
+                    <div class="col-xs-12" t-field="o.enquiry_id.partner_id.street"/>
+                </div>
+
+                <t t-if="o.report_type=='technical' and not o.revised">
+                    <div class="col-xs-12" style="text-align:center;font-size:14px;margin-top:px;margin-bottom:5px;">
+                        <b><u>TECHNICAL BID</u></b>
+                    </div>
+                </t>
+                <t t-if="o.revised and o.report_type=='technical'">
+                    <div class="col-xs-12" style="text-align:center;font-size:14px;margin-top:px;margin-bottom:5px;">
+                        <b><u>REVISED TECHNICAL BID</u></b>
+                    </div>
+                </t>
+                <t t-if="o.report_type=='commercial' and not o.revised">
+                    <div class="col-xs-12" style="text-align:center;font-size:14px;margin-top:px;margin-bottom:5px;">
+                        <b><u>COMMERCIAL BID</u></b>
+                    </div>
+                </t>
+                <t t-if="o.revised and o.report_type=='commercial'">
+                    <div class="col-xs-12" style="text-align:center;font-size:14px;margin-top:px;margin-bottom:5px;">
+                        <b><u>REVISED COMMERCIAL BID</u></b>
+                    </div>
+                </t>
+                <t t-if="o.note">
+                    <div class="col-xs-12" style="text-align:center;font-size:14px;"><span t-field="o.note"/></div>
+                </t>
+
+
+                <div class="col-xs-12" style="margin-top:20px;">Dear Sir,</div>
+                <div class="col-xs-2">Sub:</div>
+                <div class="col-xs-10" style="padding-left:0px;">
+                    <div class="col-xs-12" style="padding-left:0px;">RFQ. No:&#160;<span t-field="o.enquiry_id.reference"/></div>
+                    <div class="col-xs-12" style="padding-left:0px;">Coll.RFQ. No:&#160;<span t-field="o.enquiry_id.customer_rfq"/></div>
+                </div>
+                <div class="col-xs-12" style="margin-top:10px;">
+                    We thank you for your valued enquiry and are pleased to submit our offer as per enclosed.
+                </div>
+                <t t-if="o.add_note">
+                    <div class="col-xs-12" style="font-size:14px;"><span t-field="o.add_note"/></div>
+                </t>
+                <div class="col-xs-12">We trust our offer suffices</div>
+                <div class="col-xs-1"/><div class="col-xs-11" style="">Delivery Place :&#160;<span t-field="o.enquiry_id.partner_delivery_id"/></div>
+                <div class="col-xs-1"/><div t-if="o.duty_exemption" class="col-xs-11" style="font-weight:bold;">Duty Exemption Letter :&#160;<span t-field="o.duty_exemption_letter"/></div>
+                <div class="col-xs-12" style="margin-top:7px;">
+                    <b>Our quotation is for total quantity mentioned in the RFQ. In the event of partial order or in case of
+                    any changes in the quantities, please contact us for confirmation of validity of prices with our
+                    principal supplier/s.In the event of an Order Purchase order cannot be cancellable and returnable.</b>
+                </div>
+                <div class="col-xs-12">
+                    Hope our offer meets your requirements and if any further clarification, we are at your disposal.
+                    <br/>
+                    We assure our best service at all times.
+                    <br/>
+                    Yours faithfully
+                </div>
+                <div class="col-xs-12" style="margin-top:30px;">C.T Hashim</div>
+                <div class="col-xs-12" style="margin-top:10px;">CEO</div>
+                <div class="col-xs-12" style="margin-top:30px; text-align:right;"><span t-field="o.enquiry_id.user_id.name"/></div>
+            </div>
+        </t>
+    </template>
+
+    <template id="hatta_covering_letter">
+        <t t-call="report.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="hatta_trading.hatta_covering_letter_document" t-lang="o.enquiry_id.partner_id.lang"/>
+            </t>
+        </t>
+    </template>
+
+    <report
+        string="Covering Letter"
+        id="hatta_letter"
+        model="covering.letter"
+        report_type="qweb-pdf"
+        name="hatta_trading.hatta_covering_letter"
+        file="hatta_trading.hatta_covering_letter"
+        paperformat="paperformat_hatta_template"
+    />
+
+
+</odoo>

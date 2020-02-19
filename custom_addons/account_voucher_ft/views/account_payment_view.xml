@@ -1,0 +1,466 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <!--Changed Account Payment Main view-->
+    <record id="view_account_payment_form" model="ir.ui.view">
+        <field name="name">account.payment.voucher.form</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_form"/>
+        <field name="arch" type="xml">
+            <!--<field name="amount" position="after">-->
+                <!--<field name="project_id"/>-->
+            <!--</field>-->
+
+            <field name="payment_type" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </field>
+            <field name="partner_type" position="attributes">
+                <attribute name="style">font-weight:600</attribute>
+            </field>
+            <field name="partner_id" position="attributes">
+                <attribute name="style">border-left: 1px solid #ddd;padding: 2px 36px 2px 8px</attribute>
+            </field>
+            <field name="state" position="attributes">
+                <attribute name="statusbar_visible">draft,posted,accounted,reconciled</attribute>
+            </field>
+            <button name="post" position="after">
+                <button name="account_post" type="object" string="Post" class="oe_highlight"
+                        states="posted"/>
+                <button name="set_to_draft" type="object" string="Set to Draft"
+                        states="posted"/>
+                <button name="print_voucher" type="object" string="Print Voucher" class="oe_read_only"
+                        attrs="{'invisible': ['|',('payment_type','=','transfer'),
+                        ('state','not in',['posted','accounted'])]}"/>
+                <button name="print_internal_transfer_pv" type="object" string="Print Voucher" class="oe_read_only"
+                        attrs="{'invisible': ['|',('payment_type','!=','transfer'),
+                        ('pettycash_id', '!=', False)]}"/>
+                <button name="action_send_pv_cheque_email"
+                        attrs="{'invisible': ['|',('payment_type','!=','outbound'),('state','=','draft')]}"
+                        type="object" string="Send Mail"/>
+            </button>
+
+            <xpath expr="//sheet" position="after">
+                				<div class="oe_chatter">
+					<field name="message_follower_ids" widget="mail_followers" />
+					<field name="message_ids" widget="mail_thread" />
+				</div>
+
+            </xpath>
+        </field>
+    </record>
+
+    <!--Primary Tree view for Receipt voucher-->
+        <record id="view_account_payment_tree_receipt_voucher" model="ir.ui.view">
+            <field name="name">account.payment.tree</field>
+            <field name="model">account.payment</field>
+            <field name="arch" type="xml">
+                <tree decoration-info="state=='draft'" decoration-muted="state=='reconciled'" edit="false">
+                    <field name="payment_date"/>
+                    <field name="name"/>
+                    <field name="journal_id"/>
+                    <field name="payment_method_id"/>
+                    <field name="partner_id" string="Customer"/>
+                    <field name="amount" sum="Amount"/>
+
+                    <field name="cheque_out_id"/>
+                    <field name="state"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="partner_type" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_account_supplier_payment_tree_payment_voucher" model="ir.ui.view">
+            <field name="name">account.supplier.payment.tree</field>
+            <field name="model">account.payment</field>
+            <field name="arch" type="xml">
+                <tree decoration-info="state=='draft'" decoration-muted="state=='reconciled'" edit="false">
+                    <field name="payment_date"/>
+                    <field name="name"/>
+                    <field name="journal_id"/>
+                    <field name="payment_method_id"/>
+                    <field name="partner_id" string="Vendor"/>
+                    <field name="amount" sum="Amount"/>
+                    <field name="cheque_id"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                    <field name="state"/>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="partner_type" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+    <!--Primary form view for Receipt voucher-->
+    <record id="view_account_payment_form_receipt_voucher" model="ir.ui.view">
+        <field name="name">account.payment.receipt.voucher.form</field>
+        <field name="model">account.payment</field>
+        <field name="mode">primary</field>
+        <field name="inherit_id" ref="account.view_account_payment_form"/>
+        <field name="arch" type="xml">
+            <sheet position="inside">
+                <group>
+                    <group>
+                        <field name="transfer_bank_name" attrs="{'invisible': [('payment_method_code','not in',['transfer']),]}"/>
+                        <field name="transfer_ref" attrs="{'invisible': [('payment_method_code','not in',['transfer']),]}"/>
+                        <field name="transfer_acc_no" attrs="{'invisible': [('payment_method_code','not in',['transfer']),]}"/>
+                    </group>
+                </group>
+                <field name="have_bills" widget="toggle_button_with_string" icon="fa-plus-circle"
+                       states="draft" options="{'terminology':['Add Invoices','Remove Invoices']}"
+                       string="Add Invoices" class="oe_edit_only"/>
+                <separator string="Customer Invoices" attrs="{'invisible': [('have_bills','=',False)]}"/>
+                <field name="invoice_ids" domain="[('state','=','open'),('partner_id','=',partner_id)]"
+                       attrs="{'invisible': [('have_bills','=',False)],'readonly': [('state','!=','draft')]}"
+                       context="{'tree_view_ref' : 'account.invoice_tree'}">
+                    <tree decoration-info="state == 'draft'" decoration-muted="state == 'cancel'" string="Invoice">
+                        <field name="partner_id" groups="base.group_user"  string="Customer" />
+                        <field name="date_invoice"/>
+                        <field name="number"/>
+                        <field name="commercial_partner_id" invisible="1"/>
+                        <field name="reference" invisible="1"/>
+                        <field name="name" invisible="1"/>
+                        <field name="journal_id" invisible="1"/>
+                        <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                        <field name="user_id"/>
+                        <field name="date_due"/>
+                        <field name="origin"/>
+                        <field name="amount_total_signed" string="Total" sum="Total"/>
+                        <field name="residual_signed" string="Amount Due" sum="Amount Due"/>
+                        <field name="currency_id" invisible="1"/>
+                        <field name="company_currency_id" invisible="1"/>
+                        <field name="state"/>
+                        <field name="type" invisible="context.get('type',True)"/>
+                    </tree>
+                    <form string="Invoice">
+                        <header>
+                            <button name="account.action_invoice_sent" type="object" string="Send by Email" attrs="{'invisible':['|',('sent','=',True), ('state', '!=', 'open')]}" class="oe_highlight" groups="base.group_user"/>
+                            <button name="account.invoice_print" string="Print" type="object" attrs="{'invisible':['|',('sent','=',True), ('state', '!=', 'open')]}" class="oe_highlight" groups="base.group_user"/>
+                            <button name="account.action_invoice_sent" type="object" string="Send by Email" attrs="{'invisible':['|',('sent','=',False), ('state', '!=', 'open')]}" groups="base.group_user"/>
+                            <button name="account.invoice_print" string="Print Invoice" type="object" attrs="{'invisible':['|',('sent','=',False), ('state', '!=', 'open')]}" groups="base.group_user"/>
+                            <button name="%(account.action_account_invoice_payment)d" type="action" states="open" string="Register Payment" groups="account.group_account_invoice" class="oe_highlight"/>
+                            <button name="account.action_invoice_open" type="object" states="draft" string="Validate" class="oe_highlight" groups="account.group_account_invoice"/>
+                            <button name="account.action_invoice_open" type="object" states="proforma2" string="Validate" groups="account.group_account_invoice"/>
+                            <button name="account.action_invoice_proforma2" type="object" states="draft" string="PRO-FORMA" groups="account.group_proforma_invoices"/>
+                            <button name="%(account.action_account_invoice_refund)d" type='action' string='Refund Invoice' groups="account.group_account_invoice" attrs="{'invisible': ['|',('type', '=', 'out_refund'), ('state', 'not in', ('open','proforma2','paid'))]}"/>
+                            <button name="account.action_invoice_cancel" type="object" states="draft,proforma2,open" string="Cancel Invoice" groups="base.group_no_one"/>
+                            <button name="account.action_invoice_draft" states="cancel" string="Reset to Draft" type="object" groups="account.group_account_invoice"/>
+                            <field name="state" widget="statusbar" nolabel="1" statusbar_visible="draft,open,paid"/>
+                        </header>
+                        <div class="alert alert-info" role="alert" style="margin-bottom:0px;" attrs="{'invisible': [('has_outstanding','=',False)]}">
+                            You have <bold><a class="alert-link" href="#outstanding" role="button">outstanding payments</a></bold> for this customer. You can allocate them to mark this invoice as paid.
+                        </div>
+                        <field name="has_outstanding" invisible="1"/>
+                        <sheet string="Invoice">
+                            <label string="Pro Forma Invoice" attrs="{'invisible': [('state','not in',('proforma','proforma2'))]}"/>
+                            <label string="Refund" attrs="{'invisible': ['|',('state','in',('draft','proforma','proforma2')), ('type','&lt;&gt;','out_refund')]}"/>
+                            <h1 class="mt0">
+                                <label string="Draft Invoice" attrs="{'invisible': ['|',('state','not in',('draft',)), ('type','&lt;&gt;','out_invoice')]}"/>
+                                <label string="Draft Refund" attrs="{'invisible': ['|',('state','not in',('draft',)), ('type','&lt;&gt;','out_refund')]}"/>
+                                <field name="number" readonly="1" class="oe_inline" attrs="{'invisible': [('state','in',('draft',))]}"/>
+                            </h1>
+                            <field name="type" invisible="1"/>
+                            <group>
+                                <group>
+                                    <field string="Customer" name="partner_id"
+                                        context="{'search_default_customer':1, 'show_address':1}"
+                                        options='{"always_reload": True}'
+                                        domain="[('customer', '=', True)]"/>
+                                    <field name="payment_term_id"/>
+                                </group>
+                                <group>
+                                    <field name="date_invoice"/>
+                                    <field name="move_name" invisible="1"/>
+                                    <field name="user_id" groups="base.group_user"/>
+                                    <label for="currency_id" groups="base.group_multi_currency"/>
+                                    <div groups="base.group_multi_currency">
+                                        <field name="currency_id" options="{'no_create': True, 'no_open': True}" class="oe_inline"/>
+                                        <field name="company_currency_id" invisible="1"/>
+                                    </div>
+                                </group>
+                            </group>
+                            <field name="sent" invisible="1"/>
+                            <notebook colspan="4">
+                                <page string="Invoice Lines">
+                                    <field name="invoice_line_ids" nolabel="1" widget="one2many_list" mode="tree,kanban" context="{'type': type, 'journal_id': journal_id, 'default_invoice_id': id}">
+                                        <tree string="Invoice Lines" editable="bottom">
+                                            <field name="sequence" widget="handle"/>
+                                            <field name="product_id"/>
+                                            <field name="origin" invisible="1"/>
+                                            <field name="name"/>
+                                            <field name="company_id" invisible="1"/>
+                                            <field name="account_id" groups="account.group_account_user"
+                                                domain="[('company_id', '=', parent.company_id), ('internal_type', '=', 'other')]"/>
+                                            <field name="account_analytic_id" groups="analytic.group_analytic_accounting"
+                                                domain="[('company_id', '=', parent.company_id)]"/>
+                                            <field name="analytic_tag_ids" groups="analytic.group_analytic_accounting" widget="many2many_tags"/>
+                                            <field name="quantity"/>
+                                            <field name="uom_id" groups="product.group_uom"/>
+                                            <field name="price_unit"/>
+                                            <field name="discount" groups="base.group_no_one"/>
+                                            <field name="invoice_line_tax_ids" widget="many2many_tags" context="{'type':parent.type}"
+                                                domain="[('type_tax_use','=','sale'),('company_id', '=', parent.company_id)]" options="{'no_create': True}"/>
+                                            <field name="price_subtotal"/>
+                                            <field name="currency_id" invisible="1"/>
+                                        </tree>
+                                        <kanban class="o_kanban_mobile">
+                                            <field name="product_id"/>
+                                            <field name="price_subtotal"/>
+                                            <field name="quantity"/>
+                                            <field name="uom_id" groups="product.group_uom"/>
+                                            <templates>
+                                                <t t-name="kanban-box">
+                                                    <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                                                        <div class="row">
+                                                            <div class="col-xs-12">
+                                                                <strong><span><t t-esc="record.product_id.value or 'None'"/></span></strong>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-xs-8 text-muted">
+                                                                <span><t t-esc="record.quantity.value"/> <t t-esc="record.uom_id.value"/></span>
+                                                            </div>
+                                                            <div class="col-xs-4 text-muted">
+                                                                <span class="text-right"><t t-esc="record.price_subtotal.value"/></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </t>
+                                            </templates>
+                                        </kanban>
+                                    </field>
+                                    <group class="oe_subtotal_footer oe_right">
+                                        <field name="amount_untaxed"/>
+                                        <field name="amount_tax"/>
+                                        <field name="amount_total" class="oe_subtotal_footer_separator"/>
+                                        <field name="payments_widget" colspan="2" nolabel="1" widget="payment"/>
+                                        <field name="residual" class="oe_subtotal_footer_separator" attrs="{'invisible': [('state', '=', 'draft')]}"/>
+                                        <field name="reconciled" invisible="1"/>
+                                        <field name="outstanding_credits_debits_widget" colspan="2" nolabel="1" widget="payment" attrs="{'invisible': [('state', 'not in', 'open')]}"/>
+                                    </group>
+                                    <field name="comment" placeholder="Terms and conditions..."/>
+                                </page>
+                                <page string="Other Info" name="other_info">
+                                    <group>
+                                        <group>
+                                            <field name="fiscal_position_id" options="{'no_create': True}" />
+                                            <field name="journal_id" groups="account.group_account_user"
+                                                options="{'no_create': True}" attrs="{'readonly':[('move_name','!=',False)]}"/>
+                                            <field domain="[('company_id', '=', company_id),('internal_type','=', 'receivable'), ('deprecated', '=', False)]"
+                                                name="account_id" groups="account.group_account_manager"/>
+                                            <field name="company_id" options="{'no_create': True}" groups="base.group_multi_company"/>
+                                            <field domain="[('partner_id.ref_company_ids', 'in', [company_id])]" name="partner_bank_id" invisible="1"/>
+                                            <field name="date_due" groups="base.group_no_one"/>
+                                        </group>
+                                        <group>
+                                            <field name="move_id" groups="account.group_account_manager" attrs="{'invisible': [('move_id', '=', False)]}"/>
+                                            <field name="origin" groups="base.group_user" attrs="{'invisible': [('origin', '=', False)]}"/>
+                                            <field name="name"/>
+                                        </group>
+                                    </group>
+                                    <field name="tax_line_ids">
+                                        <tree editable="bottom" string="Taxes" create="0">
+                                            <field name="name"/>
+                                            <!--Need invisible fields for on_change to create all necessary info -->
+                                            <field name="tax_id" invisible="1"/>
+                                            <field name="account_analytic_id" invisible="1"/>
+                                            <field name="sequence" invisible="1"/>
+                                            <field name="manual" invisible="1"/>
+                                            <field name="account_id" groups="account.group_account_user"/>
+                                            <field name="amount"/>
+                                            <field name="currency_id" invisible="1"/>
+                                        </tree>
+                                    </field>
+                                </page>
+                            </notebook>
+                        </sheet>
+                        <div class="oe_chatter">
+                            <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                            <field name="message_ids" widget="mail_thread"/>
+                        </div>
+                </form>
+                </field>
+                <field name="have_lines" widget="toggle_button_with_string" icon="fa-plus-circle"
+                       states="draft" options="{'terminology':['Add Voucher Lines','Remove Voucher Lines']}"
+                       string="Add Extra Lines" class="oe_edit_only"/>
+                <separator string="Voucher Lines" attrs="{'invisible': [('have_lines','=',False)]}"/>
+
+                <field name="voucher_lines"
+                       attrs="{'invisible': [('have_lines','=',False)]}">
+                    <tree string="Voucher Lines" editable="bottom">
+                        <field name="account_id"/>
+                        <field name="name"/>
+                        <field name="asset_id"/>
+                        <field name="line_amount"/>
+                        <field name="currency_id" invisible="1"/>
+                    </tree>
+                    <form>
+                        <sheet>
+                            <group>
+                                <group>
+                                    <field name="account_id"/>
+                                    <field name="name"/>
+                                </group>
+                                <group>
+                                    <field name="line_amount"/>
+                                </group>
+                            </group>
+                        </sheet>
+                    </form>
+                </field>
+                <group string="Approvals" col="6">
+                    <field name="prepared_by"/>
+                    <field name="checked_by"/>
+                    <field name="passed_by"/>
+
+                </group>
+            </sheet>
+        </field>
+    </record>
+
+    <!--Primary view for Payment voucher-->
+    <record id="view_account_payment_form_payment_voucher" model="ir.ui.view">
+        <field name="name">account.payment.payment.voucher.form</field>
+        <field name="model">account.payment</field>
+        <field name="mode">primary</field>
+        <field name="inherit_id" ref="account.view_account_payment_form"/>
+        <field name="arch" type="xml">
+            <sheet position="inside">
+                <group>
+                    <group>
+                        <field name="transfer_bank_name" attrs="{'invisible': [('payment_method_code','not in',['transfer']),]}"/>
+                        <field name="transfer_ref" attrs="{'invisible': [('payment_method_code','not in',['transfer']),]}"/>
+                        <field name="transfer_acc_no" attrs="{'invisible': [('payment_method_code','not in',['transfer']),]}"/>
+                    </group>
+                </group>
+
+                <field name="have_bills" widget="toggle_button_with_string" icon="fa-plus-circle"
+                   states="draft" options="{'terminology':['Add Bills','Remove Bills']}"
+                   string="Add Vendor Bills" class="oe_edit_only" nolabel="1"/>
+                <separator string="Vendor Bills" attrs="{'invisible': [('have_bills','=',False)]}"/>
+                <field name="invoice_ids" domain="[('state','=','open'),('partner_id','=',partner_id)]"
+                       attrs="{'invisible': [('have_bills','=',False)],'readonly': [('state','!=','draft')]}">
+                </field>
+                <br/>
+                <field name="have_lines" widget="toggle_button_with_string" icon="fa-plus-circle"
+                   states="draft" options="{'terminology':['Add Voucher Lines','Remove Voucher Lines']}"
+                   string="Add Extra Lines" class="oe_edit_only" nolabel="1"/>
+                <separator string="Voucher Lines" attrs="{'invisible': [('have_lines','=',False)]}"/>
+                                <group attrs="{'invisible': [('have_lines','=',False)]}">
+
+                </group>
+
+                <field name="voucher_lines" attrs="{'invisible': [('have_lines','=',False)]}">
+                    <tree string="Voucher Lines" editable="bottom" >
+                        <field name="account_id"/>
+                        <field name="name"/>
+                        <field name="asset_id"/>
+                        <field name="line_amount"/>
+                        <field name="currency_id" invisible="1"/>
+                    </tree>
+                    <form>
+                        <sheet>
+                            <group>
+                                <group>
+                                    <field name="account_id"/>
+                                    <field name="name"/>
+                                </group>
+                                <group>
+                                    <field name="line_amount"/>
+                                </group>
+                            </group>
+                        </sheet>
+                    </form>
+                </field>
+                <group string="Approvals" col="6">
+                    <field name="prepared_by"/>
+                    <field name="checked_by"/>
+                    <field name="passed_by"/>
+
+                </group>
+
+            </sheet>
+        </field>
+    </record>
+
+    <record id="action_account_payments" model="ir.actions.act_window">
+        <field name="name">Receipt Vouchers</field>
+        <field name="res_model">account.payment</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form,graph</field>
+        <field name="context">{'default_payment_type': 'inbound'}</field>
+        <field name="domain">[('partner_type', '=', 'customer')]</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('view_account_payment_tree_receipt_voucher')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('view_account_payment_form_receipt_voucher')})]"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+              Click to register a Receipt Voucher
+            </p><p>
+              Receipt Vouchers are used to register liquidity movements to company(collect money).
+              You can then process those vouchers by your own means or by using installed facilities.
+        </p>
+        </field>
+    </record>
+    <record id="action_account_payments_payable" model="ir.actions.act_window">
+        <field name="name">Payment Vouchers</field>
+        <field name="res_model">account.payment</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form,graph</field>
+        <field name="context">{'default_payment_type': 'outbound'}</field>
+        <field name="domain">[('partner_type', '=', 'supplier')]</field>
+        <!--<field name="view_id" ref="account.view_account_supplier_payment_tree"/>-->
+        <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('view_account_supplier_payment_tree_payment_voucher')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('view_account_payment_form_payment_voucher')})]"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+              Click to register a Payment Voucher
+            </p><p>
+              Payment Voucher are used to register liquidity movements from company(send money).
+              You can then process those vouchers by your own means or by using installed facilities.
+        </p>
+        </field>
+    </record>
+    <record id="action_account_internal_transfers" model="ir.actions.act_window">
+        <field name="name">Internal Transfers</field>
+        <field name="res_model">account.payment</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form,graph</field>
+        <field name="context">{'default_payment_type': 'transfer'}</field>
+        <field name="domain">[
+            ('payment_type', '=', 'transfer'),
+            ('pettycash_id', '=', False)
+            ]</field>
+        <field name="view_id" ref="account.view_account_supplier_payment_tree"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+              Click to register an Internal Transfer
+            </p><p>
+              Internal Transfer are used to transfer liquidity movements from one Journal
+            to another inside the company (Transfer from Bank Account to Cash Account).
+        </p>
+        </field>
+    </record>
+    <menuitem id="menu_accounting_vouchers"
+              name="Vouchers"
+              sequence="1"
+              groups="account.group_account_user"
+              parent="account.menu_finance"/>
+    <menuitem id="menu_vouchers_receipt"
+              name="Receipt Vouchers"
+              parent="menu_accounting_vouchers"
+              action="action_account_payments"/>
+    <menuitem id="menu_vouchers_payment"
+              name="Payment Vouchers"
+              groups="account.group_account_user"
+              parent="menu_accounting_vouchers"
+              action="action_account_payments_payable"/>
+    <menuitem id="menu_internal_transfers"
+              name="Internal Transfers"
+              parent="menu_accounting_vouchers"
+              groups="account.group_account_user"
+              action="action_account_internal_transfers"/>
+    <!-- Inherit Form View to Modify it -->
+
+</odoo>

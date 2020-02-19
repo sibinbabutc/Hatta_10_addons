@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <template id="report_voucher_new_format">
+    <t t-call= "report.external_layout">
+        <t t-set="o" t-value="o.with_context({'lang':o.partner_id.lang})" />
+        <div class="page" style="font-size:13px;">
+            <div class="" style="text-align:center;font-size:15px;font-weight:bold;">
+                <t t-if="o.payment_type == 'inbound'">Receipt Voucher</t>
+                <t t-if="o.payment_type == 'outbound'">Payment Voucher</t>
+            </div>
+
+            <table width="100%" style="padding-bottom:7px;margin-top:10px;">
+                <tr>
+                    <td style="padding-bottom:7px;">VOUCHER NO</td>
+                    <td style="padding-bottom:7px;">:</td>
+                    <td style="padding-bottom:7px;"><span t-field="o.name"/></td>
+                    <td style="text-align:center;padding-bottom:7px;">DIRHAMS</td>
+                    <td style="padding-bottom:7px;">:</td>
+                    <td style="padding-bottom:7px;"><span t-field="o.amount"/></td>
+                    <td style="text-align:center;padding-bottom:7px;">DATE</td>
+                    <td style="padding-bottom:7px;">:</td>
+                    <td style="padding-bottom:7px;"><span t-field="o.payment_date"/></td>
+                </tr>
+                <tr>
+                    <td style="padding-bottom:7px;">PARTY</td>
+                    <td style="padding-bottom:7px;">:</td>
+                    <td colspan="7" style="padding-bottom:7px;"><span t-field="o.partner_id.name"/></td>
+                </tr>
+                <tr>
+                    <td style="padding-bottom:7px;">NARRATION</td>
+                    <td style="padding-bottom:7px;">:</td>
+                    <td colspan="7" style="padding-bottom:7px;"><span t-field="o.communication"/></td>
+                </tr>
+                <tr>
+                    <td style="padding-bottom:7px;">AMOUNT</td>
+                    <td style="padding-bottom:7px;">:</td>
+                    <td colspan="7" style="padding-bottom:7px;"><span t-field="o.amount_in_words"/></td>
+                </tr>
+                <t t-if="o.cheque_id">
+                    <tr>
+                        <td style="padding-bottom:7px;">BANK</td>
+                        <td style="padding-bottom:7px;">:</td>
+                        <td style="padding-bottom:7px;"><span t-field="o.cheque_id.bank_name"/></td>
+                        <td style="text-align:center;padding-bottom:7px;">CHEQUE NO</td>
+                        <td style="padding-bottom:7px;">:</td>
+                        <td style="padding-bottom:7px;"><span t-field="o.cheque_id"/></td>
+                        <td style="text-align:center;">CHEQUE DATE</td>
+                        <td style="padding-bottom:7px;">:</td>
+                        <td style="padding-bottom:7px;"><span t-field="o.cheque_id.cheque_date"/></td>
+                    </tr>
+                </t>
+            </table>
+        <t t-if="o.move_line_ids">
+                <table class="table table-condensed" style="margin-top:20px;">
+                    <tr>
+                        <td style="border-top:solid 1px #525050;border-bottom:solid 1px #525050;">A/C CODE &amp; DESCRIPTION</td>
+                        <td style="border-top:solid 1px #525050;border-bottom:solid 1px #525050;">CC</td>
+                        <td style="border-top:solid 1px #525050;border-bottom:solid 1px #525050;">SUB LEDGER</td>
+                        <td style="border-top:solid 1px #525050;border-bottom:solid 1px #525050;">REF. # </td>
+                        <td style="border-top:solid 1px #525050;border-bottom:solid 1px #525050;">DEBIT</td>
+                        <td style="border-top:solid 1px #525050;border-bottom:solid 1px #525050;">CREDIT</td>
+                        <td style="border-top:solid 1px #525050;border-bottom:solid 1px #525050;">REMARK</td>
+                    </tr>
+
+                    <t t-set="i" t-value="1"/>
+                    <t t-set="total_debit" t-value="0"/>
+                    <t t-set="total_credit" t-value="0"/>
+
+                    <tr t-foreach="o.move_line_ids" t-as="l">
+                        <td><span t-esc="i"/><span t-field="l.account_id"/></td>
+                    <t t-set="i" t-value="i+1"/>
+                        <td></td>
+                        <td></td>
+                        <td><span t-field="l.ref"/> </td>
+                        <td><span t-field="l.debit"/> </td>
+                        <td><span t-field="l.credit"/> </td>
+                        <td><span t-field="l.narration"/></td>
+                        <t t-set="total_debit" t-value="total_debit +l.debit"/>
+                        <t t-set="total_credit" t-value="total_credit +l.credit"/>
+                    </tr>
+                    <tr>
+                        <td style="border-top:solid 1px #525050;">Total:</td>
+                        <td style="border-top:solid 1px #525050;"></td>
+                        <td style="border-top:solid 1px #525050;"></td>
+                        <td style="border-top:solid 1px #525050;"></td>
+                        <td style="border-top:solid 1px #525050;"><span t-esc="total_debit"></span></td>
+                        <td style="border-top:solid 1px #525050;"><span t-esc="total_credit"></span></td>
+                        <td style="border-top:solid 1px #525050;"></td>
+                    </tr>
+                </table>
+            </t>
+
+        </div>
+
+        <div class="footer" style="font-size:12px;">
+                <div class="col-xs-3" style="text-align:center;"><span t-field="o.passed_by"/></div>
+                <div class="col-xs-1">&#160;</div>
+                <div class="col-xs-3" style="text-align:center;"><span t-field="o.checked_by"/></div>
+                <div class="col-xs-1">&#160;</div>
+                <div class="col-xs-3" style="text-align:center;"><span t-field="o.prepared_by"/></div>
+                <div class="col-xs-3" style="border-top:solid 1px black;text-align:center;">RECEIVED BY</div>
+                <div class="col-xs-1">&#160;</div>
+                <div class="col-xs-3" style="border-top:solid 1px black;text-align:center;">AUTHORISED BY </div>
+                <div class="col-xs-1">&#160;</div>
+                <div class="col-xs-3" style="border-top:solid 1px black;text-align:center;">PREPARED BY</div>
+            </div>
+
+    </t>
+</template>
+
+</odoo>

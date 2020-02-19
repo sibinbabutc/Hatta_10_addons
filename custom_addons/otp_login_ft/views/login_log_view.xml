@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record model='ir.ui.view' id='login_log_view_form'>
+            <field name="name">login.log.form</field>
+            <field name="model">login.log.view</field>
+            <field name="arch" type="xml">
+                <form string="Login Log" >
+                <group>
+                    <group>
+                        <field name="user_id" required="True"/>
+                        <field name="login_date" readonly="1"/>
+                        <field name="logout_date"/>
+                        <field name="status"/>
+                    </group>
+                 </group>
+                </form>
+            </field>
+        </record>
+        
+        <record model='ir.ui.view' id='login_log_view_tree'>
+            <field name="name">login.log.tree</field>
+            <field name="model">login.log.view</field>
+            <field name="arch" type="xml">
+                <tree string="Login Log"  editable="bottom">
+                    <field name="user_id"/>
+                    <field name="login_date"/>
+                    <field name="logout_date"/>
+                    <field name="status"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record model='ir.actions.act_window' id='login_log_view_action'>
+            <field name="name">Login Log</field>
+            <field name="res_model">login.log.view</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        
+        
+        <menuitem name="Login Log" id="menu_user_login_logout" 
+                parent="base.menu_users" action="login_log_view_action" sequence="26" groups="group_hatta_password_man"/>
+    </data>
+</openerp>

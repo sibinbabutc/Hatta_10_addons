@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="assets_common" name="hatta_pdf_reports" inherit_id="report.assets_common">
+        <xpath expr="." position="inside">
+            <link href="/hatta_trading/static/src/css/hatta.css" rel="stylesheet" type="text/css"/>
+        </xpath>
+    </template>
+
+    <template id="hatta_sale_quotation_report_document">
+        <t t-call="report.external_layout">
+            <div class="page no_pad ft_font hatt_sale" style="font-family:Times New Roman !important;">
+                <table class="table table-bordered" width="100%" style="margin-top:10px;">
+                    <tr>
+                        <td width="7%" style="padding-left:15px;"><b>To:</b></td>
+                        <td width="43%" style=""><span t-field="docs.partner_id.name"/></td>
+                        <td width="13%" style=""><b>From:</b></td>
+                        <td width="%" style=""><span t-field="docs.user_id.name"/></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:15px;"><b>Attn:</b></td>
+                        <td style=""><span t-field="docs.partner_id.name"/></td>
+                        <td style=""><b>Date:</b></td>
+                        <td style=""><span t-field="docs.date_order" t-options ='{"format": "dd/MM/yyyy"}'/></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:15px;"><b>Contact:</b></td>
+                        <td style=""><span t-field="docs.partner_id.name"/></td>
+                        <td style=""><b>Our Ref</b></td>
+                        <td style=""><span t-field="docs.enquiry_id.reference"/></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:15px;"><b>Email:</b></td>
+                        <td style=""><span t-field="docs.partner_id.email"/></td>
+                        <td style=""><b>Your Ref:</b></td>
+                        <td style=""><span t-field="docs.enquiry_id.customer_rfq"/></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:15px;"><b>Sub:</b></td>
+                        <td colspan="3" style=""><span t-field="docs.name"/></td>
+                    </tr>
+                </table>
+
+                <div class="col-xs-12" style="padding-left:px;padding-right:px;">
+                    Dear Sir,<br/>
+                    Reference to your inquiry, please find attached our best offer for your kind perusal.
+                    In case of any changes in the quantities, please contact us for confirmation of validity of prices with our principal supplier/s.<br/>
+                </div>
+
+                <table class="hatta_template_table2">
+                    <tr>
+                        <td colspan="2" style="font-weight:;padding-left:15px;">TERMS &amp; CONDITIONS</td>
+                    </tr>
+                    <tr>
+                        <td width="20%"></td>
+                        <td style="color:black;padding-left:15px;">Quote Validity:<span t-field="docs.quotation_validity"/>Days</td>
+                    </tr>
+                    <tr>
+                        <td width="20%"></td>
+                        <td style="color:black;padding-left:15px;">Payment:<span t-field="docs.payment_term_id.name"/></td>
+                    </tr>
+                </table>
+
+                <div class="col-xs-12" style="margin-top:px;margin-bottom:15px;padding-left:px;">
+                    We hope you will find our offer meets with your requirements and look forward to receive your valuable order.<br/>
+                    Thanking you,<br/><br/>
+                    C.T.HASHIM<br/>
+                    CEO
+                </div>
+            </div>
+
+
+        </t>
+        <t t-call="report.external_layout">
+            <div class="page no_pad ft_font hatt_sale" style="font-family:Times New Roman !important;">
+                <table class="table table-bordered">
+                    <r>
+                        <td style="text-align:left;">Item</td>
+                        <td style="text-align:left;">Description</td>
+                        <td style="text-align:center;">Quantity</td>
+                        <td style="text-align:right;">Unit Price</td>
+                        <td style="text-align:center;">VAT</td>
+                        <td style="text-align:right;">Price</td>
+                    </r>
+                    <tr t-foreach="o.order_line" t-as="item" class="text_align_center">
+                        <td style="text-align:left;"><t t-esc="item.serial_no"/></td>
+                        <td style="text-align:left;"><t t-esc="item.name"/></td>
+                        <td style="text-align:center;"><t t-esc="item.product_uom_qty"/></td>
+                        <td style="text-align:right;"><t t-esc="item.price_unit"/></td>
+                        <td style="text-align:center;"><span t-esc="', '.join(map(lambda x: (x.description or x.name), item.tax_id))"/></td>
+                        <td style="text-align:right;"><t t-esc="item.price_subtotal"/></td>
+
+                    </tr>
+                </table>
+
+                <table class="hatta_template_table2" style="margin-bottom:15px;">
+                    <tr>
+                        <td style="font-size:14px;"></td>
+                        <td  style="border-left:solid 1px white;font-size:14px;text-align:right;"><b>Total(excluding VAT):</b></td>
+                        <td style="font-size:14px;padding-left:15px;text-align:center;">
+                            <b><span t-field="docs.amount_untaxed"/></b>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-size:14px;"><b></b></td>
+                        <td  style="border-left:solid 1px white;font-size:14px;text-align:right;"><b>VAT:</b></td>
+                        <td style="font-size:14px;padding-left:15px;text-align:center;">
+                            <b><span t-field="docs.amount_tax"/></b>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-size:14px;"><b><span t-field="docs.amount_in_words"/></b></td>
+                        <td  style="border-left:solid 1px white;font-size:14px;text-align:right;"><b>Total:</b></td>
+                        <td style="font-size:14px;padding-left:15px;text-align:center;">
+                            <b><span t-field="docs.amount_total"/></b>
+                        </td>
+                    </tr>
+                </table>
+
+
+                <div class="col-xs-12" style="margin-top:10px;">Remarks To Customer:<br/><span t-field="docs.note"/>
+                </div>
+            </div>
+        </t>
+
+    </template>
+
+
+
+
+
+
+    <template id="hatta_sale_quotation_report_document_without_header">
+            <div class="page no_pad ft_font hatt_sale" style="font-family:Times New Roman !important;">
+                <table class="table table-bordered" width="100%" style="margin-top:10px;">
+                    <tr>
+                        <td width="7%" style="padding-left:15px;"><b>To:</b></td>
+                        <td width="43%" style=""><span t-field="docs.partner_id.name"/></td>
+                        <td width="13%" style=""><b>From:</b></td>
+                        <td width="%" style=""><span t-field="docs.user_id.name"/></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:15px;"><b>Attn:</b></td>
+                        <td style=""><span t-field="docs.partner_id.name"/></td>
+                        <td style=""><b>Date:</b></td>
+                        <td style=""><span t-field="docs.date_order" t-options ='{"format": "dd/MM/yyyy"}'/></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:15px;"><b>Contact:</b></td>
+                        <td style=""><span t-field="docs.partner_id.name"/></td>
+                        <td style=""><b>Our Ref</b></td>
+                        <td style=""><span t-field="docs.enquiry_id.reference"/></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:15px;"><b>Email:</b></td>
+                        <td style=""><span t-field="docs.partner_id.email"/></td>
+                        <td style=""><b>Your Ref:</b></td>
+                        <td style=""><span t-field="docs.enquiry_id.customer_rfq"/></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left:15px;"><b>Sub:</b></td>
+                        <td colspan="3" style=""><span t-field="docs.name"/></td>
+                    </tr>
+                </table>
+
+                <div class="col-xs-12" style="padding-left:px;padding-right:px;">
+                    Dear Sir,<br/>
+                    Reference to your inquiry, please find attached our best offer for your kind perusal.
+                    In case of any changes in the quantities, please contact us for confirmation of validity of prices with our principal supplier/s.<br/>
+                </div>
+                <table class="hatta_template_table2">
+                    <tr>
+                        <td colspan="2" style="font-weight:;padding-left:15px;">TERMS &amp; CONDITIONS</td>
+                    </tr>
+                    <tr>
+                        <td width="20%"></td>
+                        <td style="color:black;padding-left:15px;">Quote Validity:<span t-field="docs.quotation_validity"/>Days</td>
+                    </tr>
+                    <tr>
+                        <td width="20%"></td>
+                        <td style="color:black;padding-left:15px;">Payment:<span t-field="docs.payment_term_id.name"/></td>
+                    </tr>
+                </table>
+
+                <div class="col-xs-12" style="margin-top:px;margin-bottom:15px;padding-left:px;">
+                    We hope you will find our offer meets with your requirements and look forward to receive your valuable order.<br/>
+                    Thanking you,<br/><br/>
+                    C.T.HASHIM<br/>
+                    CEO
+                </div>
+            </div>
+
+            <div class="page no_pad ft_font hatt_sale">
+                <table class="table table-bordered">
+                    <r>
+                        <td style="text-align:left;">Item</td>
+                        <td style="text-align:left;">Description</td>
+                        <td style="text-align:center;">Quantity</td>
+                        <td style="text-align:right;">Unit Price</td>
+                        <td style="text-align:center;">VAT</td>
+                        <td style="text-align:right;">Price</td>
+                    </r>
+                    <tr t-foreach="o.order_line" t-as="item" class="text_align_center">
+                        <td style="text-align:left;"><t t-esc="item.serial_no"/></td>
+                        <td style="text-align:left;"><t t-esc="item.name"/></td>
+                        <td style="text-align:center;"><t t-esc="item.product_uom_qty"/></td>
+                        <td style="text-align:right;"><t t-esc="item.price_unit"/></td>
+                        <td style="text-align:center;"><span t-esc="', '.join(map(lambda x: (x.description or x.name), item.tax_id))"/></td>
+                        <td style="text-align:right;"><t t-esc="item.price_subtotal"/></td>
+
+                    </tr>
+                </table>
+                <table class="hatta_template_table2" style="margin-bottom:15px;">
+                    <tr>
+                        <td style="font-size:14px;"></td>
+                        <td  style="border-left:solid 1px white;font-size:14px;text-align:right;"><b>Total(excluding VAT):</b></td>
+                        <td style="font-size:14px;padding-left:15px;text-align:center;">
+                            <b><span t-field="docs.amount_untaxed"/></b>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-size:14px;"><b></b></td>
+                        <td  style="border-left:solid 1px white;font-size:14px;text-align:right;"><b>VAT:</b></td>
+                        <td style="font-size:14px;padding-left:15px;text-align:center;">
+                            <b><span t-field="docs.amount_tax"/></b>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-size:14px;"><b><span t-field="docs.amount_in_words"/></b></td>
+                        <td  style="border-left:solid 1px white;font-size:14px;text-align:right;"><b>Total:</b></td>
+                        <td style="font-size:14px;padding-left:15px;text-align:center;">
+                            <b><span t-field="docs.amount_total"/></b>
+                        </td>
+                    </tr>
+                </table>
+
+                <div class="col-xs-12" style="margin-top:10px;">Remarks To Customer:<br/><span t-field="docs.note"/></div>
+                <!--<table class="hatta_template_table2">-->
+                    <!--<tr>-->
+                        <!--<td rowspan="2" width="35%!important" height="20px;" style="font-weight:bold;-->
+                                                              <!--border-right:solid 1px white;padding-left:15px;">Terms and Conditions</td>-->
+                        <!--&lt;!&ndash;<td width="15%!important" style="border-left:solid 1px white;text-align:right;">Total:</td>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<td style="padding-left:15px;text-align:right;"><b><span t-field="docs.amount_total"/></b></td>&ndash;&gt;-->
+                    <!--</tr>-->
+                    <!--&lt;!&ndash;<tr>&ndash;&gt;-->
+
+                        <!--&lt;!&ndash;<td rowspan="3" style="border-left:solid 1px white;text-align:right;">Amount In Words:</td>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<td rowspan="3" style="text-align:left;"><span t-field="docs.amount_in_words"/></td>&ndash;&gt;-->
+                    <!--&lt;!&ndash;</tr>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<tr>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<td style="color:black;border-right:solid 1px white;padding-left:15px;">Delivery Date:<span t-field="docs.delivery_date"/></td>&ndash;&gt;-->
+                    <!--&lt;!&ndash;</tr>&ndash;&gt;-->
+                    <!--<tr>-->
+                        <!--<td style="color:black;border-right:solid white 1px;padding-left:15px;">Quote Validity:<span t-field="docs.quotation_validity"/>Days</td>-->
+                    <!--</tr>-->
+                    <!--<tr>-->
+                        <!--<td style="color:black;border-right:solid white 1px;padding-left:15px;">Payment:<span t-field="docs.payment_term_id.name"/></td>-->
+                    <!--</tr>-->
+                <!--</table>-->
+
+            </div>
+    </template>
+
+    <template id="hatta_sale_quotation_report_title" inherit_id="report.external_layout_header">
+        <div class="report-title" position="inside">
+            <t t-if="xmlid == 'hatta_trading.hatta_sale_quotation_report'">
+                SALE QUOTATION
+            </t>
+        </div>
+    </template>
+
+    <template id="hatta_sale_quotation_report">
+    <t t-call="report.html_container">
+        <t t-foreach="docs" t-as="o">
+            <t t-call="hatta_trading.hatta_sale_quotation_report_document" t-lang="o.partner_id.lang"/>
+        </t>
+    </t>
+    </template>
+
+    <template id="hatta_sale_quotation_report_without_header">
+    <t t-call="report.html_container">
+        <t t-foreach="docs" t-as="o">
+            <t t-call="hatta_trading.hatta_sale_quotation_report_document_without_header" t-lang="o.partner_id.lang"/>
+        </t>
+    </t>
+    </template>
+
+    <record id="paperformat_hatta_invoice2" model="report.paperformat">
+        <field name="name">Hatta Sale Quotation</field>
+        <field name="default" eval="True"/>
+        <field name="format">custom</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">30</field>
+        <field name="margin_bottom">10</field>
+        <field name="margin_left">5</field>
+        <field name="margin_right">5</field>
+    </record>
+
+    <report
+        string="Sale Quotation(For Plain Paper)"
+        id="sale_quotation_report"
+        model="sale.order"
+        report_type="qweb-pdf"
+        name="hatta_trading.hatta_sale_quotation_report"
+        file="hatta_trading.hatta_sale_quotation_report"
+        paperformat="paperformat_hatta_template"
+        />
+
+    <report
+        string="Sale Quotation(For Letter Head)"
+        id="sale_quotation_report_without_header"
+        model="sale.order"
+        report_type="qweb-pdf"
+        name="hatta_trading.hatta_sale_quotation_report_without_header"
+        file="hatta_trading.hatta_sale_quotation_report_without_header"
+        paperformat="paperformat_hatta_invoice2"
+    />
+
+</odoo>

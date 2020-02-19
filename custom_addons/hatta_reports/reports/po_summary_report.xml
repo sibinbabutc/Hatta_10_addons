@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="assets_common" name="hatta_pdf_reports" inherit_id="report.assets_common">
+        <xpath expr="." position="inside">
+            <link href="/hatta_reports/static/src/css/hatta.css" rel="stylesheet" type="text/css"/>
+        </xpath>
+    </template>
+
+    <template id="report_po_summary">
+        <t t-call="hatta_reports.simple_external_layout">
+        <div class="page ft_font">
+            <!--<table class="table">-->
+                <!--<tr>-->
+                    <!--<th width="70%" style="padding-bottom:10 px;border:0px;"><b>From:</b><t t-esc="from_date"/></th>-->
+                    <!--<th width="30%" style="padding-bottom:10 px;border:0px;text-align:center;"><b>To:</b><t t-esc="date_to"/></th>-->
+                <!--</tr>-->
+            <!--</table>-->
+            <table class="table">
+                <thead>
+                    <th style="text-align:center;border-top:;border-bottom:.05em solid grey;background:#c9c9c9;">SL No</th>
+                    <th style="text-align:center;border-top:;border-bottom:.05em solid grey;background:#c9c9c9;">PO No</th>
+                    <th style="text-align:center;border-top:;border-bottom:.05em solid grey;background:#c9c9c9;">Client Name</th>
+                    <th style="text-align:center;border-top:;border-bottom:.05em solid grey;background:#c9c9c9;">Customer PO</th>
+                    <th style="text-align:center;border-top:;border-bottom:.05em solid grey;background:#c9c9c9;">Supplier</th>
+                    <th style="text-align:center;border-top:;border-bottom:.05em solid grey;background:#c9c9c9;">Purchase Date</th>
+                    <th style="text-align:center;border-top:;border-bottom:.05em solid grey;background:#c9c9c9;">Job</th>
+                    <th style="text-align:center;border-top:;border-bottom:.05em solid grey;background:#c9c9c9;">Currency</th>
+                    <th style="text-align:center;border-top:;border-bottom:.05em solid grey;background:#c9c9c9;">Aed Value</th>
+                </thead>
+                <tr>
+                    <td colspan="9" style="text-align:left;border-top:;border-bottom:.05em solid grey;">xxxx</td>
+                </tr>
+                <t t-foreach="docs" t-as="o">
+                    <tr>
+                        <td style="border-top:.05em solid grey;text-align:center;"></td>
+                        <td style="border-top:.05em solid grey;text-align:center;"><span t-field="o.name"/> </td>
+                        <td style="border-top:.05em solid grey;text-align:center;"><span t-field="o.partner_id"/></td>
+                        <td style="border-top:.05em solid grey;text-align:center;"></td>
+                        <td style="border-top:.05em solid grey;text-align:center;"><span t-field="o.partner_id"/></td>
+                        <td style="border-top:.05em solid grey;text-align:center;"><span t-field="o.date_order"/></td>
+                        <td style="border-top:.05em solid grey;text-align:center;"></td>
+                        <td style="border-top:.05em solid grey;text-align:center;"><span t-field="o.currency_id"/></td>
+                        <td style="border-top:.05em solid grey;text-align:center;"><span t-field="o.amount_total"/></td>
+                    </tr>
+                </t>
+                <tr>
+                    <td colspan="7" style="border-top:.05em solid grey;text-align:left;">Total</td>
+                    <td colspan="2" style="border-top:.05em solid grey;text-align:right;"></td>
+                </tr>
+                <tr>
+                    <td colspan="7" style="border-top:.05em solid grey;text-align:left;">Total No. Orders</td>
+                    <td colspan="2" style="border-top:.05em solid grey;text-align:right;"></td>
+                </tr>
+            </table>
+        </div>
+        </t>
+    </template>
+
+        <template id="po_summary_header" inherit_id="hatta_reports.simple_external_layout_header">
+            <div class="report-title" position="inside">
+                <t t-if="xmlid == 'hatta_reports.report_po_summary'">
+                    PURCHASE ORDER STATUS REPORT
+                </t>
+            </div>
+        </template>
+
+
+    <record id="paperformat_po_summary" model="report.paperformat">
+        <field name="name">New Report</field>
+        <field name="default" eval="True"/>
+        <field name="format">custom</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">0</field>
+        <field name="margin_bottom">10</field>
+        <field name="margin_left">10</field>
+        <field name="margin_right">10</field>
+    </record>
+
+    <report
+        id="po_summary_report"
+        model="report.hatta_reports.report_po_summary"
+        report_type="qweb-pdf"
+        string="PO Summary"
+        name="hatta_reports.report_po_summary"
+        file="hatta_reports.report_po_summary"
+        paperformat="paperformat_po_summary"
+    />
+
+</odoo>

@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+            <template id="report_petty_cash_payment_voucher">
+            <div class="footer">
+                    <div class="row" style="margin-bottom:35px;padding-top:10px;"><b>
+                        <div class="col-xs-3 ntbold" style="font-style: italic;" >Prepared By</div>
+                        <div class="col-xs-3 ntbold" style="text-align:center;font-style: italic;">Checked By</div>
+                        <div class="col-xs-3 ntbold" style="text-align:center;font-style: italic;">Posted By</div>
+                        <div class="col-xs-3 ntbold" style="text-align:right;font-style: italic;">Approved By</div></b>
+                    </div>
+                    <div class="row" style="margin-bottom:20px;border-top:1px solid grey;">
+                        <div class="col-xs-12 text-left" style="padding-top:3px;" >Receivers Name:</div>
+                        <div class="col-xs-12 text-left" >Signature:</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-4" style="font-size:11px;color:grey;">MECD/FIN/FR-02 B,24/11/2017</div>
+                        <div class="col-xs-4" style="text-align:center;font-size:12px;">
+                            <span>Printed On: </span><span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y %I:%M %p ')"/></div>
+                        <div class="col-xs-4 text-right">
+                        <span style="font-size:12px;">&#160;</span>Page<span class="page" /> of <span class="topage" />
+                        </div>
+                    </div>
+                </div>
+
+
+        <div class="header" style="height:200px">
+            <!-- company name -->
+            <div class="row">
+                        <div class="col-xs-3">
+                            <img style="width:100% !important;" t-if="res_company.logo" t-att-src="'data:image/png;base64,%s' % res_company.logo" />
+                        </div>
+                        <div class="col-xs-9" style="text-align:right;font-size:15px;">
+                            <div style="font-weight:bold;">
+                                    <h4 style="margin-bottom: 6px;padding-top: 6px;font-weight: bold;" t-esc="res_company.partner_id.name"/>
+                            </div>
+                            <div >
+                                <span t-field="res_company.partner_id.street"/><br/>
+                                <span t-field="res_company.partner_id.street2"/><br/>
+                                <span t-field="res_company.partner_id.city"/>
+                                <span t-field="res_company.partner_id.state_id"/>
+                                <span t-field="res_company.partner_id.zip"/><br/>
+                                <span t-field="res_company.partner_id.country_id"/>
+                            </div>
+                        </div>
+                    </div>
+        </div>
+                <t t-set="o" t-value="o.with_context({'lang':o.partner_id.lang})" />
+                <div class="page" style="font-size:12px">
+                    <br/>
+                    <div class="header" style="text-align:center;margin-top:-30px;">
+                        <h2><strong>Payment Voucher (Petty Cash Fund)</strong></h2>
+                    </div>
+                    <div class="row mt8 mb16">
+                        <div name="partner_address" class="col-xs-6">
+                            <table class="table mt8" style="font-size:12px ">
+                                    <tr><td>Date : </td><td><b><span t-field="o.payment_date"/></b></td></tr>
+                                <tr><td>
+                                        <span>Paid To:</span>
+                                </td><td><b><span t-field="o.destination_journal_id"/></b></td></tr>
+                                <tr t-if="o.payee_name"><td>
+                                    Cheque Name:
+                                </td><td>
+                                    <b><span t-field="o.payee_name"/></b>
+                                </td></tr>
+
+                                <tr t-if="o.cheque_id"><td>
+                                    Cheque Date:
+                                </td><td>
+                                    <b><span t-field="o.cheque_id.cheque_date"/></b>
+                                </td></tr>
+
+                                <tr t-if="o.communication"><td>
+                                    <span>Narration:</span>
+                                </td><td>
+                                    <b><span t-if="o.communication" t-field="o.communication"/></b>
+                                </td></tr>
+                            </table>
+                        </div>
+                        <div class="col-xs-6">
+                            <table class="table mt8" style="font-size:12px">
+                                <tr t-if="o.name"><td>
+                                        Voucher No:
+                                </td><td><b><span t-field="o.name"/></b></td></tr>
+                                <tr><td>
+                                    Payment Method:
+                                </td><td>
+                                    <b><span t-field="o.journal_id"/></b>
+                                </td></tr>
+                                <tr t-if="o.cheque_id"><td>
+                                    Cheque No:
+                                </td><td>
+                                    <b><span t-field="o.cheque_id.cheque_no"/></b>
+                                </td></tr>
+                                <tr><td>
+                                    <span>Amount:</span>
+                                </td><td>
+                                    <b><span t-field="o.amount"
+                                          t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></b>
+                                </td></tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div style="border-top:1px solid black">
+                        <h4><strong>Petty Cash Fund: <span t-field="o.pettycash_id"/></strong></h4>
+                    </div>
+
+
+                    <table class="table mt8" style="font-size:12px;border-bottom:1px solid black">
+                        <tr style="background-color:#000266 !important; color:white;text-align:center">
+                            <th>From/To</th>
+                            <th>Account Name/Fund Name</th>
+                            <th class="text-center">Dr.</th>
+                            <th class="text-center">Cr.</th>
+                        </tr>
+                        <tr>
+                            <td>From</td>
+                            <td><span t-field="o.journal_id"/></td>
+                            <td>&#160;</td>
+                            <td class="text-right"><span t-field="o.amount"
+                                  t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></td>
+                        </tr>
+                        <tr>
+                            <td>To</td>
+                            <td><span t-field="o.destination_journal_id"/></td>
+                            <td class="text-right"><span t-field="o.amount"
+                                  t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></td>
+                            <td>&#160;</td>
+                        </tr>
+                    </table>
+
+                    <p><b>Amount in Words : <span t-field="o.amount_in_words"/></b></p>
+                </div>
+        </template>
+
+            <template id="report_petty_cash_payment">
+            <t t-call="report.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="account_petty_cash_ft.report_petty_cash_payment_voucher" t-lang="o.partner_id.lang"/>
+                </t>
+            </t>
+        </template>
+
+
+        <record id="paperformat_petty_cash_payment_voucher" model="report.paperformat">
+                <field name="name">Petty Cash payment Voucher</field>
+                <field name="default" eval="True"/>
+                <field name="format">A4</field>
+                <field name="orientation">Portrait</field>
+                <field name="margin_top">40</field>
+                <field name="margin_bottom">35</field>
+                <field name="margin_left">7</field>
+                <field name="margin_right">7</field>
+                <field name="header_line" eval="False"/>
+                <field name="header_spacing">37</field>
+            </record>
+
+        <report
+            id="account_petty_cash_payment_voucher_report"
+            model="account.payment"
+            string="Petty Cash Payment Voucher"
+            report_type="qweb-pdf"
+            menu="False"
+            name="account_petty_cash_ft.report_petty_cash_payment"
+            file="account_petty_cash_ft.report_petty_cash_payment"
+            paperformat="paperformat_petty_cash_payment_voucher"
+        />
+</odoo>

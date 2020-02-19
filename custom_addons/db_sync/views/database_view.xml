@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <record id="view_database_details_form" model="ir.ui.view">
+        <field name="name">Databases</field>
+        <field name="model">database.details</field>
+        <field name="arch" type="xml">
+            <form string="Databases">
+                <header>
+<!--                    <button name="sync_partner_categories" type="object" string="Sync Partner Categories"-->
+<!--                            attrs="{'invisible': [('state', '=', 'not_connected')]}"/>-->
+<!--                    <button name="sync_sale_price_lists" type="object" string="Sync Sale Pricelists"-->
+<!--                            attrs="{'invisible': [('state', '=', 'not_connected')]}"/>-->
+                    <button name="sync_customers" type="object" string="Sync Customers"
+                            attrs="{'invisible': [('state', '=', 'not_connected')]}"/>
+                    <button name="test_connection" type="object" string="Test Connection" class="oe_highlight"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                    <group>
+                        <field name="url"/>
+                        <field name="db_name"/>
+                        <field name="username"/>
+                        <field name="password"/>
+                    </group>
+                    <group invisible="1">
+                        <field name="uid" states="connected"/>
+                    </group>
+                    <notebook>
+                        <page string="ToDos">
+                            <field name="to_do_s"/>
+                        </page>
+                    </notebook>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_database_details_tree" model="ir.ui.view">
+        <field name="name">Databases</field>
+        <field name="model">database.details</field>
+        <field name="arch" type="xml">
+            <tree string="Databases">
+                <field name="url"/>
+                <field name="db_name"/>
+                <field name="username"/>
+                <field name="password"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_databases_details" model="ir.actions.act_window">
+        <field name="name">Databases</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">database.details</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_server_test_database_connections_all" model="ir.actions.server">
+        <field name="name">Databases: Test all Connections</field>
+        <field name="type">ir.actions.server</field>
+        <field name="model_id" ref="model_database_details" />
+        <field name="binding_model_id" ref="model_database_details" />
+        <field name="state">code</field>
+        <field name="code">records.test_connection()</field>
+    </record>
+
+    <menuitem id="db_sync_menu_root"
+              name="DB Sync"
+              sequence="1"/>
+
+    <!-- This Menu Item Must have a parent -->
+    <menuitem id="database_menu_categ"
+              name="Database"
+              parent="db_sync_menu_root"
+              sequence="10"/>
+
+    <!-- This Menu Item must have a parent and an action -->
+    <menuitem id="database_sub_menu"
+              name="Database"
+              parent="database_menu_categ"
+              action="action_databases_details"
+              sequence="10"/>
+
+</odoo>

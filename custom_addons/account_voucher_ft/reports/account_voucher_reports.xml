@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <template id="report_voucher_with_lines">
+            <div class="footer">
+                <div t-if="o.payment_type == 'outbound'" class="row" style="margin-bottom:35px;padding-top:10px;"><b>
+                    <div class="col-xs-3 ntbold" style="font-style: italic;" >Prepared By</div>
+                    <div class="col-xs-3 ntbold" style="text-align:center;font-style: italic;">Checked By</div>
+                    <div class="col-xs-3 ntbold" style="text-align:center;font-style: italic;">Posted By</div>
+                    <div class="col-xs-3 ntbold" style="text-align:right;font-style: italic;">Approved By</div></b>
+                    <div class="col-xs-3"><span t-esc="o.prepared_by"/></div>
+                    <div class="col-xs-3" style="text-align:center"><span t-esc="o.checked_by"/></div>
+                    <div class="col-xs-3" style="text-align:center"><span t-esc="o.passed_by"/></div>
+                </div>
+                <div t-if="o.payment_type == 'inbound'" class="row" style="margin-bottom:35px;padding-top:10px;"><b>
+                    <div class="col-xs-4 ntbold" style="font-style: italic;" >Prepared By</div>
+                    <div class="col-xs-4 ntbold" style="text-align:center;font-style: italic;">Checked By</div>
+                    <div class="col-xs-4 ntbold" style="text-align:right;font-style: italic;">Posted By</div></b>
+                    <div class="col-xs-4"><span t-esc="o.prepared_by"/></div>
+                    <div class="col-xs-4" style="text-align:center"><span t-esc="o.checked_by"/></div>
+                    <div class="col-xs-4" style="text-align:right"><span t-esc="o.passed_by"/></div>
+                </div>
+
+                <div class="row" style="margin-bottom:20px;border-top:1px solid grey;">
+                    <t t-if="o.payment_type == 'outbound'">
+                        <div class="col-xs-12 text-left" style="padding-top:3px;" >Receivers Name:</div>
+                        <div class="col-xs-12 text-left" >Signature:</div>
+                    </t>
+
+                </div>
+                <div class="row">
+                    <div class="col-xs-4" style="font-size:11px;color:grey;">MECD/FIN/FR-02,24/11/2017</div>
+                    <div class="col-xs-4" style="text-align:center;font-size:12px;">
+                        <span>Printed On: </span><span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y %I:%M %p ')"/></div>
+                    <div class="col-xs-4 text-right">
+                    <span style="font-size:12px;">&#160;</span>Page&#160;<span class="page" /> of <span class="topage" />
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="header" style="height:200px">
+                <!-- company name -->
+                <div class="row">
+                    <div class="col-xs-3">
+                        <img style="width:100% !important;" t-if="res_company.logo" t-att-src="'data:image/png;base64,%s' % res_company.logo" />
+                    </div>
+                    <div class="col-xs-9" style="text-align:right;font-size:15px;">
+                        <div style="font-weight:bold;">
+                            <h4 style="margin-bottom: 6px;padding-top: 6px;font-weight: bold;" t-esc="res_company.partner_id.name"/>
+                        </div>
+                        <div >
+                            <span t-field="res_company.partner_id.street"/><br/>
+                            <span t-field="res_company.partner_id.street2"/><br/>
+                            <span t-field="res_company.partner_id.city"/>
+                            <span t-field="res_company.partner_id.state_id"/>
+                            <span t-field="res_company.partner_id.zip"/><br/>
+                            <span t-field="res_company.partner_id.country_id"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <t t-set="o" t-value="o.with_context({'lang':o.partner_id.lang})" />
+            <div class="page" style="font-size:12px">
+                <br/>
+                <div class="header" style="text-align:center;margin-top:-30px;">
+                    <h2>
+                        <strong>
+                            <t t-if="o.payment_type == 'inbound'">Receipt Voucher</t>
+                            <t t-if="o.payment_type == 'outbound'">Payment Voucher</t>
+                        </strong>
+                    </h2>
+                </div>
+                <div class="row mt8 mb16">
+                    <div name="partner_address" class="col-xs-6">
+                        <table class="table mt8" style="font-size:12px ">
+                            <tr><td class="col-xs-3">Date : </td><td class="col-xs-9"><b><span t-field="o.payment_date"/></b></td></tr>
+                            <tr><td>
+                                <span>
+                                    <t t-if="o.payment_type == 'inbound'">Received from:</t>
+                                    <t t-if="o.payment_type == 'outbound'">Paid To:</t>
+                                </span>
+                                </td><td><b><span t-field="o.partner_id"/></b></td>
+                            </tr>
+                            <tr t-if="o.cheque_id"><td>
+                                    Cheque Name:
+                                </td><td>
+                                    <b><span t-field="o.payee_name"/></b>
+                                </td>
+                            </tr>
+                            <tr t-if="o.cheque_out_id"><td>
+                                    Cheque No:
+                                </td><td>
+                                    <b><span t-field="o.cheque_out_id.cheque_no"/></b>
+                                </td>
+                            </tr>
+
+                            <tr t-if="o.cheque_id"><td>
+                                    Cheque Date:
+                                </td><td>
+                                    <b><span t-field="o.cheque_id.cheque_date"/></b>
+                                </td>
+                            </tr>
+                            <tr t-if="o.payment_method_code in ['cheque_payment','cheque_receipt','cheque_pdc_payment','cheque_pdc_receipt'] and o.cheque_out_id.acc_num_out">
+                                <td><span t-if="o.cheque_out_id.acc_num_out">Account No :</span>
+                                </td>
+                                <td><b>
+                                    <span t-if="o.cheque_out_id.acc_num_out" t-field="o.cheque_out_id.acc_num_out"/>
+                                    </b>
+                                </td>
+                            </tr>
+                            <tr t-if="o.payment_method_code in ['transfer'] and o.transfer_acc_no">
+                                <td><span t-if="o.transfer_acc_no">Account No :</span></td>
+                                <td><b><span t-if="o.transfer_acc_no" t-field="o.transfer_acc_no"/></b></td>
+                            </tr>
+                            <tr t-if="o.communication">
+                                <td><span>Narration:</span></td>
+                                <td>
+                                    <b><span t-if="o.communication" t-field="o.communication"/></b>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-xs-6">
+                        <table class="table mt8" style="font-size:12px">
+                            <tr t-if="o.name">
+                                <td class="col-xs-4">Voucher No:</td>
+                                <td class="col-xs-8"><b><span t-field="o.name"/></b></td>
+                            </tr>
+                            <tr><td>Payment Method:</td>
+                                <td>
+                                    <b>
+                                        <span t-if="o.journal_id.type =='cash'" t-field="o.journal_id.type"/>
+                                        <t t-if="o.journal_id.type =='bank'" >
+                                            <span t-if="o.payment_method_code in ['cheque_payment','cheque_receipt','cheque_pdc_payment','cheque_pdc_receipt']" >Cheque</span>
+                                            <t t-if="o.payment_method_code in ['transfer']" >Transfer - <span t-field="o.journal_id"/></t>
+                                        </t>
+                                    </b>
+                                </td>
+                            </tr>
+                            <tr t-if="o.cheque_id">
+                                <td>Cheque No:</td>
+                                <td><b><span t-field="o.cheque_id.cheque_no"/></b></td>
+                            </tr>
+                            <tr t-if="o.payment_method_code in ['cheque_payment','cheque_receipt','cheque_pdc_payment','cheque_pdc_receipt'] and (o.cheque_out_id or o.cheque_id)">
+                                <td><span t-if="o.cheque_out_id or o.cheque_id">Bank :</span>
+                                </td>
+                                <td><b>
+                                    <span t-if="o.cheque_out_id" t-field="o.cheque_out_id.bank_name_out"/>
+                                    <span t-if="o.cheque_id" t-field="o.journal_id"/>
+                                    </b>
+                                </td>
+                            </tr>
+                            <tr t-if="o.payment_method_code in ['transfer'] and o.transfer_bank_name">
+                                <td><span t-if="o.transfer_bank_name">Bank :</span></td>
+                                <td><b><span t-if="o.transfer_bank_name" t-field="o.transfer_bank_name"/></b></td>
+                            </tr>
+
+
+                            <tr>
+                                <td><span>Amount:</span></td>
+                                <td><b><span t-field="o.amount"
+                                      t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></b></td>
+                            </tr>
+
+                        </table>
+                    </div>
+                </div>
+
+                <t t-if="o.have_bills">
+                    <div class="col-xs-12" style="margin-left:0px !important;padding-left:0px !important;">
+                        <t t-if="o.payment_type == 'inbound'"><b>Reference</b></t>
+                        <t t-if="o.payment_type == 'outbound'"><b>Bill Reference</b></t>
+                    </div>
+                </t>
+
+                <t t-if="o.have_bills">
+                    <table class="table table-condensed" style="font-size:12px !important; margin-left:0px !important" t-if="o.invoice_ids">
+                        <thead>
+                            <tr style="background-color:#000266 !important; color:white;">
+                                <th>S No</th>
+                                <th>
+                                    <t t-if="o.payment_type == 'inbound'">Customer</t>
+                                    <t t-if="o.payment_type == 'outbound'">Reference</t>
+                                </th>
+                                <th>Date</th>
+                                <th><t t-if="o.payment_type == 'inbound'">Invoice No</t>
+                                    <t t-if="o.payment_type == 'outbound'">Vendor Bill No</t>
+                                </th>
+                                <th >Due Date</th>
+                                <th class="text-right">Amount</th>
+                                <th class="text-right">Amount Due</th>
+                            </tr>
+                        </thead>
+                        <tbody class="payment_tbody">
+                            <t t-set="bill_amount" t-value="0.00"/>
+                            <t t-set="residual_amount" t-value="0.00"/>
+                            <tr t-foreach="o.invoice_ids" t-as="l">
+                                <td class="text-center" ><span t-esc="l_index+1"/></td>
+                                <td><span t-field="l.number"/></td>
+                                <td><span t-field="l.date_invoice"/></td>
+                                <td>
+                                    <t t-if="o.payment_type == 'inbound'"><span t-field="l.partner_id"/></t>
+                                    <t t-if="o.payment_type == 'outbound'"><span t-field="l.reference"/></t>
+                                </td>
+                                <td ><span t-field="l.date_due"/></td>
+                                <td class="text-right">
+                                    <span t-esc="'%.2f'%(l.amount_total)"/>
+                                </td>
+                                <td class="text-right">
+                                    <span t-esc="'%.2f'%(l.residual)"/>
+                                </td>
+                                <t t-set="bill_amount" t-value="bill_amount+l.amount_total"/>
+                                <t t-set="residual_amount" t-value="residual_amount+l.residual"/>
+                            </tr>
+                            <tr style="border-top:2px solid black !important;">
+                                <td class="text-right" colspan="5">
+                                    <b><span>
+                                        <t t-if="o.payment_type == 'inbound'">Total Invoice Amount:</t>
+                                    <t t-if="o.payment_type == 'outbound'">Total Bill Amount:</t>
+                                        </span></b>
+                                </td>
+                                <td class="text-right">
+                                    <b><span t-esc="bill_amount"
+                                             t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></b>
+                                </td>
+                                 <td class="text-right">
+                                    <b><span t-esc="residual_amount"
+                                             t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></b>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </t>
+
+                <t t-if="o.have_lines">
+                    <table class="table table-condensed" style="font-size:12px !important; margin-left:0px !important" t-if="o.voucher_lines">
+                        <thead>
+                            <tr style="background-color:#000266 !important; color:white;">
+                                <th>S No</th>
+                                <th>GL Code</th>
+                                <th>Description</th>
+                                <th class="text-right">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody class="payment_tbody">
+                            <t t-set="voucher_line_amount" t-value="0.00"/>
+                            <tr t-foreach="o.voucher_lines" t-as="l">
+                                <td class="text-center" ><span t-esc="l_index+1"/></td>
+                                <td><span t-field="l.account_id.code"/></td>
+                                <td><span t-field="l.name"/></td>
+                                <td class="text-right">
+                                    <span t-esc="'%.2f'%(l.line_amount)"/>
+                                </td>
+                                <t t-set="voucher_line_amount" t-value="voucher_line_amount+l.line_amount"/>
+                            </tr>
+                            <tr style="border-top:2px solid black !important;">
+                                <td class="text-right" colspan="5">
+                                    <b><span>Total Voucher Amount:</span></b>
+                                </td>
+                                <td class="text-right">
+                                    <b><span t-esc="voucher_line_amount"
+                                             t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></b>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </t>
+                <p><b>Amount in Words : <span t-field="o.amount_in_words"/></b></p>
+            </div>
+        </template>
+
+        <template id="assets_common" name="account_payment_print_ft pdf assets" inherit_id="report.assets_common">
+            <xpath expr="." position="inside">
+                <link href="/account_voucher_ft/static/src/css/invoice.css" rel="stylesheet" type="text/css"/>
+            </xpath>
+        </template>
+
+        <template id="report_voucher_without_lines">
+            <t t-call="report.external_layout">
+                <t t-set="o" t-value="o.with_context({'lang':o.partner_id.lang})" />
+                <div class="page">
+                    <div class="row row_top"><h3>
+                        <t t-if="o.payment_type == 'inbound'">Receipt Voucher</t>
+                        <t t-if="o.payment_type == 'outbound'">Payment Voucher</t>
+                    </h3></div>
+                    <div class="row row_top_space">
+                        <div class="col-xs-2 col_num">
+                            <t t-if="o.name"><strong>Voucher No:</strong></t>
+                        </div>
+                        <div class="col-xs-3 col_numv"><p t-field="o.name"/></div>
+                        <div class="col-xs-2 col_date">
+                            <t t-if="o.payment_date"><strong>Date:</strong></t>
+                        </div>
+                        <div class="col-xs-3 col_datev"><p t-field="o.payment_date"/></div>
+                        <div class="col-xs-12 col_name"><strong>
+                            <t t-if="o.payment_type == 'inbound'">Received from:</t>
+                            <t t-if="o.payment_type == 'outbound'">Paid To:</t>
+                        </strong>
+                            <span class="indent" t-field="o.partner_id"/>
+                        </div>
+                        <div class=" col-xs-12 col_name"><strong>Amount:</strong>
+                            <span class="indent" t-field="o.amount_in_words"/>
+                        </div>
+                        <div class=" col-xs-8 col_name">&#160;</div>
+                        <div class=" col-xs-4 col_amt"><span t-if="o.partner_id.vat"><span t-field="o.partner_id.vat"/></span>
+                            <strong><span>Amount:</span></strong>
+                             <span t-field="o.amount"
+                                          t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></div>
+
+                        <div class=" col-xs-8 col_name">
+                            <strong>
+                                <t t-if="o.payment_type == 'inbound'">Received By:</t>
+                                <t t-if="o.payment_type == 'outbound'">Paid By:</t>
+                            </strong>
+                            <span class="indent" t-esc="user.name"/>
+                        </div>
+                        <div class=" col-xs-3 col_sign"><strong>Sign</strong></div>
+                    </div>
+
+                </div>
+            </t>
+        </template>
+
+        <template id="report_voucher">
+            <t t-call="report.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <!--<t t-if="o.have_lines or o.have_bills" t-call="account_voucher_ft.report_voucher_with_lines" t-lang="o.partner_id.lang"/>-->
+                    <!--<t t-if="not o.have_lines and not o.have_bills" t-call="account_voucher_ft.report_voucher_without_lines" t-lang="o.partner_id.lang"/>-->
+                    <t t-call="account_voucher_ft.report_voucher_new_format"></t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

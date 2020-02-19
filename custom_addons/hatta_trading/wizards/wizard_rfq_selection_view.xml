@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="purchase_order_line_with_add_button" model="ir.ui.view">
+        <field name="name">purchase.order.line.tree</field>
+        <field name="model">purchase.order.line</field>
+        <field name="inherit_id" ref="purchase.purchase_order_line_tree"/>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <tree position="inside">
+                <field name="selected_for_sale" widget="toggle_boolean_always_enabled" boolean_string="['Locked', 'Lock']" icon="['fa-lock', 'fa-unlock']"/>
+            </tree>
+            <tree position="attributes">
+                <attribute name="create">false</attribute>
+                <attribute name="delete">false</attribute>
+                <attribute name="editable"></attribute>
+            </tree>
+        </field>
+    </record>
+
+    <record id="purchase_order_line_with_minus_button" model="ir.ui.view">
+        <field name="name">purchase.order.line.tree</field>
+        <field name="model">purchase.order.line</field>
+        <field name="inherit_id" ref="purchase.purchase_order_line_tree"/>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <tree position="inside">
+                <field name="selected_for_sale" widget="toggle_boolean_always_enabled" boolean_string="['Locked', 'Lock']" icon="['fa-lock', 'fa-unlock']"/>
+            </tree>
+            <tree position="attributes">
+                <attribute name="create">false</attribute>
+                <attribute name="delete">false</attribute>
+                <attribute name="editable"></attribute>
+            </tree>
+        </field>
+    </record>
+
+    <record id="wizard_rfq_selection_form_view" model="ir.ui.view">
+        <field name="name">Rfq Selection Wizard Form</field>
+        <field name="model">enquiry.details</field>
+        <field name="arch" type="xml">
+            <form string="RFQ Line Selection for Sale">
+                <sheet>
+                    <group>
+                        <!--<div>-->
+                            <!--<field name="bid_html_group_supplier" widget="toggle_button_with_string" icon="fa-plus-circle"-->
+                                   <!--options="{'terminology':['Group by Supplier','Group by Product']}"-->
+                                   <!--string=" " class="oe_edit_only"/>-->
+                        <!--</div><br/>-->
+                        <field name="name" readonly="1"/>
+                    </group>
+                    <field name="enquiry_product_lines" readonly="1">
+                        <tree colors="green:supplying_qty == product_uom_qty;blue:supplying_qty &lt; product_uom_qty;red:supplying_qty &gt; product_uom_qty">
+                            <field name="serial_no" string="#"/>
+                            <field name="product_id"/>
+                            <field name="name"/>
+                            <field name="product_uom_qty" string="Demanded Qty"/>
+                            <field name="supplying_qty" string="Purchase Quantity"/>
+                            <field name="product_uom_id"/>
+                        </tree>
+                    </field>
+                    <p>* Included Only RFQs in 'Ready For Sale' Stage. Hint: Please complete all RFQs upto 'Ready for Sale' Stage</p>
+                    <separator string="Selected RFQ Lines"/>
+                    <field name="selected_rfq_lines"
+                           context="{'tree_view_ref': 'hatta_trading.purchase_order_line_with_minus_button'}"/>
+                    <separator string="UnSelected RFQ Lines"/>
+                    <field name="unselected_rfq_lines"
+                           context="{'tree_view_ref': 'hatta_trading.purchase_order_line_with_add_button'}"/>
+                    <field name="purchase_order_lines" invisible="1"/>
+                </sheet>
+                <footer>
+                    <button name="confirm_and_sale_ready" type="object" string="Confirm &amp; Process"
+                            class="oe_highlight" icon="fa-gear"/>
+                    <button string="Close" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

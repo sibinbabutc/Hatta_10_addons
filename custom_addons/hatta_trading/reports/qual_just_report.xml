@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<report
+		id="hatta_qual_just_docx"
+		model="enquiry.details"
+		string="Qualification and Justification"
+		report_type="docx"
+		name="hatta_trading.qual.docx"
+		file="hatta_trading.qual.docx"
+		attachment_use="False"
+	/>
+</odoo>

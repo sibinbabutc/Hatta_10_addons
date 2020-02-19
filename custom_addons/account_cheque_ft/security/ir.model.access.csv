@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_account_payment_method,access_account_payment_method,model_account_payment_method,,1,1,1,1
+access_cheque_book,access_cheque_book,model_cheque_book,,1,1,1,1
+access_cheque_category_cheques,access_cheque_category_cheques,model_cheque_category_cheques,,1,1,1,1
+access_cheque_register,access_cheque_register,model_cheque_register,,1,1,1,1
+access_res_bank,access_res_bank,model_res_bank,,1,1,1,1
+access_res_bank_out,access_res_bank_out,model_res_bank_out,,1,1,1,1
+access_res_bank_branch_out,access_res_bank_branch_out,model_res_bank_branch_out,,1,1,1,1
+access_cheque_format,access_cheque_format,model_cheque_format,,1,1,1,1
+access_cheque_register_out,access_cheque_register_out,model_cheque_register_out,,1,1,1,1

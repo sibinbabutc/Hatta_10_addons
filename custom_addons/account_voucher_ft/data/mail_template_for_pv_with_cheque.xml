@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+        <!--Default Notification Email template for invoices-->
+        <record id="mail_template_data_email_pv_with_cheques" model="mail.template">
+            <field name="name">Cheque collection Notification - Send by Email</field>
+            <field name="email_from">${user.email}</field>
+            <field name="subject">CHEQUE READY FOR COLLECTION  (Ref ${object.name or 'n/a'})</field>
+            <field name="partner_to">${object.partner_id.id}</field>
+            <field name="model_id" ref="account.model_account_payment"/>
+            <field name="auto_delete" eval="True"/>
+            <field name="report_template" ref="account_pv_with_cheque"/>
+            <field name="report_name">Cheque_collection_${(object.name)}</field>
+            <field name="lang">${object.partner_id.lang}</field>
+            <field name="body_html"><![CDATA[
+                <p>Mr. / Ms.: ${object.partner_id.name},</p>
+                % if object.partner_id.phone:
+                    <p>Tel: ${object.partner_id.phone},</p>
+                % endif
+                % if object.partner_id.fax:
+                    <p>fax: ${object.partner_id.fax},</p>
+                % endif
+                <p> <strong><u>Attn: Accounts Department</u></strong></p>
+                <p> Dear Sir/Madam, </p>
+                <p>This is to inform you that your payment due with us is ready for collection.
+                Please arrange to pick up with the Original Official Receipt during our office hours
+                between 02:00 p.m to 5.00 p.m. (Saturday-Wednesday)
+                </p>
+                 % if object.cheque_id:
+                    <p><span style="padding-left:20px;">Cheque No: ${object.cheque_id.cheque_no} </span></p>
+                    <p><span style="padding-left:20px;">Cheque Date: ${object.cheque_id.cheque_date.split('-')[2] + '-' + object.cheque_id.cheque_date.split('-')[1] + '-' + object.cheque_id.cheque_date.split('-')[0]}</span></p>
+                    <p><span style="padding-left:20px;">Amount: ${object.amount} </span></p>
+                    <p><span style="padding-left:20px;">Bank Name: ${object.cheque_id.bank_name.name} </span></p>
+                 % endif
+
+                    <p>Yours Sincerely,
+                </p>
+
+                <p><strong>For ${object.company_id.name}</strong></p>
+                <img src="account_voucher_ft/static/src/images/location.png" alt="Location" style="width:200px;height:120px;">
+                <p><a style="padding-top:20px;" href="https://www.google.co.in/maps/place/Masri+Engineering+%26+Contracting+Est.+MEC/@25.0999531,55.169716,13z/data=!4m12!1m6!3m5!1s0x3e5f6b6e1460f98b:0xf63061c086e5b6a7!2sMasri+Engineering+%26+Contracting+Est.+MEC!8m2!3d25.1002176!4d55.1695037!3m4!1s0x3e5f6b6e1460f98b:0xf63061c086e5b6a7!8m2!3d25.1002176!4d55.1695037">Click here for Office location</a>
+                ]]>
+            </field>
+        </record>
+</odoo>

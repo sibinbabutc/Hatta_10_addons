@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="cost_sheet_form_view" model="ir.ui.view">
+        <field name="name">hatta.cost.sheet.form</field>
+        <field name="model">hatta.cost.sheet</field>
+        <field name="arch" type="xml">
+            <form string="Cost Sheet">
+                <header>
+                    <button name="action_approve" states="draft,margin_update" string="Approve" type="object"  class="oe_highlight"
+                            groups="hatta_trading.group_cost_sheet_manager"/>
+                    <button name="action_submit" states="approve" string="Submit" type="object"  class="oe_highlight"
+                            groups="hatta_trading.group_cost_sheet_manager"/>
+                    <button name="action_margin_update" states="approve" string="Set to Draft" type="object"/>
+                    <button name="action_print_cost" string="Print" type="object" class="oe_highlight"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,approve,submitted" readonly="1"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="cost_sheet_currency_id" required="1"/>
+                            <field name="shipping_method_id"/>
+                            <field name="collect_delivery_type" widget="radio"/>
+                            <field name="is_duty_required" attrs="{'readonly':[('state', 'in', ['approve','submitted'])]}"/>
+                            <br/><br/>
+                            <field name="total_cost" states="margin_update,approve,submitted"/>
+                            <field name="margin" states="approve,submitted" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="create_date"/>
+                            <field name="create_uid"/>
+                            <field name="purchase_order_id" readonly="1"/>
+                            <field name="currency_id"/>
+                            <field name="is_same_currency" invisible="1"/>
+
+                            <label for="exchange_rate" attrs="{'invisible':[('is_same_currency', '=', True)]}"/>
+                            <div attrs="{'invisible':[('is_same_currency', '=', True)]}">
+                                <field name="exchange_rate" class="oe_inline"/> (<field name="exchange_rate_view_label" class="oe_inline"/>)
+                            </div>
+
+                            <label for="exchange_rate_view" attrs="{'invisible':[('is_same_currency', '=', True)]}"/>
+                            <div attrs="{'invisible':[('is_same_currency', '=', True)]}">
+                                <field name="exchange_rate_view" widget="exchange_rate_changer" class="oe_inline"
+                                       options="{'currency': 'cost_sheet_currency_id'}"
+                                       attrs="{'invisible':[('is_same_currency', '=', True)]}"/> <field name="exchange_rate_label"/>
+                            </div>
+                            <separator string="Totals"/><br/>
+                            <field name="total_equipment_cost"/>
+                            <field name="total_cost_lc" invisible="1"/>
+                            <field name="total_expenses"/>
+                        </group>
+                    </group>
+                    <!--<field name="cost_lines" invisible="1"/>-->
+                    <notebook>
+                        <page string="Summary">
+                            <field name="equipment_cost_html"/>
+                        </page>
+                        <page string="Equipment Cost">
+                            <field name="cost_line_equipment_ids" domain="[('cost_type','=','equipment_cost')]"
+                                   context="{'default_cost_type': 'equipment_cost'}">
+                                <tree editable="bottom">
+                                    <field name="cost_type" invisible="1"/>
+                                    <field name="line_charge_id" domain="[('cost_type','=','equipment_cost')]"
+                                           context="{'default_cost_type': 'equipment_cost'}"/>
+                                    <field name="exchange_rate" invisible="1"/>
+                                    <field name="info"/>
+                                    <field name="account_id"/>
+                                    <field name="split_method"/>
+                                    <field name="amount_fc"/>
+                                    <field name="amount_lc"/>
+                                    <!--<field name="pay_to_supplier"/>-->
+                                </tree>
+                            </field>
+                        </page>
+
+                        <page string="Expenses">
+                            <div style="margin-bottom:10px">
+                                <!--<button name="action_bank_interest_update" type="object"-->
+                                        <!--class="oe_highlight" string="Compute Bank Interest"-->
+                                        <!--attrs="{'invisible': [('bank_interest_calculated', '=', True)]}"/>-->
+                                <!--<button name="update_customs_duty" type="object" style="margin-left:10px" class="oe_highlight" string="Compute Customs Duty"/>-->
+                            </div>
+                            <field name="cost_line_expense_ids" domain="[('cost_type','=','expense')]"
+                                   context="{'default_cost_type': 'expense'}">
+                                <tree editable="bottom">
+                                    <field name="cost_type" invisible="1"/>
+                                    <field name="line_charge_id" domain="[('cost_type','=','expense')]"
+                                           context="{'default_cost_type': 'expense'}"/>
+                                    <field name="exchange_rate" invisible="1"/>
+                                    <field name="info"/>
+                                    <field name="account_id"/>
+                                    <field name="split_method"/>
+                                    <field name="amount_fc"/>
+                                    <field name="amount_lc"/>
+                                    <!--<field name="pay_to_supplier"/>-->
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Bank Interest Line">
+                            <field name="bank_interest_computed" invisible="1"/>
+                            <field name="customs_interest_computed" invisible="1"/>
+                            <field name="bank_interest_line">
+                                <tree editable="bottom">
+                                    <field name="amount"/>
+                                    <field name="delivery_days"/>
+                                    <field name="interest_amount"/>
+                                </tree>
+                                <form>
+                                    <group>
+                                        <field name="amount"/>
+                                        <field name="delivery_days"/>
+                                        <field name="interest_amount"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                        <page string="Shipping Charges">
+                            <group>
+                                <group>
+                                    <field name="weight"/>
+                                    <field name="volume"/>
+                                </group>
+                                <group>
+                                    <field name="dimension"/>
+                                    <field name="zone"/>
+                                </group>
+                            </group>
+                            <field name="shipping_ids">
+                                <tree editable="bottom">
+                                    <field name="carrier_id"/>
+                                    <field name="cost_center_id"/>
+                                    <field name="awb_date"/>
+                                    <field name="awb"/>
+                                    <field name="invoice_number"/>
+                                    <field name="duty_invoice_number"/>
+                                    <field name="carrier_freight"/>
+                                    <field name="carrier_duty"/>
+                                    <field name="total"/>
+                                    <field name="movement_state"/>
+                                    <field name="state"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Notes">
+                            <group string="Notes">
+                                <field name="cost_sheet_notes" nolabel="1"/>
+                            </group>
+                        </page>
+                        <page string="Users">
+                            <group colspan="2">
+                                <field name="prepared_by"/>
+                                <field name="checked_by"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="cost_sheet_inherit_view_form" model="ir.ui.view">
+            <field name="name">cost.sheet.form.inherit</field>
+            <field name="model">hatta.cost.sheet</field>
+            <field name="inherit_id" ref="hatta_trading.cost_sheet_form_view"/>
+            <field name="groups_id" eval="[(6, 0, [ref('hatta_trading.group_cost_sheet_manager') ])]" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='margin']" position="attributes">
+                   <attribute name="readonly">0</attribute>
+                </xpath>
+            </field>
+    </record>
+
+    <record id="cost_sheet_tree_view" model="ir.ui.view">
+        <field name="name">hatta.cost.sheet.tree</field>
+        <field name="model">hatta.cost.sheet</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="create_date"/>
+                <field name="create_uid"/>
+                <field name="name"/>
+                <field name="purchase_order_id"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_cost_sheet" model="ir.actions.act_window">
+        <field name="name">Cost Sheet</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hatta.cost.sheet</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+            <!-- Add Text Here -->
+          </p><p>
+            <!-- More details about what a user can do with this object will be OK -->
+          </p>
+        </field>
+    </record>
+
+    <record id="charge_type_view_form" model="ir.ui.view">
+        <field name="name">costsheet.line.charge.form</field>
+        <field name="model">costsheet.line.charge</field>
+        <field name="arch" type="xml">
+            <form string="Charge Type">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="cost_type" invisible="1"/>
+                            <field name="related_certificate_id"/>
+                        </group>
+                        <group>
+                            <field name="account_id"/>
+                            <field name="charge_type"/>
+                            <field name="split_method_default" required="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="description"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="charge_type_view_tree" model="ir.ui.view">
+        <field name="name">costsheet.line.charge.tree</field>
+        <field name="model">costsheet.line.charge</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="charge_type"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="hatta_shipment_method_view_form" model="ir.ui.view">
+        <field name="name">hatta.shipment.method.form</field>
+        <field name="model">hatta.shipment.method</field>
+        <field name="arch" type="xml">
+            <form string="Shipping Method">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name">Name</label>
+                        <h1><field name="name" placeholder="Name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="bank_interest"/>
+                            <field name="minimum_bank_interest"/>
+                            <field name="bank_interest_charge"
+                                   context="{'default_cost_type': 'expense'}"/>
+                        </group>
+                        <group>
+                            <field name="customs_duty"/>
+                            <field name="minimum_customs_duty"/>
+                            <field name="customs_duty_charge" context="{'default_cost_type': 'expense'}"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Charges">
+                            <field name="shipment_method_line">
+                                <tree editable="bottom">
+                                    <field name="name" required="1" context="{'default_cost_type': 'expense'}"/>
+                                    <field name="amount"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="shipping_carrier_view_form" model="ir.ui.view">
+        <field name="name">shipping.carrier.form</field>
+        <field name="model">shipping.carrier</field>
+        <field name="arch" type="xml">
+            <form string="Carrier">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="partner_id"/>
+                        </group>
+                        <group>
+                            <field name="account_number"/>
+                            <field name="note"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="hatta_shipment_method_action" model="ir.actions.act_window">
+        <field name="name">Shipping Method</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hatta.shipment.method</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+                Click to create a Shipping Method.
+          </p><p>
+            Shipping Method can be used in Cost Sheet.
+          </p>
+        </field>
+    </record>
+
+    <record id="hatta_charge_type_action" model="ir.actions.act_window">
+        <field name="name">Charge Type</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">costsheet.line.charge</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+            Click to create a Charge Type.
+          </p><p>
+            Charge Types can be used in Cost Sheet.
+          </p>
+        </field>
+    </record>
+
+
+    <record id="wizard_cost_sheet_margin_confirm" model="ir.ui.view">
+        <field name="name">Wizard for Cost Sheet Margin Confirmation</field>
+        <field name="model">hatta.cost.sheet</field>
+        <field name="arch" type="xml">
+            <form string="Cost Sheet Margin Confirmation">
+                <b>Please Confirm the Cost Sheet Margin for Submit.</b>
+                <group><group>
+                    <field name="margin" required="1"/>
+                </group></group>
+                <footer>
+                    <button name="action_submit_" type="object" string="Confirm &amp; Submit"
+                            icon="fa-thumbs-up" class="oe_highlight" groups="hatta_trading.group_cost_sheet_manager"/>
+                    <button string="Cancel" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

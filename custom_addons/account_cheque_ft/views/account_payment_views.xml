@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <record id="view_account_payment_form_inherited" model="ir.ui.view">
+            <field name="name">account.payment.form.inherited</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_form" />
+            <field name="arch" type="xml">
+                <header position="inside">
+                    <button name="print_cheque" type="object" string="Print Cheque" class="oe_highlight"
+                            attrs="{'invisible': [('payment_method_code','not in',['cheque_payment','cheque_pdc_payment'])]}"/>
+                </header>
+                <field name="payment_type" position="attributes">
+                    <attribute name="widget"/>
+                </field>
+                <xpath expr="//field[@name='payment_method_id']" position="after">
+                    <field name="bank_id" invisible="1"/>
+                    <field name="cheque_id" options="{'no_create': True}" class="oe_inline"
+                           domain="[('state','=','blank'), ('bank_name','=',bank_id)]"
+                    attrs="{'invisible':[('payment_method_code','not in',['cheque_payment','cheque_pdc_payment'])
+                    ],
+                    'required': [('state', '!=', 'draft'),('payment_method_code','in',['cheque_payment','cheque_pdc_payment'])]}"/>
+                    <field name="cheque_out_id" options="{'no_create': True}" class="oe_inline"
+                    attrs="{'invisible':['|',
+                    ('payment_method_code','not in',['cheque_receipt','cheque_pdc_receipt']),
+                    ('cheque_out_id','=',False)
+                    ]}" readonly="1"/>
+
+                    <button name="cancel_cheque" type="object" string="Cancel Cheque" class="oe_edit_only oe_inline"
+                            attrs="{'invisible': ['!',
+                            '&amp;',
+                                ('cheque_id','!=',False),
+                                ('payment_method_code','in',['cheque_receipt','cheque_pdc_receipt']),
+                            ]}"/>
+
+                    <button name="%(action_create_cheque_out_wizard)d" type="action"
+                            string="Create Cheque" class="oe_highlight oe_right"
+                            context="{'default_payment_id': active_id,
+                                'default_partner_id': partner_id,
+                                'default_issue_date': payment_date,
+                                'default_cheque_date': (mature_date!=False and mature_date) or payment_date,
+                                'default_amount': amount}"
+                            attrs="{'invisible': ['!',
+                            '&amp;',
+                                ('cheque_out_id','=',False),
+                                ('payment_method_code','in',['cheque_receipt','cheque_pdc_receipt'])]}"/>
+
+                </xpath>
+                <xpath expr="//div[@name='amount_div']" position="after">
+                    <field name="payee_name" attrs="{'invisible':['|', ('cheque_id','=',False)],
+                    'required': [('cheque_id', '!=', False)]}"/>
+                    <field name="amount_in_words"
+                    attrs="{'invisible':[('cheque_id','=',False)]}"/>
+                </xpath>
+                <field name="payment_date" position="after">
+                    <field name="mature_date"
+                           attrs="{'invisible': ['!',
+                                ('payment_method_code','in',['cheque_pdc_receipt','cheque_pdc_payment'])],
+                                'required': [('payment_method_code','in',['cheque_pdc_receipt','cheque_pdc_payment'])],
+                                'readonly':[('state','!=','draft')]}"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="view_account_payment_form_inherit_payment" model="ir.ui.view">
+                <field name="name">view.account.payment.form.inherit.payment</field>
+                <field name="model">account.payment</field>
+                <field name="inherit_id" ref="payment.view_account_payment_form_inherit_payment"/>
+                <field name="arch" type="xml">
+                    <field name="payment_transaction_id" position="after">
+                        <field name="category_cheque_pdc_id"
+                               attrs="{'invisible':[('category_cheque_pdc_id','=',False)]}"/>
+                    </field>
+                    <xpath expr="//field[@name='payment_transaction_id']" position="attributes">
+                        <attribute name="invisible">1</attribute>
+                    </xpath>
+                </field>
+        </record>
+
+
+        <record id="view_account_payment_invoice_form_inherited" model="ir.ui.view">
+            <field name="name">account.payment.invoice.form.inherited</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_invoice_form" />
+            <field name="arch" type="xml">
+                <!--<xpath expr="//div[@name='amount_div']" position="after">-->
+                    <!--<field name="check_amount_in_words" attrs="{'invisible': [('payment_method_code', '!=', 'check_printing')]}" groups="base.group_no_one"/>-->
+                <!--</xpath>-->
+                <xpath expr="//field[@name='payment_method_id']" position="after">
+                    <field name="bank_id" invisible="1"/>
+                    <field name="cheque_id" options="{'no_create': True}" class="oe_inline"
+                           domain="[('state','=','blank'), ('bank_name','=',bank_id)]"
+                    attrs="{'invisible':[('payment_method_code','not in',['cheque_payment','cheque_pdc_payment'])
+                    ],
+                    'required': [('payment_method_code','in',['cheque_payment','cheque_pdc_payment'])]}"/>
+                    <field name="cheque_out_id" options="{'no_create': True}" class="oe_inline"
+                    attrs="{'invisible':['|',
+                    ('payment_method_code','not in',['cheque_receipt','cheque_pdc_receipt']),
+                    ('cheque_out_id','=',False)
+                    ]}" readonly="1"/>
+
+                    <button name="cancel_cheque" type="object" string="Cancel Cheque" class="oe_edit_only oe_inline"
+                            attrs="{'invisible': ['!',
+                            '&amp;',
+                                ('cheque_id','!=',False),
+                                ('payment_method_code','in',['cheque_receipt','cheque_pdc_receipt']),
+                            ]}"/>
+
+                    <button name="%(action_create_cheque_out_wizard)d" type="action"
+                            string="Create Cheque" class="oe_highlight oe_right"
+                            context="{'default_payment_id': active_id,
+                                'default_partner_id': partner_id,
+                                'default_issue_date': payment_date,
+                                'default_cheque_date': (mature_date!=False and mature_date) or payment_date,
+                                'default_amount': amount}"
+                            attrs="{'invisible': ['!',
+                            '&amp;',
+                                ('cheque_out_id','=',False),
+                                ('payment_method_code','in',['cheque_receipt','cheque_pdc_receipt'])]}"/>
+
+                </xpath>
+                <field name="payment_date" position="after">
+                    <field name="mature_date"
+                           attrs="{'invisible': ['!',
+                                ('payment_method_code','in',['cheque_pdc_receipt','cheque_pdc_payment'])],
+                                'required': [('payment_method_code','in',['cheque_pdc_receipt','cheque_pdc_payment'])],
+                                'readonly':[('state','!=','draft')]}"/>
+                </field>
+            </field>
+        </record>
+</odoo>

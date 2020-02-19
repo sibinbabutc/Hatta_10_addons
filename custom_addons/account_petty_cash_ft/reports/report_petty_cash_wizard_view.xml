@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+        <record model="ir.ui.view" id="petty_cash_report_wizard_form">
+        <field name="name">Petty Cash Statement Report</field>
+        <field name="model">petty_cash.report.wizard</field>
+        <field name="arch" type="xml">
+            <form create="false">
+                <group>
+                    <group>
+                        <field name="pettycash_user" options="{'no_create': True, 'no_open': True}"/>
+                        <field name="view_type" widget="radio"/>
+                    </group>
+                    <group>
+                        <label for="months" string="Select Period" attrs="{'invisible':[('view_type','not in',['month','year'])]}"/>/>
+                            <div>
+                                <field name="months" class="oe_inline" attrs="{'invisible':[('view_type','not in',['month'])],
+                                                                                'required':[('view_type','in',['month'])]}"/>
+                                <field name="year" class="oe_inline" attrs="{'invisible':[('view_type','not in',['month','year'])],
+                                                                             'required':[('view_type','in',['month','year'])]}"/>
+                            </div>
+                        <field name="from_date" attrs="{'invisible':[('view_type','not in',['day'])]}"/>
+                        <field name="to_date" attrs="{'invisible':[('view_type','not in',['day'])]}"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="print_report" type="object"
+                            string="Print Report" class="oe_highlight" style="margin-left: 5px;"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_petty_cash_report_wizard">
+        <field name="name">Petty Cash Statement</field>
+        <field name="res_model">petty_cash.report.wizard</field>
+        <field name="target">new</field>
+        <field name="view_mode">form</field>
+    </record>
+
+    <!--<menuitem name="Petty Cash Statement"-->
+              <!--id="report_wizard_menu_petty_statement"-->
+              <!--sequence="10"-->
+              <!--parent="menu_pettycash_root"-->
+              <!--action="action_petty_cash_report_wizard"/>-->
+
+
+</odoo>

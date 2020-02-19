@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates>
+
+    <t t-name="FieldMany2ManyMultiLine">
+        <t t-foreach="elements" t-as="el">
+            <span t-attf-class="badge dropdown o_tag_color_#{el.color || 10}" t-att-data-color="el.color || 10" t-att-data-index="el_index" t-att-data-id="el.id">
+                <span class="o_badge_text" t-attf-title="#{el['display_name']}"><t t-raw="el['display_name']"/></span>
+                <span t-if="!readonly" class="fa fa-times o_delete"/>Test
+            </span>
+        </t>
+    </t>
+
+
+    <t t-name="ExchangeRateDialog">
+        <div class="o_form_sheet_bg">
+            <div class="o_form_sheet">
+                <div class="row mt32 mb16">
+                    <div class="col-xs-2">
+                        <label class="o_form_label o_form_label_help" data-original-title="" title="">
+                                    Currency
+                                </label>
+                    </div>
+                    <div class="col-xs-2">
+                        <span class="o_form_field o_form_field_number"><t t-esc="widget.currency.current_display"/></span>
+                    </div>
+                    <div class="col-xs-3">
+                        <label class="o_form_label o_form_label_help" data-original-title="" title="">
+                                    Current Rate
+                                </label>
+                    </div>
+                    <div class="col-xs-5">
+                        <input class="o_form_input o_form_field o_exchange_rate" style="background: #c9fffa;"
+                               t-att-value="widget.exchange_rate"
+                                       maxlength="12" type="text" required="required"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="FieldExchangeRate">
+        <span t-if="widget.get('effective_readonly')"/>
+        <button class="oe_link oe_edit_only oe_inline oe_exchange_rate on_read save">Update Rate</button>
+    </t>
+
+    <t t-extend="HiddenInputFile">
+        <t t-jquery="form.o_form_binary_form" t-operation="replace">
+            <form class="o_form_binary_form" t-att-target="fileupload_id"
+                  method="post" enctype="multipart/form-data" t-att-action="fileupload_action || '/web/binary/upload'">
+                <input type="hidden" name="csrf_token" t-att-value="csrf_token"/>
+                <input type="hidden" name="session_id" value="" t-if="widget.session.override_session"/>
+                <input type="hidden" name="callback" t-att-value="fileupload_id"/>
+                <input t-if="widget.widget!='image'" type="file"  multiple="" class="o_form_input_file" name="ufile"/>
+                <input t-if="widget.widget=='image'" type="file"  multiple="" class="o_form_input_file" name="ufile" accept="image/*"/>
+                <t t-raw="0"/>
+            </form>
+        </t>
+    </t>
+
+</templates>

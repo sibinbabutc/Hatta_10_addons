@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Inherit Form View to Modify it -->
+    <record id="account_tax_form_view_inherit" model="ir.ui.view">
+        <field name="name">account.tax.form.view</field>
+        <field name="model">account.tax</field>
+        <field name="inherit_id" ref="account.view_tax_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='children_tax_ids']" position="before">
+                <group>
+                    <field name="is_standard_rated"/>
+                    <field name="is_reverse_charge"/>
+                </group>
+            </xpath>
+
+        </field>
+    </record>
+
+
+    <record id="account_invoice_wizard_form_view" model="ir.ui.view">
+        <field name="name">VAT In Out Report Wizard Form</field>
+        <field name="model">taxinout.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Tax In Out Report">
+                <sheet>
+                    <group>
+                        <group>
+                            <!--<field name="target_move"/>-->
+                            <field name="start_date"/>
+                            <field name="tax_filter" />
+                            <field name="taxes" options="{'no_open': True, 'no_create': True}"
+                                   widget="many2many_tags"
+                                   attrs="{'invisible':[('tax_filter', '=', False)]}"/>
+                        </group>
+                        <group>
+                            <field name="report_type"/>
+                            <field name="end_date"/>
+                            <field name="suppliers" options="{'no_open': True, 'no_create': True}"
+                                   widget="many2many_tags"
+                                   attrs="{'invisible': [('report_type', '=', 'sale')]}"/>
+                            <field name="customers" options="{'no_open': True, 'no_create': True}"
+                                   widget="many2many_tags"
+                                   attrs="{'invisible': [('report_type', '=', 'purchase')]}"/>
+                        </group>
+                    </group>
+                </sheet>
+                <footer>
+                    <!--<button name="print_report" type="object"-->
+                            <!--string="Print Report" class="oe_highlight" style="margin-left: 5px;"/>-->
+                     <button name="print_report_xls" type="object"
+                            string="Print Report Xls" class="oe_highlight" style="margin-left: 5px;"/>
+               </footer>
+            </form>
+        </field>
+    </record>
+
+     <record model="ir.actions.act_window" id="action_tax_report_wizard">
+        <field name="name">VAT Reports</field>
+        <field name="res_model">taxinout.report.wizard</field>
+        <field name="target">new</field>
+        <field name="view_mode">form</field>
+    </record>
+
+    <menuitem name="VAT Report"
+              id="report_wizard_menu_tax_report"
+              sequence="10"
+              parent="account.menu_finance_reports"
+              action="action_tax_report_wizard"/>
+
+            <record id="wizard_vat_report_info_excel_report_form_view" model="ir.ui.view">
+        <field name="name">wizard.employee.info.excel.report.form.view</field>
+        <field name="model">wizard.vat_report.info.excel.report</field>
+        <field name="arch" type="xml">
+            <form>
+                        <field name="name" invisible="1"/>
+                        <h1>
+                            <field name="report" filename="name" readonly="1"/>
+                        </h1>
+                    <footer>
+                        <button special="cancel" string="Cancel" class="oe_link"/>
+                    </footer>
+            </form>
+        </field>
+    </record>
+
+
+</odoo>

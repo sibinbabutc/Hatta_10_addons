@@ -1,0 +1,97 @@
+#blc
+{
+
+border: 1px solid #000266;
+}
+#received
+{
+margin-top:10px;
+}
+.rigt
+{
+text-align:right;
+}
+.row_top
+{
+background-color:#011578;
+text-align:center;
+color:white;
+}
+.col_num
+{
+border-bottom:1px solid black;
+padding-left: 0px;
+}
+.col_numv
+{
+border-bottom:1px solid black;
+padding-left: 0px;
+    margin-left: -50px;
+}
+.col_numv p
+{
+    margin: 0px 0px 0px;
+}
+.col_date
+{
+border-bottom: 1px solid black;
+margin-left:30%;
+padding-left: 0px;
+}
+.col_datev
+{
+border-bottom:1px solid black;
+padding-left: 0px;
+    margin-left: -90px;
+}
+.col_datev p
+{
+    margin: 0px 0px 0px;
+}
+.row_top_space
+{
+margin-top:20px;
+padding-left: 0px;
+}
+.col_name
+{
+border-bottom: 1px solid black;
+margin-top:15px;
+padding-left: 0px;
+}
+.col_namev
+{
+border-bottom:1px solid black;
+padding-left: 0px;
+    margin-left: -120px;
+}
+.col_namev p
+{
+    margin: 0px 0px 0px;
+}
+.col_amt
+{
+background-color:#90B1E6;
+    height: 35px;
+    line-height: 35px;
+    padding-left: 0px;
+    text-align:center;
+}
+.col_sign
+{
+margin-left:5%;
+border-bottom: 1px solid black;
+margin-top:15px;
+padding-left: 0px;
+}
+
+span.indent{
+padding-left: 1.8em
+}
+.line_indent{
+border-bottom:1px solid black;
+}
+.pay_for{
+margin-top:15px;
+
+}

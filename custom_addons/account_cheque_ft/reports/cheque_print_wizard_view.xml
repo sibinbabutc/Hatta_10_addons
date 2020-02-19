@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <record model="ir.ui.view" id="cheque_report_wizard_report_wizard">
+        <field name="name">Report</field>
+        <field name="model">cheque.report.wizard</field>
+        <field name="arch" type="xml">
+            <form create="false">
+                <group>
+                    <group>
+                        <field name="report_type" options="{'no_create': True,'no_create_edit':True,'no_open':True}"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="print_report" type="object"
+                            string="Print Report" class="oe_highlight" style="margin-left: 5px;"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_cheque_printing_wizard">
+        <field name="name">Report Wizard</field>
+        <field name="res_model">cheque.report.wizard</field>
+        <field name="target">new</field>
+        <field name="view_mode">form</field>
+    </record>
+    <template id="cheque_format_ib_and_eib_check">
+        <t t-call="report.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-foreach="cheque_format" t-as="format">
+                    <div class="page" t-attf-style="height:#{format.page_height}%;width:#{format.page_width}%;">
+                        <div class="row">
+                            <div t-attf-style="padding-top:#{format.date_tm}%;margin-top:#{format.date_tm}%;
+                            margin-left:#{format.date_lm}%;font-size:#{format.date_fs}px">
+                                <span t-field="o.payment_date" t-options ='{"format": "dd/MM/YYYY"}'/>
+                            </div>
+                            <div t-attf-style="margin-top:#{format.payee_tm}%;
+                            margin-left:#{format.payee_lm}%;font-size:#{format.payee_fs}px">
+                                <span t-esc="o.payee_name.upper()"/>
+                            </div>
+                            <div class="col-xs-8">
+                                <div t-attf-style="margin-top:#{format.amt_word_tm}%;
+                            margin-left:#{format.amt_word_lm}%;font-size:#{format.amt_word_fs}px">
+                            <t t-set="amount_in_word_cheque" t-value="(o.amount_in_words_cheque).replace('and Fils Zero',' ')"/>
+                                    <span style="line-height:45px;" t-esc="(amount_in_word_cheque).replace(',',' ')"/>
+                                    <span>Only</span>
+                                </div>
+                            </div>
+                            <div class="col-xs-4">
+                                <div t-attf-style="margin-top:#{format.amt_tm}%;
+                            margin-left:#{format.amt_lm}%;font-size:#{format.amt_fs}px">
+                                    <!-- <h4><span t-field="o.amount" t-field-options="{'display_currency': false}"/></h4> -->
+                                    <b>
+                                        <span t-esc="'{0:,.2f}'.format(float(o.amount))"/>
+                                    </b>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+        <record id="paperformat_cheque_format_all" model="report.paperformat">
+        <field name="name">Cheque Paper - ALL</field>
+        <field name="default" eval="True" />
+        <field name="format">custom</field>
+        <field name="page_height">206</field>
+        <field name="page_width">99</field>
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">0</field>
+        <field name="margin_bottom">0</field>
+        <field name="margin_left">0</field>
+        <field name="margin_right">0</field>
+        <field name="header_line" eval="False" />
+        <field name="header_spacing">0</field>
+        <field name="dpi">90</field>
+    </record>
+
+
+    <report
+            id="report_cheque_print_for_all_one"
+            model="account.payment"
+            string="Cheque Printing"
+            report_type="qweb-pdf"
+            name="account_cheque_ft.report_cheque_print_for_all_one"
+            file="account_cheque_ft.report_cheque_print_for_all_one"
+            menu="False"
+            paperformat="paperformat_cheque_format_all"
+    />
+
+
+</odoo>
+

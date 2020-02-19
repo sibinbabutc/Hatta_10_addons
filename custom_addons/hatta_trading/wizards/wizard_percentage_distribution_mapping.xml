@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="wizard_percentage_distribution_mapping" model="ir.ui.view">
+        <field name="name">Percentage Mapping for Cost Distribution</field>
+        <field name="model">wizard.purchase.landed.cost</field>
+        <field name="arch" type="xml">
+            <form string="Choose Percentages">
+                <sheet>
+                    <separator string="Margin Percentage Allocation"
+                               attrs="{'invisible': [('margin_split_method', '!=', 'percentage')]}"/>
+                    <field name="margin_percentage_mapping_html" readonly="1"
+                           attrs="{'invisible': [('margin_split_method', '!=', 'percentage')]}"/>
+                    <field name="order_line" attrs="{'invisible': [('margin_split_method', '!=', 'percentage')]}">
+                        <tree editable="bottom" create="false" delete="false">
+                            <field name="serial_no" readonly="1"/>
+                            <field name="product_id" readonly="1"/>
+                            <field name="product_qty" readonly="1"/>
+                            <field name="price_unit" string="Former Unit Price" readonly="1"/>
+                            <field name="price_total" string="Former Price" readonly="1"/>
+                            <field name="margin_percentage" sum="Percentage" required="1"/>
+                        </tree>
+                    </field>
+                    <separator string="Cost Percentage Allocation"
+                               attrs="{'invisible': [('landed_cost_lines_with_percentage', '=', [])]}"/>
+                    <field name="percentage_mapping_html" readonly="1"
+                           attrs="{'invisible': [('landed_cost_lines_with_percentage', '=', [])]}"/>
+                    <field name="landed_cost_lines_with_percentage"
+                           attrs="{'invisible': [('landed_cost_lines_with_percentage', '=', [])]}">
+                        <tree editable="bottom" create="false" delete="false">
+                            <field name="cost_sheet_line_id" readonly="1"/>
+                            <field name="serial_no" readonly="1"/>
+                            <field name="product_id" readonly="1"/>
+                            <field name="product_qty" readonly="1"/>
+                            <field name="price_unit" string="Former Unit Price" readonly="1"/>
+                            <field name="price_total" string="Former Price" readonly="1"/>
+                            <field name="applied_percentage" sum="Percentage" required="1"/>
+                        </tree>
+                    </field>
+                    <field name="landed_cost_id" invisible="1"/>
+                    <field name="margin_split_method" invisible="1"/>
+                </sheet>
+                <footer>
+                    <button name="complete" string="Complete &amp; Compute" type="object" class="oe_highlight"/>
+                    <button string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

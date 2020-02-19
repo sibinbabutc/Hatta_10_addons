@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<record id="account_invoice_inherit" model="ir.ui.view">
+		<field name="name">account.invoice.custom.view</field>
+		<field name="model">account.invoice</field>
+		<field name="inherit_id" ref="account.invoice_form"/>
+		<field name="arch" type="xml">
+			<xpath expr="//field[@name='team_id']" position="after">
+				<field name="job_code"/>
+			</xpath>
+			<xpath expr="//field[@name='job_code']" position="after">
+				<field name="cust_po_ref"/>
+			</xpath>
+			<xpath expr="//field[@name='payment_term_id']" position="after">
+				<field name="delivery_status"/>
+			</xpath>
+		</field>
+	</record>
+
+	<record id="res_partner_inherit" model="ir.ui.view">
+		<field name="name">res.partner.custom.view</field>
+		<field name="model">res.partner</field>
+		<field name="inherit_id" ref="base.view_partner_form"/>
+		<field name="arch" type="xml">
+			<xpath expr="//field[@name='category_id']" position="after">
+				<field name="customer_id"/>
+			</xpath>
+			<xpath expr="//field[@name='customer_id']" position="after">
+				<field name="c_r"/>
+			</xpath>
+			<xpath expr="//field[@name='lang']" position="after">
+				<field name="vat_no"/>
+			</xpath>
+			<xpath expr="//field[@name='name']" position="after">
+				<field name="name_in_arabic" placeholder="الاسم باللغة العربية"/>
+			</xpath>
+		</field>
+	</record>
+</odoo>

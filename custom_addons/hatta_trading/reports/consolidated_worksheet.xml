@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="assets_common" name="hatta_pdf_reports" inherit_id="report.assets_common">
+        <xpath expr="." position="inside">
+            <link href="/hatta_trading/static/src/css/hatta.css" rel="stylesheet" type="text/css"/>
+        </xpath>
+    </template>
+
+    <template id="hatta_consolidated_worksheet_report_document">
+        <t t-call="report.external_layout">
+            <div class="page ft_font">
+                <!--<div class="col-xs-12" style="text-align:center;font-size:12px;margin-bottom:25px;"><b>CONSOLIDATED WORK SHEET</b></div>-->
+                <div class="col-xs-12" style="text-align:right"><span t-field="docs.date_deadline"/></div>
+                <div class="col-xs-12" style="padding-left:0px;"><b>Your RFQ Number:</b><span>&#160;</span><span t-field="docs.customer_rfq"/></div>
+                <div class="col-xs-12" style="padding-left:0px;"><b>Our Reference:</b><span>&#160;</span><span t-field="docs.reference"/></div>
+                <table class="hatta_ws_table" style="border:0px !important;" width="100%">
+                    <thead>
+                        <td style="text-align:left;">SI.No</td>
+                        <td style="text-align:left;">Product</td>
+                        <td>Quantity</td>
+                        <td>UOM</td>
+                        <td>Cost Price FC</td>
+                        <td>Total Cost FC</td>
+                        <td>Cost Price LC</td>
+                        <td>Total Cost LC</td>
+                        <td>Factor/Margin</td>
+                        <td>Selling Price LC</td>
+                        <td>Total Selling Price LC</td>
+                    </thead>
+                    <t t-set="sum_total_cost_lc" t-value="0.00"/>
+                    <t t-set="sum_total_sp_lc" t-value="0.00"/>
+                    <t t-foreach="o.selected_purchase_order_lines" t-as="item">
+                        <t t-set="sum_total_cost_lc" t-value="sum_total_cost_lc+item.price_total_lc"/>
+                        <t t-set="sum_total_sp_lc" t-value="sum_total_sp_lc+item.sale_price_lc"/>
+                    </t>
+                    <t t-if="sum_total_cost_lc != 0.00">
+                        <t t-set="factor_margin" t-value="float(sum_total_sp_lc/sum_total_cost_lc)"/>
+                    </t>
+
+                    <tr t-foreach="o.selected_purchase_order_lines" t-as="item">
+                        <td style="text-align:left;"><t t-esc="item.serial_no"/></td>
+                        <td style="text-align:left;"><t t-esc="item.product_id.name"/></td>
+                        <td><t t-esc="item.product_qty"/></td>
+                        <td><t t-esc="item.product_uom.name"/></td>
+                        <td style="text-align:right;"><t t-esc="'{0:,.2f}'.format(float(item.price_unit))"/></td>
+                        <!--<td><t t-if="item.order_id.cost_sheet_id" t-esc="'%.2f'%(item.net_cost_lc * item.order_id.cost_sheet_id.exchange_rate)"/></td>-->
+                        <td style="text-align:right;"><t t-esc="'{0:,.2f}'.format(float(item.price_total))"/></td>
+                        <td style="text-align:right;"><t t-esc="'{0:,.2f}'.format(float(item.price_unit_lc))"/></td>
+                        <!--<td><t t-esc="item.net_cost_lc"/></td>-->
+                        <!--<td><t t-esc="(item.sale_price_unit)/(item.net_cost_lc)"/></td>-->
+                        <!--<td style="text-align:right;"><t t-esc="item.price_total_lc"/></td>-->
+                        <td style="text-align:right;"><t t-esc="'{0:,.2f}'.format(float(item.price_total_lc))"/></td>
+<!--                        <t t-set="sum_total_cost_lc" t-value="sum_total_cost_lc+item.price_total_lc"/>-->
+<!--                        <td style="text-align:right;"><t t-esc="'{0:,.2f}'.format(float(item.dist_margin))"/> </td>-->
+                        <td style="text-align:right;"><t t-esc="factor_margin"/> </td>
+                        <td style="text-align:right;"><t t-esc="'{0:,.2f}'.format(float(item.sale_price_unit))"/></td>
+                        <td style="text-align:right;"><t t-esc="'{0:,.2f}'.format(float(item.sale_price_lc))"/></td>
+<!--                        <t t-set="sum_total_sp_lc" t-value="sum_total_sp_lc+item.sale_price_lc"/>-->
+                    </tr>
+
+                    <tr>
+                        <td style="border:0px !important;"></td>
+                        <td style="border:0px !important;"></td>
+                        <td style="border:0px !important;"></td>
+                        <td style="border:0px !important;"></td>
+                        <td style="border:0px !important;"></td>
+                        <td style="border:0px !important;"></td>
+                        <td style="border:0px !important;"></td>
+                        <td style="border:0px !important;text-align:right;">
+                            <t t-esc="'{0:,.2f}'.format(float(sum_total_cost_lc))"/>
+                        </td>
+                        <td style="border:0px !important;"></td>
+                        <td style="border:0px !important;text-align:right;">Total:</td>
+                        <td style="border:0px !important;text-align:right;">
+                            <t t-esc="'{0:,.2f}'.format(float(sum_total_sp_lc))"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </t>
+    </template>
+
+    <template id="hatta_consolidated_worksheet_report_title" inherit_id="report.external_layout_header">
+        <div class="report-title" position="inside">
+            <t t-if="xmlid == 'hatta_trading.hatta_consolidated_worksheet_report'">
+                CONSOLIDATED WORK SHEET
+            </t>
+        </div>
+    </template>
+
+    <template id="hatta_consolidated_worksheet_report">
+        <t t-call="report.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="hatta_trading.hatta_consolidated_worksheet_report_document" t-lang="o.partner_id.lang"/>
+            </t>
+        </t>
+    </template>
+
+    <record id="paperformat_hatta_consolidated" model="report.paperformat">
+        <field name="name">Hatta Consolidated</field>
+        <field name="default" eval="True"/>
+        <field name="format">custom</field>
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">40</field>
+        <field name="header_spacing">35</field>
+        <field name="margin_bottom">10</field>
+        <field name="margin_left">5</field>
+        <field name="margin_right">5</field>
+    </record>
+
+    <report
+            string="Consolidated WorkSheet"
+            id="consolidated_worksheet_report"
+            model="enquiry.details"
+            report_type="qweb-pdf"
+            name="hatta_trading.hatta_consolidated_worksheet_report"
+            file="hatta_trading.hatta_consolidated_worksheet_report"
+            paperformat="paperformat_hatta_consolidated"
+    />
+
+</odoo>

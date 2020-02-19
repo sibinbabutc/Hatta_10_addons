@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <template id="purchase_order_status_report_documents">
+        <div class="page ft_font">
+
+
+
+            <table class="table">
+                <tr>
+                    <th width="70%" style="padding-bottom:10 px;border:0px;"><b>From:</b><t t-esc="from_date"/></th>
+                    <th width="30%" style="padding-bottom:10 px;border:0px;text-align:center;"><b>To:</b><t t-esc="date_to"/></th>
+                </tr>
+            </table>
+            <table class="table">
+                <thead>
+                    <th style="text-align:center;border-top:;border-bottom:.05em solid grey;background:#c9c9c9;">SL No</th>
+                    <th style="text-align:center;border-top:;border-bottom:.05em solid grey;background:#c9c9c9;">PRODUCT</th>
+                    <th style="text-align:center;border-top:;border-bottom:.05em solid grey;background:#c9c9c9;">UNIT</th>
+                    <th style="text-align:center;border-top:;border-bottom:.05em solid grey;background:#c9c9c9;">QTY</th>
+                    <th style="text-align:center;border-top:;border-bottom:.05em solid grey;background:#c9c9c9;">RATE</th>
+                    <th style="text-align:center;border-top:;border-bottom:.05em solid grey;background:#c9c9c9;">PO AMOUNT</th>
+                    <th style="text-align:center;border-top:;border-bottom:.05em solid grey;background:#c9c9c9;">GRN QTY</th>
+                    <th style="text-align:center;border-top:;border-bottom:.05em solid grey;background:#c9c9c9;">CANC.QTY</th>
+                    <th style="text-align:center;border-top:;border-bottom:.05em solid grey;background:#c9c9c9;">PEND QTY</th>
+                    <th style="text-align:center;border-top:;border-bottom:.05em solid grey;background:#c9c9c9;">PEND AMOUNT</th>
+                </thead>
+
+                    <t t-foreach="docs" t-as="d">
+                        <tr>
+                            <td colspan="10"><span t-field="d.partner_id.name"/></td>
+                        </tr>
+
+                        <t t-foreach="lines" t-as="o">
+                            <tr>
+                                <td style="border-top:.05em solid grey;text-align:center;"><t t-esc="o_index+1"/></td>
+                                <td style="border-top:.05em solid grey;text-align:center;"><t t-esc="o.product_id.name"/></td>
+                                <td style="border-top:.05em solid grey;text-align:center;"><t t-esc="o.price_unit"/></td>
+                                <td style="border-top:.05em solid grey;text-align:center;"><t t-esc="o.product_qty"/></td>
+                                <td style="border-top:.05em solid grey;text-align:center;"></td>
+                                <td style="border-top:.05em solid grey;text-align:center;"></td>
+                                <td style="border-top:.05em solid grey;text-align:center;"></td>
+                                <td style="border-top:.05em solid grey;text-align:center;"></td>
+                                <td style="border-top:.05em solid grey;text-align:center;"></td>
+                                <td style="border-top:.05em solid grey;text-align:center;"></td>
+                            </tr>
+                        </t>
+                </t>
+
+            </table>
+        </div>
+    </template>
+    <template id="purchase_order_status_header" inherit_id="hatta_reports.simple_external_layout_header">
+        <div class="report-title" position="inside">
+            <t t-if="xmlid == 'hatta_reports.purchase_order_status_report'">
+                PURCHASE ORDER STATUS REPORT
+            </t>
+        </div>
+    </template>
+
+    <template id="purchase_order_status_report">
+        <t t-call="report.html_container">
+            <t t-call="hatta_reports.purchase_order_status_report_documents"/>
+        </t>
+    </template>
+
+
+    <record id="paperformat_inventory_report" model="report.paperformat">
+        <field name="name">Hatta Costsheet</field>
+        <field name="default" eval="True"/>
+        <field name="format">custom</field>
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">0</field>
+        <field name="margin_bottom">10</field>
+        <field name="margin_left">5</field>
+        <field name="margin_right">5</field>
+    </record>
+
+    <report
+        string="PO Status"
+        id="hatta_purchase_order_status_report"
+        model="report.hatta_reports.purchase_order_status_report"
+        report_type="qweb-pdf"
+        name="hatta_reports.purchase_order_status_report"
+        file="hatta_reports.purchase_order_status_report"
+        paperformat="paperformat_inventory_report"
+    />
+
+</odoo>

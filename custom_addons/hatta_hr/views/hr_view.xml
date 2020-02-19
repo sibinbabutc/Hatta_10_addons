@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Inherit Form View to Modify it -->
+    <record id="hr_salary_rule_form_inherit" model="ir.ui.view">
+        <field name="name">hr.salary.rule.form_inherit</field>
+        <field name="model">hr.salary.rule</field>
+        <field name="inherit_id" ref="hr_payroll.hr_salary_rule_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='active']" position="after">
+                <field name="display_bold"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Inherit Form View to Modify it -->
+    <record id="hr_contract_view_form_inherit" model="ir.ui.view">
+        <field name="name">hr.contract.view.form.inherit</field>
+        <field name="model">hr.contract</field>
+        <field name="inherit_id" ref="hr_contract.hr_contract_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[2]" position="after">
+                <page string="Salary Details">
+                    <field name="sal_ids">
+                        <tree editable="bottom">
+                            <field name="categ_id" required="True" domain="[('alw_deduction', '=', True)]"/>
+                            <field name="amount" required="True"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+            <xpath expr="//field[@name='type_id']" position="attributes">
+                <attribute name="string">Contract For</attribute>
+            </xpath>
+            <xpath expr="//field[@name='type_id']" position="after">
+                <field name="contract_type"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Inherit Form View to Modify it -->
+    <record id="hr_payslip_run_form_inherit_hatta" model="ir.ui.view">
+        <field name="name">hr.payslip.run.form.inherit.hatta</field>
+        <field name="model">hr.payslip.run</field>
+        <field name="inherit_id" ref="hr_payroll.hr_payslip_run_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='draft_payslip_run']" position="before">
+                <button name="compute_all_payslip" type="object" string="Compute All"
+                        class="oe_highlight" attrs="{'invisible': [('is_confirmed','=',True)]}"/>
+                <button name="confirm_all_payslip" type="object" string="Confirm All"
+                        class="oe_highlight"  attrs="{'invisible': [('is_confirmed','=',True)]}"/>
+                <button name="Export as SIF" string="Export as SIF" class="oe_highlight" button_sif="true" />
+            </xpath>
+            <xpath expr="//field[@name='name']" position="after">
+                <label for="company_id" string="Company"/>
+                <field name="company_id" options="{'no_create': True, 'no_edit':True, 'no_open': True}"/>
+                <field name="is_confirmed" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='slip_ids']" position="after">
+                <notebook>
+                    <page string="Employee Salary Details">
+                        <field name="sal_detail_ids">
+                            <tree editable="bottom">
+                                <field name="employee_id"/>
+                                <field name="total_days"/>
+                                <field name="days_payable"/>
+                                <field name="leave_days"/>
+                                <field name="sick_leave"/>
+                                <field name="sal_advance"/>
+                                <field name="overtime_normal"/>
+                                <field name="holiday_overtime"/>
+                                <field name="holiday_worked"/>
+                                <field name="advance_balance"/>
+                                <field name="advance_ded"/>
+                                <field name="tel_deduction"/>
+                            </tree>
+                        </field>
+
+                    </page>
+                    <page string="General Allowances">
+                        <field name="gen_allowance_ids" attrs="{'readonly': [('state', '!=', 'draft')]}">
+                            <tree editable="bottom">
+                                <field name="amount" required="True"/>
+                                <field name="name" required="True"/>
+                            </tree>
+                        </field>
+                    </page>
+                </notebook>
+            </xpath>
+
+        </field>
+    </record>
+
+    <!-- Inherit Form View to Modify it -->
+    <record id="view_hr_payslip_form_inherit" model="ir.ui.view">
+        <field name="name">view.hr.payslip.form.inherit</field>
+        <field name="model">hr.payslip</field>
+        <field name="inherit_id" ref="hr_payroll.view_hr_payslip_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='credit_note']" position="after">
+                <field name="total_days"/>
+                <field name="days_payable" required="True" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                <field name="leave_days" required="False"/>
+                <field name="sick_leave" required="False" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                <field name="paid_leaves"/>
+                <field name="unpaid_leaves"/>
+            </xpath>
+            <xpath expr="//page[1]" position="after">
+                <page string="Others">
+                    <group>
+                        <group string="Overtime">
+                            <field name="overtime_normal"/>
+                            <field name="holiday_overtime"/>
+                            <field name="holiday_worked"/>
+                        </group>
+                        <group string="Deductions">
+                            <field name="advance_balance"/>
+                            <field name="advance_ded"/>
+                            <field name="tel_deduction"/>
+                        </group>
+                    </group>
+                    <group string="Leave Salary">
+                        <group>
+                            <field name="leave_sal_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                        </group>
+                        <group>
+                            <field name="leave_base_amount"/>
+                        </group>
+                    </group>
+                    <separator string="Other Deductions" colspan="4"/>
+                    <field name="other_deductions">
+                        <tree editable="bottom">
+                            <field name="name" required="True"/>
+                            <field name="code"/>
+                            <field name="amount" required="True"/>
+                        </tree>
+                    </field>
+
+                    <separator string="Other Allowances" colspan="4"/>
+                    <field name="other_allow_ids">
+                        <tree editable="bottom">
+                            <field name="name" required="True"/>
+                            <field name="amount" required="True"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+
+    <!-- Inherit Form View to Modify it -->
+    <record id="hr_leave_allocation_expiry_form" model="ir.ui.view">
+        <field name="name">Leave Allocation Expiry</field>
+        <field name="model">hr.holidays</field>
+        <field name="inherit_id" ref="hr_holidays.edit_holiday_new"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//group[1]/group[1]/div[1]" position="after">
+                <field name="leave_validity"  attrs="{'invisible': [('type', '!=', 'add')]}"/>
+                <field name="renew_allocation"  attrs="{'invisible': [('type', '!=', 'add')]}"/>
+                <field name="auto_approve_on_renewal"
+                       attrs="{'invisible': [('type', '!=', 'add'), ('renew_allocation', '=', False)]}"/>
+                <field name="expiry_date"  attrs="{'invisible': [('type', '!=', 'add')]}"/>
+            </xpath>
+            <xpath expr="//field[@name='employee_id']" position="after">
+                <field name="joining_date"/>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="view_hr_holiday_status_form_inherit_paid" model="ir.ui.view">
+        <field name="name">hr.holidays.status.form</field>
+        <field name="model">hr.holidays.status</field>
+        <field name="inherit_id" ref="hr_holidays.edit_holiday_status_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='is_encashable']" position="after">
+                <field name="paid_leave"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_hr_salaryrulecategory_form_inherit" model="ir.ui.view">
+        <field name="name">hr.salary.rule.category.form</field>
+        <field name="model">hr.salary.rule.category</field>
+        <field name="inherit_id" ref="hr_payroll.hr_salary_rule_category_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='parent_id']" position="after">
+                <field name="alw_deduction"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

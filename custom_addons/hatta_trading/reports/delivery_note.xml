@@ -1,0 +1,145 @@
+<odoo>
+
+
+
+    <template id="assets_common" name="hatta_pdf_reports" inherit_id="report.assets_common">
+        <xpath expr="." position="inside">
+            <link href="/hatta_trading/static/src/css/hatta.css" rel="stylesheet" type="text/css"/>
+        </xpath>
+    </template>
+
+    <template id="hatta_delivery_note_report_document">
+        <t t-call="report.external_layout">
+            <div class="page no_pad ft_font">
+                <table class="hatta_table" width="60%" style="font-size:14px;margin-top:10px;float:left;">
+                    <tr>
+                        <td><b>CUSTOMER</b></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span t-field="o.partner_id"/><br/>
+                            <span t-if="o.partner_id.street"><span t-field="o.partner_id.street"/></span>
+                            <span t-if="o.partner_id.street2"><br/><span t-field="o.partner_id.street2"/></span>
+                            <span t-if="o.partner_id.city"><br/><span t-field="o.partner_id.city"/></span>
+                            <span t-if="o.partner_id.zip"><span t-field="o.partner_id.zip"/></span>
+                            <span t-if="o.partner_id.state_id"><br/><span t-field="o.partner_id.state_id"/></span>
+                            <span t-if="o.partner_id.country_id"><br/><span t-field="o.partner_id.country_id"/></span>
+                        </td>
+                    </tr>
+                </table>
+
+                <table class="hatta_table" width="40%" style="font-size:14px;margin-top:10px;float:left;">
+                    <tr>
+                        <td width="15%" style="">DO NO</td>
+                        <td>:</td>
+                        <td style=""><span t-field="o.name"/></td>
+                    </tr>
+                    <tr>
+                        <td  style="">DATE</td>
+                        <td>:</td>
+                        <td  style=""><span t-field="o.date" t-options ='{"format": "dd/MM/yyyy"}'/></td>
+                    </tr>
+                    <tr>
+                        <td  style="">LOCATION</td>
+                        <td>:</td>
+                        <td  style=""><span t-field="o.picking_type_id.warehouse_id.name"/></td>
+                    </tr>
+                    <tr>
+                        <td  style="">S.PERSON</td>
+                        <td>:</td>
+                        <td  style=""><span t-field="o.sale_id.user_id.name"/></td>
+                    </tr>
+                    <tr>
+                        <td  style="">LPO.NO</td>
+                        <td>:</td>
+                        <td  style=""><span t-esc="o.find_lpo_numbers()"/></td>
+                    </tr>
+                    <tr>
+                        <td  style="">S.O NO</td>
+                        <td>:</td>
+                        <td  style=""><span t-field="o.sale_id.name"/></td>
+                    </tr>
+                    <tr>
+                        <td  style="">AC CODE</td>
+                        <td>:</td>
+                        <td  style=""><span t-field="o.sale_id.job_account.name"/></td>
+                    </tr>
+                </table>
+                <div class="col-xs-12" style="min-height:650px;border-top:solid 1px black;border-bottom:solid 1px black;padding:0px;margin-top:10px;" >
+                    <table class="table table-condensed" style="">
+                        <thead>
+                            <th style="text-align:center;">Sl.No</th>
+                            <th style="text-align:center;">Description</th>
+                            <th style="text-align:center;">Unit</th>
+                            <th style="text-align:center;">Quantity</th>
+                        </thead>
+                        <!--<tr foreach="o.move_lines" t-as="l">-->
+                            <!--<td style="text-align:center;"></td>-->
+                            <!--&lt;!&ndash;<span t-esc="l_index+1"/>&ndash;&gt;-->
+                            <!--<td style="text-align:left;"><span t-esc="l.product_id.id"/></td>-->
+                            <!--<td style="text-align:center;"><span t-esc="l.product_uom"/> </td>-->
+                            <!--<td style="text-align:center;"><span t-esc="l.product_uom_qty"/></td>-->
+                        <!--</tr>-->
+                        <tr t-foreach="o.move_lines" t-as="line">
+                            <td style="text-align:center;"><span t-esc="line_index+1"/></td>
+                            <td style="text-align:left;">
+                                <span t-esc="line.product_id.name"/><br/>
+                                <span t-esc="line.name"/>
+                            </td>
+                            <td style="text-align:center;"><span t-esc="line.product_uom.name"/> </td>
+                            <td style="text-align:center;"><span t-esc="line.product_uom_qty"/></td>
+                        </tr>
+                    </table>
+                </div>
+                <table class="col-xs-12" width="100%" style="font-size:14px;margin-top:10px;margin-bottom:;">
+                    <tr>
+                        <td width="15%" style="">PACKAGE</td>
+                        <td>:</td>
+                        <td width="25%" style=""><span t-field="o.package"/> </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td width="15%" style="">DELIVERY PLACE</td>
+                        <td>:</td>
+                        <td  style=""><span t-field="o.sale_id.partner_shipping_id.name"/></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" style=""></td>
+                        <td style="text-align:right;">FOR HATTA TRADING &amp;SERVICES</td>
+                    </tr>
+                </table>
+                <div class="col-xs-6" style="margin-top:30px;">RECEIVED BY</div>
+                <div class="col-xs-6" style="margin-top:30px;text-align:right;">AUTHORISED SIGNATORY</div>
+
+            </div>
+        </t>
+    </template>
+
+    <template id="hatta_delivery_note_report_title" inherit_id="report.external_layout_header">
+        <div class="report-title" position="inside">
+            <t t-if="xmlid == 'hatta_trading.hatta_delivery_note_report'">
+                DELIVERY NOTE
+            </t>
+        </div>
+    </template>
+
+    <template id="hatta_delivery_note_report">
+        <t t-call="report.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="hatta_trading.hatta_delivery_note_report_document" t-lang="o.partner_id.lang"/>
+            </t>
+        </t>
+    </template>
+
+    <report
+        string="Delivery Note"
+        id="delivery_note"
+        model="stock.picking"
+        report_type="qweb-pdf"
+        name="hatta_trading.hatta_delivery_note_report"
+        file="hatta_trading.hatta_delivery_note_report"
+        paperformat="paperformat_hatta_template"
+    />
+
+</odoo>

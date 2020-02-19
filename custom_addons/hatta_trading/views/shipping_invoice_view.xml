@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="hatta_shipping_invoice_form" model="ir.ui.view">
+        <field name="name">Shipping Invoice</field>
+        <field name="model">shipping.invoice</field>
+        <field name="arch" type="xml">
+            <form>
+                <div class="oe_title">
+                    <h1>
+                        <field name="name" readonly="1"/>
+                    </h1>
+                </div>
+                <group string="Shipping Invoice">
+                    <group >
+                        <field name="carrier_id"/>
+                        <field name="date"/>
+                        <field name="journal_id" required="1"/>
+                    </group>
+                    <group>
+                        <field name="account_number"/>
+                        <field name="date_accounting"/>
+                    </group>
+                </group>
+                <group string="Shipping Quotations"/>
+                <field name="quotation_ids">
+                    <tree>
+                        <field name="purchase_order_id"/>
+                        <field name="job_id"/>
+                        <field name="carrier_id"/>
+                        <field name="awb_date"/>
+                        <field name="awb"/>
+                        <field name="invoice_number"/>
+                        <field name="duty_invoice_number"/>
+                        <field name="total"/>
+                        <field name="movement_state"/>
+                        <field name="state"/>
+                    </tree>
+                </field>
+                <group>
+                    <group>
+                        <field name="total"/>
+                        <field name="rounding_off"/>
+                        <field name="net_total"/>
+                    </group>
+                </group>
+                <group string="Payments"/>
+                <field name="payment_ids"/>
+                <group>
+                    <group>
+                        <group>
+                            <field name="purchase_others"/>
+                        </group>
+                    </group>
+                </group>
+                <group string="Notes"/>
+            </form>
+        </field>
+    </record>
+
+    <record id="shipping_quotation_view_form" model="ir.ui.view">
+        <field name="name">shipping.quotation.view.form</field>
+        <field name="model">shipping.quotation</field>
+        <field name="arch" type="xml">
+            <form string="Shipping Quotation">
+                <header>
+                    <button name="action_confirm" string="Confirm" class="oe_highlight" states="draft" type="object"/>
+                    <button name="action_cancel" string="Cancel" states="draft" type="object"/>
+                    <button name="action_reset_draft" string="Reset to Draft" states="cancelled" type="object"/>
+                    <button name="action_create_shipping_invoice" string="Create Invoice"
+                            class="oe_highlight" attrs="{'invisible': ['|',('state', '!=', 'order'),
+                            ('shipping_invoice_id', '!=', False)]}" type="object"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,order"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="expense_button_box">
+                            <button name="action_view_shipping_invoice"
+                                    string="Invoices"
+                                    type="object"
+                                    class="oe_stat_button"
+                                    attrs="{'invisible': [('shipping_invoice_id', '=', False)]}"
+                                    icon="fa-pencil-square-o"/>
+
+                    </div>
+                    <div class="oe_title">
+                        <label string="Quotation " attrs="{'invisible': [('state','=','order')]}"/>
+                        <label string="Order " attrs="{'invisible': [('state','=','draft')]}"/>
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="carrier_id" required="1" domain="[('is_carrier', '=', True)]"
+                                   context="{'default_is_carrier': True, 'default_customer': False, 'default_supplier': True}"/>
+                            <field name="purchase_order_id" readonly="1"/>
+                            <field name="job_id" domain="[('is_job_code', '=', True)]" context="{'default_is_job_code': True}"/>
+                            <field name="cost_center_id" domain="[('tag_type', '=', 'cost_center')]"
+                                   context="{'default_tag_type': 'cost_center'}"/>
+                            <field name="awb_date"/>
+                            <field name="awb"/>
+                            <field name="movement_state" widget="statusbar" statusbar_visible="with_supp,in_transit,received"
+                                   style="width: initial;" clickable="True"/>
+                        </group>
+                        <group>
+                            <field name="account_id" required="1"/>
+                            <field name="invoice_number"/>
+                            <field name="duty_invoice_number"/>
+                            <field name="carrier_freight"/>
+                            <field name="carrier_duty"/>
+                            <field name="shipping_invoice_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Carrier Invoice Details">
+                            <field name="invoice_freight"/>
+                            <field name="invoice_duty"/>
+                            <field name="total"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="shipping_quotation_view_tree" model="ir.ui.view">
+        <field name="name">shipping.quotation.view.tree</field>
+        <field name="model">shipping.quotation</field>
+        <field name="arch" type="xml">
+            <tree string="Shipping Quotations">
+                <field name="name"/>
+                <field name="carrier_id"/>
+                <field name="purchase_order_id"/>
+                <field name="cost_center_id"/>
+                <field name="awb_date"/>
+                <field name="awb"/>
+                <field name="invoice_number"/>
+                <field name="duty_invoice_number"/>
+                <field name="total"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="shipping_quotation_action" model="ir.actions.act_window">
+        <field name="name">Shipping Quotation</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">shipping.quotation</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+            <!-- Add Text Here -->
+          </p><p>
+            <!-- More details about what a user can do with this object will be OK -->
+          </p>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="hatta_shipping_action">
+        <field name="name">hatta.shipping.action</field>
+        <field name="res_model">shipping.invoice</field>
+        <field name="view_mode">form,tree</field>
+        <field name="view_type">form</field>
+        <field name="view_id" ref="hatta_shipping_invoice_form"/>
+    </record>
+
+    <record id="action_shipping_quotations" model="ir.actions.act_window">
+        <field name="name">Shipping Quotations</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">shipping.quotation</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain" eval="[('state', '!=', 'order')]"/>
+        <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+            <!-- Add Text Here -->
+          </p><p>
+            <!-- More details about what a user can do with this object will be OK -->
+          </p>
+        </field>
+    </record>
+
+    <record id="action_shipping_orders" model="ir.actions.act_window">
+        <field name="name">Shipping Orders</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">shipping.quotation</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain" eval="[('state', '=', 'order')]"/>
+        <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+            <!-- Add Text Here -->
+          </p><p>
+            <!-- More details about what a user can do with this object will be OK -->
+          </p>
+        </field>
+    </record>
+
+
+    <menuitem id="shipping_menu"
+              name="Shipping"
+              parent="purchase.menu_purchase_root"
+              sequence="3"/>
+    <menuitem id="shipping_quotation_menu"
+              name="Shipping Quotation"
+              parent="shipping_menu"
+              action="action_shipping_quotations"
+              sequence="2"/>
+    <menuitem id="shipping_order_menu"
+              name="Shipping Order"
+              parent="shipping_menu"
+              action="action_shipping_orders"
+              sequence="4"/>
+
+</odoo>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record model="hr.salary.rule.category" id="categ_adv">
+            <field name="name">Advance</field>
+            <field name="code">ADV</field>
+            <field name="parent_id" ref="hr_payroll.ALW"/>
+        </record>
+
+        <record model="hr.salary.rule.category" id="categ_bad">
+            <field name="name">Balance Advance Due</field>
+            <field name="code">BAD</field>
+        </record>
+
+        <record id="hr_salary_rule_advance_salary" model="hr.salary.rule">
+            <field name="code">ADV</field>
+            <field name="sequence" eval="10"/>
+            <field name="name">Salary Advance</field>
+            <field name="category_id" ref="employee_advance_salary.categ_adv"/>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+amount = employee.get_advance_salary_amount()
+result = amount
+<!--for line in payslip.input_line_ids:-->
+    <!--if line.code == 'ADED':-->
+        <!--amount += line.amount-->
+
+            </field>
+        </record>
+
+        <!--Salary rule for advance salary amount deduction-->
+        <record id="hr_salary_rule_advance_salary_deduction" model="hr.salary.rule">
+            <field name="code">ADVDED</field>
+            <field name="sequence" eval="15"/>
+            <field name="name">Advance Deduction</field>
+            <field name="category_id" ref="hr_payroll.DED"/>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+result = payslip.advance_ded
+            </field>
+        </record>
+
+        <record id="hr_salary_rule_advance_salary_pending" model="hr.salary.rule">
+            <field name="code">PADED</field>
+            <field name="sequence" eval="14"/>
+            <field name="name">Pending Advances</field>
+            <field name="category_id" ref="employee_advance_salary.categ_bad"/>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+result = employee.get_remaining_advance_amount()
+            </field>
+        </record>
+    </data>
+</odoo>

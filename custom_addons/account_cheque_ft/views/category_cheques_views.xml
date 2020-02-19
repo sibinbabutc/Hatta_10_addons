@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+	<record id="cheque_category_cheques_tree" model="ir.ui.view">
+            <field name="name">cheque.category.cheques.tree</field>
+            <field name="model">cheque.category.cheques</field>
+            <field name="arch" type="xml">
+                <tree colors="green:state=='matured';red:state=='cancel'" create="false">
+                    <field name="name"/>
+                    <field name="partner_id"/>
+    				<field name="cheque_no"/>
+    				<field name="mature_date"/>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="cheque_amount"/>
+    				<field name="state"/>
+                    <button states="matured" type="object" name="action_process" string="Process" class="oe_highlight"/>
+                </tree>
+            </field>
+        </record>
+
+	<record id="cheque_category_cheques_form" model="ir.ui.view">
+        <field name="name">cheque.category.cheques.form.view</field>
+        <field name="model">cheque.category.cheques</field>
+        <field name="arch" type="xml">
+            <form string="Category Cheques">
+                <header>
+                    <button name="action_validate" class="oe_highlight" states="draft" string="Validate" type="object"/>
+                    <button name="action_process" class="oe_highlight" states="matured" string="Process" type="object"/>
+                    <button name="print_pdc_payment_voucher" type="object" string="Print Voucher"
+                            class="oe_highlight"
+                            attrs="{'invisible': [('category_id','not in',['pdc'])]}"/>
+                    <field name="state" widget="statusbar" statusbar_visible="matured,valid,processed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" string="Post-Dated Cheque"
+                               attrs="{'invisible':[('category_id','!=','pdc')]}"/>
+                        <label for="name" string="Bank Guarantee Cheque"
+                               attrs="{'invisible':[('category_id','!=','bgc')]}"/>
+                        <label for="name" string="Security Cheque"
+                               attrs="{'invisible':[('category_id','!=','sc')]}"/>
+                        <div class="oe_inline"><h1><field name="name"/></h1></div>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="partner_id" context="{'default_customer': 0, 'search_default_supplier': 1, 'default_supplier': 1}"
+                          domain="[('supplier', '=', True)]"/>
+                            <field name="analytic_account"/>
+                        </group>
+                        <group>
+                            <field name="category_id"/>
+                            <field name="payment_id" attrs="{'invisible':[('payment_id','=',False)]}"/>
+                            <field name="reg_date" required="True"/>
+                            <field name="mature_date"/>
+                            <field name="memo"/>
+                        </group>
+                    </group>
+                    <group string="Cheque Details">
+                        <group>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="cheque_amount" widget="monetary" required="True"
+                            attrs="{'readonly': [('cheque_type','=','partner'),('cheque_id','!=',False)]}"/>
+                            <button name="%(action_create_cheque_out_wizard)d" type="action" colspan="2"
+                                    string="Create Cheque" class="oe_highlight oe_right"
+                                    context="{'default_partner_id': partner_id,
+                                        'default_issue_date': reg_date,
+                                        'default_cheque_date': mature_date,
+                                        'default_category_id': category_id,
+                                        'default_amount': cheque_amount}"
+                                    attrs="{'invisible':['|',('cheque_out_id','!=',False),('cheque_type','=','company')]}"/>
+                            <field name="cheque_id" domain="[('state','=','blank')]"
+                                   options="{'no_create':True}" attrs="{
+                                   'invisible':[('cheque_type','=','partner'),('cheque_id','=',False)],
+                                    'required': [('cheque_type','=','company')],
+                                    'readonly': [('cheque_type','=','partner')]}"/>
+                            <field name="cheque_out_id" options="{'no_create': True}" class="oe_inline"
+                                    attrs="{'invisible':[('cheque_out_id','=',False)]}" readonly="1"/>
+
+                            <field name="description" attrs="{'invisible':[('description','=',False)]}"/>
+                        </group>
+                        <group attrs="{'invisible':[('cheque_id','=',False)]}">
+                            <field name="bank_name" attrs="{'invisible': [('cheque_type','=','partner')]}"/>
+                            <field name="bank_name_out" attrs="{'invisible': [('cheque_type','=','company')]}"/>
+                            <field name="acc_num" attrs="{'invisible': [('cheque_type','=','partner')]}"/>
+                            <field name="acc_num_out" attrs="{'invisible': [('cheque_type','=','company')]}"/>
+                            <field name="cheque_ref"/>
+                            <field name="cheque_type" invisible="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!--PDC MENUS & ACTIONS-->
+
+    <record id="action_cheque_category_cheques_payment_pdc" model="ir.actions.act_window">
+        <field name="name">Payments</field>
+        <field name="res_model">cheque.category.cheques</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('cheque_type','=','company'),('category_id','=','pdc')]</field>
+        <field name="context">{'default_cheque_type': 'company','default_category_id':'pdc'}</field>
+        <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+            Click to record a Post-Dated Cheque Payments.
+          </p><p>
+            No Post-Dated Cheque Payments have been done yet.
+          </p>
+        </field>
+    </record>
+
+    <record id="action_cheque_category_cheques_receipt_pdc" model="ir.actions.act_window">
+        <field name="name">Receipts</field>
+        <field name="res_model">cheque.category.cheques</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('cheque_type','=','partner'),('category_id','=','pdc')]</field>
+        <field name="context">{'default_cheque_type': 'partner','default_category_id':'pdc'}</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+            Click to record a Post-Dated Cheque Receipts.
+          </p><p>
+            No Post-Dated Cheque Receipts have been done yet.
+          </p>
+        </field>
+    </record>
+
+    <menuitem name="Post-Dated Cheques"
+              id="menu_cheque_category_pdc"
+              parent="account.menu_finance"
+              groups="account.group_account_user"
+              sequence="3"/>
+
+    <menuitem name="Payments"
+              id="menu_cheque_category_cheques_payments_pdc"
+              parent="menu_cheque_category_pdc"
+              action="action_cheque_category_cheques_payment_pdc"
+              groups="account.group_account_user"
+              sequence="1"/>
+    <menuitem name="Receipts"
+              id="menu_cheque_category_cheques_receipt_pdc"
+              parent="menu_cheque_category_pdc"
+              action="action_cheque_category_cheques_receipt_pdc"
+              groups="account.group_account_user"
+              sequence="2"/>
+
+
+    <!--BGC MENUS & ACTIONS-->
+
+    <record id="action_cheque_category_cheques_payment_bgc" model="ir.actions.act_window">
+        <field name="name">Payments</field>
+        <field name="res_model">cheque.category.cheques</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('cheque_type','=','company'),('category_id','=','bgc')]</field>
+        <field name="context">{'default_cheque_type': 'company','default_category_id':'bgc'}</field>
+        <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+            Click to record a Bank Guarantee Cheque Payments.
+          </p><p>
+            No Bank Guarantee Cheque Payments have been done yet.
+          </p>
+        </field>
+    </record>
+
+    <record id="action_cheque_category_cheques_receipt_bgc" model="ir.actions.act_window">
+        <field name="name">Receipts</field>
+        <field name="res_model">cheque.category.cheques</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('cheque_type','=','partner'),('category_id','=','bgc')]</field>
+        <field name="context">{'default_cheque_type': 'partner','default_category_id':'bgc'}</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+            Click to record a Bank Guarantee Cheque Receipts.
+          </p><p>
+            No Bank Guarantee Cheque Receipts have been done yet.
+          </p>
+        </field>
+    </record>
+
+    <!--<menuitem name="Bank Guarantee"-->
+              <!--id="menu_cheque_category_bank_guarantee"-->
+              <!--parent="account.menu_finance"-->
+              <!--groups="account.group_account_user"-->
+              <!--sequence="3"/>-->
+
+    <!--<menuitem name="Payments" id="menu_cheque_category_cheques_payments_bgc"-->
+              <!--parent="menu_cheque_category_bank_guarantee"-->
+              <!--action="action_cheque_category_cheques_payment_bgc"-->
+              <!--groups="account.group_account_user"-->
+              <!--sequence="1"/>-->
+    <!--<menuitem name="Receipts" id="menu_cheque_category_cheques_receipt_bgc"-->
+              <!--parent="menu_cheque_category_bank_guarantee"-->
+              <!--action="action_cheque_category_cheques_receipt_bgc"-->
+              <!--groups="account.group_account_user"-->
+              <!--sequence="2"/>-->
+
+
+    <!--SC MENUS & ACTIONS-->
+
+    <record id="action_cheque_category_cheques_payment_sc" model="ir.actions.act_window">
+        <field name="name">Payments</field>
+        <field name="res_model">cheque.category.cheques</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('cheque_type','=','company'),('category_id','=','sc')]</field>
+        <field name="context">{'default_cheque_type': 'company','default_category_id':'sc'}</field>
+        <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+            Click to record a Security Cheque Payments.
+          </p><p>
+            No Security Cheque Payments have been done yet.
+          </p>
+        </field>
+    </record>
+
+    <record id="action_cheque_category_cheques_receipt_sc" model="ir.actions.act_window">
+        <field name="name">Receipts</field>
+        <field name="res_model">cheque.category.cheques</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('cheque_type','=','partner'),('category_id','=','sc')]</field>
+        <field name="context">{'default_cheque_type': 'partner','default_category_id':'sc'}</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+            Click to record a Security Cheque Receipts.
+          </p><p>
+            No Security Cheque Receipts have been done yet.
+          </p>
+        </field>
+    </record>
+
+    <!--<menuitem name="Security Cheques"-->
+              <!--id="menu_cheque_category_security"-->
+              <!--parent="account.menu_finance"-->
+              <!--groups="account.group_account_user"-->
+              <!--sequence="3"/>-->
+
+    <!--<menuitem name="Payments"-->
+              <!--id="menu_cheque_category_cheques_payments_sc"-->
+              <!--parent="menu_cheque_category_security"-->
+              <!--groups="account.group_account_user"-->
+              <!--action="action_cheque_category_cheques_payment_sc"-->
+              <!--sequence="1"/>-->
+    <!--<menuitem name="Receipts" id="menu_cheque_category_cheques_receipt_sc"-->
+              <!--parent="menu_cheque_category_security"-->
+              <!--groups="account.group_account_user"-->
+              <!--action="action_cheque_category_cheques_receipt_sc"-->
+              <!--sequence="2"/>-->
+
+</odoo>

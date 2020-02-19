@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_tr_details,access_tr_details,model_tr_details,,1,1,1,1
+access_tr_settle_details,access_tr_settle_details,model_tr_settle_details,,1,1,1,1
+access_tr_account,access_tr_account,model_tr_account,,1,1,1,1

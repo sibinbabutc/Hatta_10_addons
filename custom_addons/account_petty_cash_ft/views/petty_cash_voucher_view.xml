@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record model="ir.ui.view" id="view_pettycash_voucher_tree">
+        <field name="name">pettycash.voucher.pettycash.form</field>
+        <field name="model">pettycash.voucher</field>
+        <field name="arch" type="xml">
+            <tree string="Petty Cash Form Vouchers Tree" default_order="date desc,number desc">
+                <field name="number"/>
+                <field name="date"/>
+                <field name="pettycash_id"/>
+                <field name="journal_id"/>
+                <field name="paid_to_char"/>
+                <field name="amount"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+     <record model="ir.ui.view" id="view_pettycash_voucher_form">
+        <field name="name">pettycash.voucher.pettycash.form</field>
+        <field name="model">pettycash.voucher</field>
+        <field name="arch" type="xml">
+            <form string="Petty Cash Voucher">
+            <header>
+                <button name="validate" type="object" states="draft" string="Validate" class="oe_highlight"/>
+                <button name="post" type="object" states="valid" string="Post"
+                        groups="account_petty_cash_ft.group_pettycash_manager" class="oe_highlight"/>
+                <button name="set_to_draft" type="object" states="valid" string="Set to Draft"/>
+                <button name="print_voucher" type="object" states="valid,posted"
+                        string="Print Voucher" class="oe_highlight oe_read_only"/>
+                <field name="state" widget="statusbar" statusbar_visible="draft,valid,posted"/>
+            </header>
+            <sheet string="Petty Cash Voucher">
+                <group/>
+                <label for="number" string="Petty Cash Voucher"/>
+                <h1>
+                    <field name="number" readonly="1"/>
+                </h1>
+                <group>
+                    <group>
+                        <field name="pettycash_id"/>
+                        <field name="date"/>
+                        <field name="currency_id" invisible="1"/>
+                        <field name="account_move_id" readonly="1"/>
+                        <field name="narration"/>
+                    </group>
+                    <group>
+                        <field name="paid_to_type"/>
+                        <field name="paid_to_char" attrs="{'invisible': [('paid_to_type','!=',False)]}"/>
+                        <field name="paid_to_in" attrs="{'invisible': [('paid_to_type','!=','internal')]}"/>
+                        <field name="paid_to_out" attrs="{'invisible': [('paid_to_type','!=','external')]}"/>
+                        <field name="journal_id" readonly="1"/>
+                        <label for="amount"/><h3><field name="amount" readonly="1"/></h3>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Voucher Lines">
+                        <field name="voucher_lines" context="{'default_currency_id': currency_id,}">
+                            <tree string="Voucher Lines" editable="bottom">
+                                <field name="pettycash_voucher_id" invisible="1"/>
+                                <field name="account_id"/>
+                                <field name="description"/>
+                                <field name="partner_id"/>
+                                <field name="asset_id"/>
+                                <field name="analytic_account_id"
+                                       groups="analytic.group_analytic_accounting"/>
+                                <field name="currency_id" invisible="1"/>
+                                <field name="amount"/>
+                                <field name="account_move_line" invisible="1"/>
+                            </tree>
+                            <form>
+                                <group>
+                                    <group>
+                                        <field name="account_id"/>
+                                        <field name="description"/>
+                                    </group>
+                                    <group>
+                                        <field name="amount"/>
+                                    </group>
+                                </group>
+                            </form>
+                        </field>
+                        <group>
+                            <field name="amount_in_words" readonly="1"/>
+
+                        </group>
+                    </page>
+                    <page string="Attachments">
+                        <group>
+                            <field name="attachments" widget="many2many_binary" nolabel="1"/>
+                        </group>
+                </page>
+                <page string="Info">
+                    <group>
+                        <group>
+                            <field name="prepared_by"/>
+                            <field name="checked_by"/>
+                        </group>
+                        <group>
+                            <field name="passed_by"/>
+                            <field name="receivers_name"/>
+                        </group>
+                    </group>
+                </page>
+                </notebook>
+                </sheet>
+                        <div class="oe_chatter">
+                            <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                            <field name="message_ids" widget="mail_thread"/>
+                        </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="open_petty_cash_voucher" model="ir.actions.act_window">
+        <field name="name">Petty Cash Vouchers</field>
+        <field name="res_model">pettycash.voucher</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent">
+                No Petty Cash Vouchers Created.
+            </p><p>
+            No Petty Cash Vouchers Created.
+        </p>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_pettycash_voucher_form_in">
+        <field name="name">pettycash.voucher.pettycash.form.menu</field>
+        <field name="model">pettycash.voucher</field>
+        <field name="inherit_id" ref="account_petty_cash_ft.view_pettycash_voucher_form"/>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <field name="pettycash_id" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </field>
+        </field>
+    </record>
+
+
+</odoo>

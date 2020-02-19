@@ -1,0 +1,455 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!--Categories-->
+        <record model="ir.module.category" id="module_categ_enquiry">
+            <field name="name">Enquiry</field>
+            <field name="sequence">200</field>
+        </record>
+
+        <record model="ir.module.category" id="module_categ_master_country">
+            <field name="name">Country Master</field>
+            <field name="sequence">201</field>
+        </record>
+
+        <record model="ir.module.category" id="module_categ_master_currency">
+            <field name="name">Currency Master</field>
+            <field name="sequence">202</field>
+        </record>
+
+        <record model="ir.module.category" id="module_categ_master_sales_person">
+            <field name="name">Salesperson Master</field>
+            <field name="sequence">203</field>
+        </record>
+
+        <record model="ir.module.category" id="module_categ_master_warehouse">
+            <field name="name">Warehouse Master</field>
+            <field name="sequence">204</field>
+        </record>
+
+        <record model="ir.module.category" id="module_categ_master_vendors">
+            <field name="name">Customers/Vendors Master</field>
+            <field name="sequence">205</field>
+        </record>
+
+        <record model="ir.module.category" id="module_categ_master_customers">
+            <field name="name">Customers Master</field>
+            <field name="sequence">206</field>
+        </record>
+
+        <record model="ir.module.category" id="module_categ_master_product">
+            <field name="name">Product Master</field>
+            <field name="sequence">207</field>
+        </record>
+
+        <record model="ir.module.category" id="module_categ_master_payment_terms">
+            <field name="name">Payment Terms Master</field>
+            <field name="sequence">208</field>
+        </record>
+
+        <record model="ir.module.category" id="module_categ_master_job_account">
+            <field name="name">Job Account Master</field>
+            <field name="sequence">209</field>
+        </record>
+
+        <record model="ir.module.category" id="module_categ_master_price_lists">
+            <field name="name">Pricelists Master</field>
+            <field name="sequence">210</field>
+        </record>
+
+        <record model="ir.module.category" id="module_categ_master_shipping_method">
+            <field name="name">Shipping Method Master</field>
+            <field name="sequence">211</field>
+        </record>
+
+        <record model="ir.module.category" id="module_categ_master_charge_type">
+            <field name="name">Charge Types Master</field>
+            <field name="sequence">212</field>
+        </record>
+
+        <record model="ir.module.category" id="module_categ_master_product_certificate">
+            <field name="name">Product Certificate Master</field>
+            <field name="sequence">213</field>
+        </record>
+
+        <record model="ir.module.category" id="module_categ_master_cost_center">
+            <field name="name">Cost Center Master</field>
+            <field name="sequence">214</field>
+        </record>
+
+
+
+        <record id="group_enquiry_view" model="res.groups">
+            <field name="name">View</field>
+            <field name="category_id" ref="hatta_trading.module_categ_enquiry"/>
+        </record>
+
+        <record id="group_enquiry_edit" model="res.groups">
+            <field name="name">Edit</field>
+            <field name="category_id" ref="hatta_trading.module_categ_enquiry"/>
+            <field name="implied_ids" eval="[(4,ref('hatta_trading.group_enquiry_view'))]"/>
+        </record>
+
+        <record id="group_enquiry_create" model="res.groups">
+            <field name="name">Create</field>
+            <field name="category_id" ref="hatta_trading.module_categ_enquiry"/>
+            <field name="implied_ids" eval="[(4,ref('hatta_trading.group_enquiry_view'))]"/>
+        </record>
+
+        <record id="group_enquiry_delete" model="res.groups">
+            <field name="name">Delete</field>
+            <field name="category_id" ref="hatta_trading.module_categ_enquiry"/>
+            <field name="implied_ids" eval="[(4,ref('hatta_trading.group_enquiry_view'))]"/>
+        </record>
+
+        <!--Country-->
+
+        <record id="group_master_country_view" model="res.groups">
+            <field name="name">View</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_country"/>
+        </record>
+
+        <record id="group_master_country_edit" model="res.groups">
+            <field name="name">Edit</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_country"/>
+            <field name="implied_ids" eval="[(4,ref('hatta_trading.group_master_country_view'))]"/>
+        </record>
+
+        <record id="group_master_country_create" model="res.groups">
+            <field name="name">Create</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_country"/>
+            <field name="implied_ids" eval="[(4,ref('hatta_trading.group_master_country_view'))]"/>
+        </record>
+
+        <record id="group_master_country_delete" model="res.groups">
+            <field name="name">Delete</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_country"/>
+            <field name="implied_ids" eval="[(4,ref('hatta_trading.group_master_country_view'))]"/>
+        </record>
+
+        <!--Currency-->
+
+        <record id="group_master_currency_view" model="res.groups">
+            <field name="name">View</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_currency"/>
+        </record>
+
+        <record id="group_master_currency_edit" model="res.groups">
+            <field name="name">Edit</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_currency"/>
+            <field name="implied_ids" eval="[(4,ref('hatta_trading.group_master_currency_view'))]"/>
+        </record>
+
+        <record id="group_master_currency_create" model="res.groups">
+            <field name="name">Create</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_currency"/>
+            <field name="implied_ids" eval="[(4,ref('hatta_trading.group_master_currency_view'))]"/>
+        </record>
+
+        <record id="group_master_currency_delete" model="res.groups">
+            <field name="name">Delete</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_currency"/>
+            <field name="implied_ids" eval="[(4,ref('hatta_trading.group_master_currency_view'))]"/>
+        </record>
+
+        <!--Salesperson-->
+
+        <record id="group_master_sales_person_view" model="res.groups">
+            <field name="name">View</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_sales_person"/>
+        </record>
+
+        <record id="group_master_sales_person_edit" model="res.groups">
+            <field name="name">Edit</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_sales_person"/>
+            <field name="implied_ids" eval="[(4,ref('hatta_trading.group_master_sales_person_view'))]"/>
+        </record>
+
+        <record id="group_master_sales_person_create" model="res.groups">
+            <field name="name">Create</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_sales_person"/>
+            <field name="implied_ids" eval="[(4,ref('hatta_trading.group_master_sales_person_view'))]"/>
+        </record>
+
+        <record id="group_master_sales_person_delete" model="res.groups">
+            <field name="name">Delete</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_sales_person"/>
+            <field name="implied_ids" eval="[(4,ref('hatta_trading.group_master_sales_person_view'))]"/>
+        </record>
+
+        <!--Warehouse-->
+
+        <record id="group_master_warehouse_view" model="res.groups">
+            <field name="name">View</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_warehouse"/>
+        </record>
+
+        <record id="group_master_warehouse_edit" model="res.groups">
+            <field name="name">Edit</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_warehouse"/>
+            <field name="implied_ids" eval="[(4,ref('hatta_trading.group_master_warehouse_view'))]"/>
+        </record>
+
+        <record id="group_master_warehouse_create" model="res.groups">
+            <field name="name">Create</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_warehouse"/>
+            <field name="implied_ids" eval="[(4,ref('hatta_trading.group_master_warehouse_view'))]"/>
+        </record>
+
+        <record id="group_master_warehouse_delete" model="res.groups">
+            <field name="name">Delete</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_warehouse"/>
+            <field name="implied_ids" eval="[(4,ref('hatta_trading.group_master_warehouse_view'))]"/>
+        </record>
+
+        <!--Partner-->
+
+        <record id="group_master_vendors_view" model="res.groups">
+            <field name="name">View</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_vendors"/>
+        </record>
+
+        <record id="group_master_vendors_edit" model="res.groups">
+            <field name="name">Edit</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_vendors"/>
+            <field name="implied_ids" eval="[(4,ref('hatta_trading.group_master_vendors_view'))]"/>
+        </record>
+
+        <record id="group_master_vendors_create" model="res.groups">
+            <field name="name">Create</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_vendors"/>
+            <field name="implied_ids" eval="[(4,ref('hatta_trading.group_master_vendors_view'))]"/>
+        </record>
+
+        <record id="group_master_vendors_delete" model="res.groups">
+            <field name="name">Delete</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_vendors"/>
+            <field name="implied_ids" eval="[(4,ref('hatta_trading.group_master_vendors_view'))]"/>
+        </record>
+
+        <!--&lt;!&ndash;Customers&ndash;&gt;-->
+
+        <!--<record id="group_master_customers_view" model="res.groups">-->
+            <!--<field name="name">View</field>-->
+            <!--<field name="category_id" ref="hatta_trading.module_categ_master_customers"/>-->
+        <!--</record>-->
+
+        <!--<record id="group_master_customers_edit" model="res.groups">-->
+            <!--<field name="name">Edit</field>-->
+            <!--<field name="category_id" ref="hatta_trading.module_categ_master_customers"/>-->
+            <!--<field name="implied_ids" eval="[(4,ref('hatta_trading.group_master_customers_view'))]"/>-->
+        <!--</record>-->
+
+        <!--<record id="group_master_customers_create" model="res.groups">-->
+            <!--<field name="name">Create</field>-->
+            <!--<field name="category_id" ref="hatta_trading.module_categ_master_customers"/>-->
+            <!--<field name="implied_ids" eval="[(4,ref('hatta_trading.group_master_customers_view'))]"/>-->
+        <!--</record>-->
+
+        <!--<record id="group_master_customers_delete" model="res.groups">-->
+            <!--<field name="name">Delete</field>-->
+            <!--<field name="category_id" ref="hatta_trading.module_categ_master_customers"/>-->
+            <!--<field name="implied_ids" eval="[(4,ref('hatta_trading.group_master_customers_view'))]"/>-->
+        <!--</record>-->
+
+        <!--Product-->
+
+        <record id="group_master_product_view" model="res.groups">
+            <field name="name">View</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_product"/>
+        </record>
+
+        <record id="group_master_product_edit" model="res.groups">
+            <field name="name">Edit</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_product"/>
+            <field name="implied_ids" eval="[(4,ref('hatta_trading.group_master_product_view'))]"/>
+        </record>
+
+        <record id="group_master_product_create" model="res.groups">
+            <field name="name">Create</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_product"/>
+            <field name="implied_ids" eval="[(4,ref('hatta_trading.group_master_product_view'))]"/>
+        </record>
+
+        <record id="group_master_product_delete" model="res.groups">
+            <field name="name">Delete</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_product"/>
+            <field name="implied_ids" eval="[(4,ref('hatta_trading.group_master_product_view'))]"/>
+        </record>
+
+        <!--Payment Terms-->
+
+        <record id="group_master_payment_terms_view" model="res.groups">
+            <field name="name">View</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_payment_terms"/>
+        </record>
+
+        <record id="group_master_payment_terms_edit" model="res.groups">
+            <field name="name">Edit</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_payment_terms"/>
+            <field name="implied_ids" eval="[(4,ref('hatta_trading.group_master_payment_terms_view'))]"/>
+        </record>
+
+        <record id="group_master_payment_terms_create" model="res.groups">
+            <field name="name">Create</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_payment_terms"/>
+            <field name="implied_ids" eval="[(4,ref('hatta_trading.group_master_payment_terms_view'))]"/>
+        </record>
+
+        <record id="group_master_payment_terms_delete" model="res.groups">
+            <field name="name">Delete</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_payment_terms"/>
+            <field name="implied_ids" eval="[(4,ref('hatta_trading.group_master_payment_terms_view'))]"/>
+        </record>
+
+        <!--Job Account-->
+
+        <record id="group_master_job_account_view" model="res.groups">
+            <field name="name">View</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_job_account"/>
+        </record>
+
+        <record id="group_master_job_account_edit" model="res.groups">
+            <field name="name">Edit</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_job_account"/>
+            <field name="implied_ids" eval="[(4,ref('hatta_trading.group_master_job_account_view'))]"/>
+        </record>
+
+        <record id="group_master_job_account_create" model="res.groups">
+            <field name="name">Create</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_job_account"/>
+            <field name="implied_ids" eval="[(4,ref('hatta_trading.group_master_job_account_view'))]"/>
+        </record>
+
+        <record id="group_master_job_account_delete" model="res.groups">
+            <field name="name">Delete</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_job_account"/>
+            <field name="implied_ids" eval="[(4,ref('hatta_trading.group_master_job_account_view'))]"/>
+        </record>
+
+        <!--Pricelists-->
+
+        <record id="group_master_price_lists_view" model="res.groups">
+            <field name="name">View</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_price_lists"/>
+        </record>
+
+        <record id="group_master_price_lists_edit" model="res.groups">
+            <field name="name">Edit</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_price_lists"/>
+            <field name="implied_ids" eval="[(4,ref('hatta_trading.group_master_price_lists_view'))]"/>
+        </record>
+
+        <record id="group_master_price_lists_create" model="res.groups">
+            <field name="name">Create</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_price_lists"/>
+            <field name="implied_ids" eval="[(4,ref('hatta_trading.group_master_price_lists_view'))]"/>
+        </record>
+
+        <record id="group_master_price_lists_delete" model="res.groups">
+            <field name="name">Delete</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_price_lists"/>
+            <field name="implied_ids" eval="[(4,ref('hatta_trading.group_master_price_lists_view'))]"/>
+        </record>
+
+        <!--Shipping Method Defaults-->
+
+        <record id="group_master_shipping_method_view" model="res.groups">
+            <field name="name">View</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_shipping_method"/>
+        </record>
+
+        <record id="group_master_shipping_method_edit" model="res.groups">
+            <field name="name">Edit</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_shipping_method"/>
+            <field name="implied_ids" eval="[(4,ref('hatta_trading.group_master_shipping_method_view'))]"/>
+        </record>
+
+        <record id="group_master_shipping_method_create" model="res.groups">
+            <field name="name">Create</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_shipping_method"/>
+            <field name="implied_ids" eval="[(4,ref('hatta_trading.group_master_shipping_method_view'))]"/>
+        </record>
+
+        <record id="group_master_shipping_method_delete" model="res.groups">
+            <field name="name">Delete</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_shipping_method"/>
+            <field name="implied_ids" eval="[(4,ref('hatta_trading.group_master_shipping_method_view'))]"/>
+        </record>
+
+        <!--Charge Type-->
+
+        <record id="group_master_charge_type_view" model="res.groups">
+            <field name="name">View</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_charge_type"/>
+        </record>
+
+        <record id="group_master_charge_type_edit" model="res.groups">
+            <field name="name">Edit</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_charge_type"/>
+            <field name="implied_ids" eval="[(4,ref('hatta_trading.group_master_charge_type_view'))]"/>
+        </record>
+
+        <record id="group_master_charge_type_create" model="res.groups">
+            <field name="name">Create</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_charge_type"/>
+            <field name="implied_ids" eval="[(4,ref('hatta_trading.group_master_charge_type_view'))]"/>
+        </record>
+
+        <record id="group_master_charge_type_delete" model="res.groups">
+            <field name="name">Delete</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_charge_type"/>
+            <field name="implied_ids" eval="[(4,ref('hatta_trading.group_master_charge_type_view'))]"/>
+        </record>
+
+        <!--Product Certificates-->
+
+        <record id="group_master_product_certificate_view" model="res.groups">
+            <field name="name">View</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_product_certificate"/>
+        </record>
+
+        <record id="group_master_product_certificate_edit" model="res.groups">
+            <field name="name">Edit</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_product_certificate"/>
+            <field name="implied_ids" eval="[(4,ref('hatta_trading.group_master_product_certificate_view'))]"/>
+        </record>
+
+        <record id="group_master_product_certificate_create" model="res.groups">
+            <field name="name">Create</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_product_certificate"/>
+            <field name="implied_ids" eval="[(4,ref('hatta_trading.group_master_product_certificate_view'))]"/>
+        </record>
+
+        <record id="group_master_product_certificate_delete" model="res.groups">
+            <field name="name">Delete</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_product_certificate"/>
+            <field name="implied_ids" eval="[(4,ref('hatta_trading.group_master_product_certificate_view'))]"/>
+        </record>
+
+        <!--Cost Center-->
+
+        <record id="group_master_cost_center_view" model="res.groups">
+            <field name="name">View</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_cost_center"/>
+        </record>
+
+        <record id="group_master_cost_center_edit" model="res.groups">
+            <field name="name">Edit</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_cost_center"/>
+            <field name="implied_ids" eval="[(4,ref('hatta_trading.group_master_cost_center_view'))]"/>
+        </record>
+
+        <record id="group_master_cost_center_create" model="res.groups">
+            <field name="name">Create</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_cost_center"/>
+            <field name="implied_ids" eval="[(4,ref('hatta_trading.group_master_cost_center_view'))]"/>
+        </record>
+
+        <record id="group_master_cost_center_delete" model="res.groups">
+            <field name="name">Delete</field>
+            <field name="category_id" ref="hatta_trading.module_categ_master_cost_center"/>
+            <field name="implied_ids" eval="[(4,ref('hatta_trading.group_master_cost_center_view'))]"/>
+        </record>
+    </data>
+</odoo>

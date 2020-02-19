@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <template id="sale_invoice_summary_report_document">
+        <t t-call="hatta_reports.simple_external_layout">
+        <div class="page ft_font">
+            <div class="col-xs-12">
+                <h6>
+                    <b>
+                        <t t-if="date_from">From <t t-esc="date_from"/></t><t t-if="date_to"> To <t t-esc="date_to"/></t>
+                    </b>
+                </h6>
+
+            </div>
+            <table class="table tab1">
+                <thead>
+                    <th style="text-align:center;border-top:.10em solid;border-bottom:.10em solid;">SL NO</th>
+                    <th style="text-align:center;border-top:.10em solid;border-bottom:.10em solid;">INV NO</th>
+                    <th style="text-align:center;border-top:.10em solid;border-bottom:.10em solid;">DATE</th>
+                    <th style="text-align:center;border-top:.10em solid;border-bottom:.10em solid;">CC</th>
+                    <th style="text-align:center;border-top:.10em solid;border-bottom:.10em solid;">CUSTOMER</th>
+                    <th style="text-align:center;border-top:.10em solid;border-bottom:.10em solid;">JOB</th>
+                    <th style="text-align:center;border-top:.10em solid;border-bottom:.10em solid;">LPO</th>
+                    <th style="text-align:center;border-top:.10em solid;border-bottom:.10em solid;">CUR</th>
+                    <th style="text-align:center;border-top:.10em solid;border-bottom:.10em solid;">FC AMOUNT</th>
+                    <th style="text-align:center;border-top:.10em solid;border-bottom:.10em solid;">NET</th>
+                    <th style="text-align:center;border-top:.10em solid;border-bottom:.10em solid; ">BALANCE</th>
+                </thead>
+                <!--<tr>-->
+                    <!--<td colspan="11" style="border-top:.05em solid grey;text-align:left;">XXXXX</td>-->
+                <!--</tr>-->
+                <t t-foreach="docs" t-as="item">
+                    <tr>
+                        <td colspan="11" style="border-top:.05em solid;border-bottom:.10em solid;"><h6><b>Sales Invoice - <t t-esc="item[0]"/></b></h6></td>
+                    </tr>
+                    <t t-set="sl_no" t-value="1"/>
+                    <t t-foreach="item[1]" t-as="inv">
+                        <tr>
+                            <td style="text-align:center;"><t t-esc="sl_no"/></td>
+                            <td><span t-esc="inv['name']"/></td>
+                            <td><span t-esc="inv['date']"/></td>
+                            <td style="text-align:center;"><span t-esc="inv['cost_center']"/></td>
+                            <td><span t-esc="inv['customer']"/></td>
+                            <td style="text-align:center;"><span t-esc="inv['job']"/></td>
+                            <td style="text-align:center;"><t t-esc="inv['lpo']"/></td>
+                            <td style="text-align:center;"><t t-esc="inv['curr']"/></td>
+                            <td style="text-align:center;"><span t-esc="inv['fc_amount']"/></td>
+                            <td style="text-align:center;"><t t-esc="inv['net']"/></td>
+                            <td style="text-align:center;"><span t-esc="inv['balance']"/></td>
+                        </tr>
+                        <t t-set="sl_no" t-value="sl_no+1"/>
+                    </t>
+                    <tr>
+                        <td colspan="9" style="border-top:.05em solid;border-bottom:.05em solid;text-align:left;"><h6><b>Sales Invoice - <t t-esc="item[0]"/> Total</b></h6></td>
+                        <td style="border-top:.05em solid;border-bottom:.05em solid;text-align:center;"><h6><b><t t-esc="item[2]"/></b></h6></td>
+                        <td style="border-top:.05em solid;border-bottom:.05em solid;text-align:center;"><h6><b><t t-esc="item[3]"/></b></h6></td>
+                    </tr>
+                </t>
+                <tr>
+                    <td colspan="9" style="border-top:.05em solid;border-bottom:.05em solid;text-align:left;"><h5><b>Grand Total</b></h5></td>
+                    <td style="border-top:.05em solid;border-bottom:.05em solid;text-align:center;"><h5><b><t t-esc="grand_total_net"/></b></h5></td>
+                    <td style="border-top:.05em solid;border-bottom:.05em solid;text-align:center;"><h5><b><t t-esc="grand_total_balance"/></b></h5></td>
+                </tr>
+
+            </table>
+        </div>
+        </t>
+    </template>
+
+    <template id="sale_invoice_header" inherit_id="hatta_reports.simple_external_layout_header">
+        <div class="report-title" position="inside">
+            <t t-if="xmlid == 'hatta_reports.sale_invoice_summary_report_document'">
+                INVOICE SUMMARY
+            </t>
+        </div>
+    </template>
+
+    <template id="sale_invoice_summary_report">
+        <!--<t t-foreach="docs" t-as="o">-->
+            <t t-call="hatta_reports.sale_invoice_summary_report_document"/>
+        <!--</t>-->
+    </template>
+
+    <report
+        string="Invoice Summary"
+        id="hatta_sale_invoice_summary_report"
+        model="report.hatta_reports.sale_invoice_summary_report"
+        report_type="qweb-pdf"
+        name="hatta_reports.sale_invoice_summary_report"
+        file="hatta_reports.sale_invoice_summary_report"/>
+        <!--paperformat="paperformat_inventory_report"-->
+</odoo>

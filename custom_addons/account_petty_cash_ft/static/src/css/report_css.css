@@ -1,0 +1,22 @@
+.vertical-text {
+    position: fixed;
+    -webkit-backface-visibility: hidden;
+    -webkit-transform: rotate(90deg);
+    -webkit-transform-origin: center bottom auto;
+    top: 50%;
+    right: 300px;
+}
+.ntbold
+{
+font-weight:lighter !important;
+}
+.rt_text
+{
+text-align:right;
+padding-right:200px;
+}
+.ft_font
+{
+font-size:13px;
+font-family:TimesNewRoman, "Times New Roman", Times, Baskerville, Georgia, serif;
+}

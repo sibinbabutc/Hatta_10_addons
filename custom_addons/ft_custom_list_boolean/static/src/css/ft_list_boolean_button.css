@@ -1,0 +1,6 @@
+.o_list_view .o_ft_boolean.selected {
+    color: red;
+}
+.o_list_view .o_ft_boolean {
+    color: seagreen;
+}

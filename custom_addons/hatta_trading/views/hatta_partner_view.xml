@@ -1,0 +1,138 @@
+<odoo>
+    <record id="hatta_partner_view" model="ir.ui.view">
+        <field name="name">hatta.partner.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr='//field[@name="type"]' position="after">
+                <field name="sub_ledger_code"/>
+            </xpath>
+            <xpath expr='//group[@name="purchase"]' position='inside'>
+                <field name="is_manufacturer"/>
+                <field name="is_principal_supplier"/>
+                <field name="is_employee"/>
+		<field name="is_carrier"/>	                
+            </xpath>
+            <xpath expr='//field[@name="category_id"]' position='after'>
+                <field name="partner_code"/>
+                <field name="reviewed"/>
+                <field name="vat" string="TRN" attrs="{'required': [('country_id','=', 2)]}"/>
+                <!--<field name="trn_code"/>-->
+                <field name="partner_abbreviation"/>
+                <field name="upload_invoice_to_customer"/>
+            </xpath>
+            <xpath expr='//notebook' position='inside'>
+                <page string="Paying Bank">
+                    <field name="pay_bank_ids" options="{'no_create': True}">
+<!--                           attrs="{'invisible': [('is_company','=', True)]}">-->
+                        <tree editable="bottom">
+                            <field name="acc_number" />
+                            <field name="bank_id" />
+                            <field name="currency_id" />
+                        </tree>
+                    </field>
+                </page>
+                <page name="final_destination" string="Final Destination">
+                    <field name="final_destination_id"  attrs="{'invisible':[('customer','=',False)]}">
+                        <kanban>
+                            <field name="color"/>
+                            <field name="name"/>
+                            <field name="title"/>
+                            <field name="email"/>
+                            <field name="partner_id"/>
+                            <field name="function"/>
+                            <field name="phone"/>
+                            <field name="street"/>
+                            <field name="street2"/>
+                            <field name="zip"/>
+                            <field name="city"/>
+                            <field name="country_id"/>
+                            <field name="mobile"/>
+                            <field name="fax"/>
+                            <field name="state_id"/>
+                            <field name="image"/>
+                            <field name="comment"/>
+                            <templates>
+                                <t t-name="kanban-box">
+                                    <t t-set="color" t-value="kanban_color(record.color.raw_value)"/>
+                                    <div t-att-class="color + (record.title.raw_value == 1 ? ' oe_kanban_color_alert' : '') + ' oe_kanban_global_click'">
+                                        <a t-if="!read_only_mode" type="delete" class="fa fa-times pull-right"/>
+                                        <div class="o_kanban_image">
+                                            <img t-if="record.image.raw_value" t-att-src="'data:image/png;base64,'+record.image.raw_value"/>
+                                            <t t-if="!record.image.raw_value">
+                                                <img t-if="record.type.raw_value === 'delivery'" t-att-src="_s + &quot;/base/static/src/img/truck.png&quot;"/>
+                                                <img t-if="record.type.raw_value === 'invoice'" t-att-src="_s + &quot;/base/static/src/img/money.png&quot;"/>
+                                                <t t-if="record.type.raw_value !== 'invoice' &amp;&amp; record.type.raw_value !== 'delivery'">
+                                                    <img t-if="record.is_company.raw_value === true" t-att-src="_s + &quot;/base/static/src/img/company_image.png&quot;"/>
+                                                    <img t-if="record.is_company.raw_value === false" t-att-src="_s + &quot;/base/static/src/img/avatar.png&quot;"/>
+                                                </t>
+                                            </t>
+                                        </div>
+                                        <div class="oe_kanban_details">
+                                            <field name="name"/>
+                                            <div t-if="record.function.raw_value"><field name="function"/></div>
+                                            <div t-if="record.email.raw_value"><field name="email"/></div>
+                                            <div t-if="record.type.raw_value != 'contact'">
+                                                <div>
+                                                    <field name="zip"/>
+                                                    <field name="city"/>
+                                                </div>
+                                                <field t-if="record.state_id.raw_value" name="state_id"/>
+                                                <field name="country_id"/>
+                                            </div>
+                                            <div t-if="record.phone.raw_value">Phone: <field name="phone"/></div>
+                                            <div t-if="record.mobile.raw_value">Mobile: <field name="mobile"/></div>
+                                            <div t-if="record.fax.raw_value">Fax: <field name="fax"/></div>
+                                        </div>
+                                    </div>
+                                </t>
+                            </templates>
+                        </kanban>
+                        <form string="Contact / Address">
+                            <sheet>
+                                <group>
+                                    <group>
+                                        <label for="street" string="Address"/>
+                                        <div>
+                                            <div class="o_address_format" name="div_address">
+                                                <field name="street" placeholder="Street..." class="o_address_street"/>
+                                                <field name="street2" placeholder="Street 2..." class="o_address_street"/>
+                                                <field name="city" placeholder="City" class="o_address_city"/>
+                                                <field name="state_id" class="o_address_state" placeholder="State" options="{&quot;no_open&quot;: True}" context="{'country_id': country_id, 'zip': zip}"/>
+                                                <field name="zip" placeholder="ZIP" class="o_address_zip"/>
+                                                <field name="country_id" placeholder="Country" class="o_address_country" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"/>
+                                            </div>
+                                        </div>
+                                    </group>
+                                    <group>
+                                        <field name="name" string="Contact Name"/>
+                                        <field name="title" placeholder="e.g. Mr."/>
+                                        <field name="function" placeholder="e.g. Sales Director"/>
+                                        <field name="email"/>
+                                        <field name="phone" widget="phone"/>
+                                        <field name="mobile" widget="phone"/>
+                                        <field name="comment" placeholder="internal note..."/>
+                                    </group>
+                                </group>
+
+                            </sheet>
+                        </form>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="partner_property_view_form" model="ir.ui.view">
+        <field name="name">partner.property.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="account.view_partner_property_form"/>
+        <field name="arch" type="xml">
+            <xpath expr='//field[@name="trust"]' position="after">
+                <field name="analytic_account_id"/>
+                <field name="sequence_id"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

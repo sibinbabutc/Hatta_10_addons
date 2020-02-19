@@ -1,0 +1,593 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_enquiry_details_form" model="ir.ui.view">
+        <field name="name">enquiry.details.form</field>
+        <field name="model">enquiry.details</field>
+        <field name="arch" type="xml">
+            <form string="Enquiry Details">
+               <header>
+                   <button name="skip_pdf" string="Skip PDF" type="object" icon="fa-file"
+                           attrs="{'invisible': ['|', ('state', 'not in', ['pdf']),('enquiry_attachment_ids', '!=', [])]}"/>
+                   <button name="pdf_to_enquiry" string="Convert to Enquiry" type="object" states="pdf"/>
+                   <button name="action_create_rfq" string="Create RFQ" type="object" class="btn-primary"
+                           states="enquiry,sent"/>
+                   <!--<button name="action_send_enquiry" string="Send By Email" type="object" states="enquiry,sent" icon="fa-envelope"/>-->
+                   <button name="action_wizard_rfq_selection" string="Select Bids for Sale" states="on_estimation"
+                           type="object" class="oe_highlight" icon="fa-list"/>
+                   <button name="go_to_sale_order" type="object" string="Go To Sale Order"
+                           attrs="{'invisible': ['|',('state','not in',('sale_ready','sale_quotation','done')),('sale_ids','=',[])]}" class="oe_highlight"/>
+                   <button name="create_sale_order" type="object" string="Create Sale Order"
+                           attrs="{'invisible': ['|',('state','!=','sale_ready'),('sale_ids','!=',[])]}" class="oe_highlight"/>
+                   <button name="action_covering_letter" type="object" string="Print Covering Letter" icon="fa-print"
+                           class="oe_highlight" states="on_estimation,sale_ready,sale_quotation"/>
+                   <button name="action_wizard_rfq_selection" string="Re-Select Bids for Sale" states="sale_ready"
+                           type="object" icon="fa-list"/>
+                   <button name="go_to_sale_order" type="object" string="Go To Sale Order"
+                           attrs="{'invisible': ['|',('state','!=',('enquiry','sent','on_estimation')),('sale_ids','=',[])]}"/>
+                   <button name="create_sale_order" type="object" string="Create Sale Order"
+                           attrs="{'invisible': ['|',('state','!=',('enquiry','sent','on_estimation')),('sale_ids','!=',[])]}"/>
+                   <button name="action_create_rfq" string="Create RFQ" type="object"
+                           states="on_estimation,sale_ready,sale_quotation"/>
+                   <field name="state" widget="statusbar" statusbar_visible="enquiry,on_estimation,sale_quotation,done"/>
+               </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <br/>
+                        <button name="action_view_sale_orders" type="object" class="oe_stat_button" icon="fa-tasks"
+                                states="sale_quotation,done">
+                            <field name="sale_q_count" widget="statinfo" nolabel="1"/>
+                            <span>&#160; SQs/SOs</span>
+                        </button>
+                        <button name="action_view_rfq" type="object" class="oe_stat_button" icon="fa-tasks"
+                                attrs="{'invisible': [('rfq_count', '=', 0)]}">
+                            <field name="rfq_count" widget="statinfo" nolabel="1"/>
+                            <span>&#160; RFQs/POs</span>
+                        </button>
+                   </div>
+                    <div class="oe_title" states="enquiry,sale_quotation,done,sent,on_estimation,sale_ready">
+                        <label for="reference"/>
+                        <h2>
+                            <field name="reference"/>
+                        </h2>
+                    </div>
+                <group>
+                    <group>
+                        <field name="customer_rfq"/>
+                        <b><field name="coll_no_type" nolabel="1" widget="radio" options="{'horizontal':True}" class="o_td_label"/></b>
+                        <field name="coll_buyer_ref_no" nolabel="1" class="oe_inline" style="margin-left: 9px"/>
+                    </group>
+                    <group>
+                        <field name="name" states="enquiry,sale_quotation,done,sent,on_estimation,sale_ready"/>
+                    </group>
+                    <group>
+                        <field name="partner_id" required="1" domain="[('customer', '=', True)]"/>
+<!--                        <field name="partner_final_destinations" invisible="1"/>-->
+                        <field name="partner_procure_id" states="enquiry,sale_quotation,done,sent,on_estimation,sale_ready"/>
+                        <field name="partner_delivery_id" states="enquiry,sale_quotation,done,sent,on_estimation,sale_ready"/>
+                        <field name="contact_id" states="enquiry,sale_quotation,done,sent,on_estimation,sale_ready"/>
+                        <field name="end_user_id" states="enquiry,sale_quotation,done,sent,on_estimation"/>
+                    </group>
+                    <group>
+                        <field name="cost_center_id" attrs="{'required': [('state', '!=', 'pdf')]}"
+                               domain="[('tag_type', '=', 'cost_center')]" context="{'default_tag_type': 'cost_center'}"/>
+                        <field name="creation_date" readonly="1"/>
+                        <field name="date_deadline" required="1"/>
+                        <field name="worksheet_date" states="enquiry,sale_quotation,done,sent,on_estimation,sale_ready"/>
+                        <field name="payment_term_id" states="enquiry,sale_quotation,done,sent,on_estimation,sale_ready"/>
+                        <field name="delivery_terms" states="enquiry,sale_quotation,done,sent,on_estimation,sale_ready"/>
+                        <field name="quote_validity" states="enquiry,sale_quotation,done,sent,on_estimation,sale_ready"/>
+                    </group>
+                    <group>
+                        <field name="email_from"/>
+                        <field name="phone"/>
+                    </group>
+                    <group>
+                        <field name="supplier_closing_date" attrs="{'readonly': [('state','not in', ['enquiry','sent'])],
+                        'required': [('state','!=', 'pdf')]}"/>
+                    </group>
+                    <group>
+                        <field name="product_type" states="enquiry,sale_quotation,done,sent,on_estimation,sale_ready"/>
+
+                    </group>
+                </group>
+                    <notebook >
+                        <page string="Selected RFQ Lines" states="sale_ready,sale_quotation">
+                            <field name="selected_purchase_order_lines">
+                                <!--TODO: Replace with the seperate tree form view, define in hatta_purchase_view-->
+                                <tree string="Purchase Order Lines" edit="false" delete="false" create="false">
+                                    <field name="currency_id" invisible="1"/>
+                                    <field name="base_currency" invisible="1"/>
+                                    <field name="state" invisible="1"/>
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="serial_no"/>
+                                    <field name="product_id" attrs="{'readonly': [('state', 'in', ('purchase', 'to approve','done', 'cancel'))]}" context="{'partner_id':parent.partner_id, 'quantity':product_qty,'uom':product_uom, 'company_id': parent.company_id}"/>
+                                    <field name="name"/>
+                                    <field name="date_planned" invisible="1"/>
+                                    <field name="company_id" options="{'no_create': True}" invisible="1"/>
+                                    <field name="base_currency" invisible="1"/>
+                                    <field name="product_qty"/>
+                                    <field name="qty_received" invisible="not context.get('show_purchase', False)"/>
+                                    <field name="qty_invoiced" invisible="not context.get('show_purchase', False)"/>
+                                    <field name="product_uom" string="UOM" attrs="{'readonly': [('state', 'in', ('purchase', 'done', 'cancel'))]}"/>
+                                    <field name="price_unit_lc" string="Unit Price" widget="monetary" options="{'currency_field': 'base_currency'}"/>
+                                    <field name="price_tax" string="VAT"/>
+                                    <field name="taxes_id" invisible="1"/>
+                                    <field name="price_subtotal_lc" string="Subtotal" widget="monetary"/>
+                                    <field name="price_total_lc" string="Total" widget="monetary" sum="Total"/>
+                                    <field name="net_cost_lc" sum="Total"/>
+                                    <field name="dist_margin" sum="Total"/>
+                                    <field name="sale_price_unit"/>
+                                    <field name="sale_price_lc" sum="Total"/>
+                                    <!--<button type="object" name="toggle_selection" class="oe_highlight" pin_unpin="True" pin_field="selected_for_sale"/>-->
+                                 </tree>
+                                <form string="Purchase Order Line">
+                                    <header>
+                                        <field name="state" widget="statusbar" statusbar_visible="False"/>
+                                    </header>
+                                    <sheet>
+                                        <group>
+                                            <group>
+                                                <field name="serial_no"/>
+                                                <field name="product_id" context="{'partner_id': parent.partner_id}"/>
+                                                <field name="name"/>
+                                                <label for="product_qty"/>
+                                                <div>
+                                                    <field name="product_qty" class="oe_inline"/>
+                                                    <span class="oe_inline">&#160;</span>
+                                                    <field name="product_uom" groups="product.group_uom" class="oe_inline"/>
+                                                </div>
+                                            </group>
+                                            <group>
+                                                <field name="manufacturer_id"/>
+                                                <field name="date_planned" widget="date"/>
+                                                <field name="company_id" groups="base.group_multi_company"
+                                                       options="{'no_create': True}"/>
+                                                <field name="account_analytic_id" colspan="2" groups="purchase.group_analytic_accounting"/>
+                                                <field name="taxes_id" widget="many2many_tags" domain="[('type_tax_use', '=', 'purchase')]"/>
+                                                <field name="price_tax"/>
+                                                <field name="currency_id" invisible="1"/>
+                                                <field name="base_currency" invisible="1"/>
+                                            </group>
+                                            <group string="In Local Currency">
+                                                <field name="price_unit_lc"/>
+                                                <field name="price_subtotal_lc" widget="monetary"/>
+                                                <field name="price_total_lc" widget="monetary"/>
+                                                <field name="total_landed_cost"/>
+                                                <field name="net_cost_lc" widget="monetary"
+                                                       style="font-size: xx-large;border-bottom: solid 1px;border-top: solid 1px;"/>
+                                                <field name="dist_margin"/>
+                                                <field name="sale_price_lc" widget="monetary"
+                                                       style="font-size: xx-large;border-bottom: solid 1px;border-top: solid 1px;"/>
+                                                <field name="sale_price_unit"/>
+                                            </group>
+                                            <group string="In Foreign Currency">
+                                                <!--<field name="total_discount_fc"/>-->
+                                                <field name="price_unit"/>
+                                                <field name="price_subtotal" widget="monetary"/>
+                                                <field name="price_total" widget="monetary"/>
+                                            </group>
+                                        </group>
+                                        <notebook>
+                                            <page string="Landed Cost Lines" states="sale_ready,to approve,purchase,done">
+                                                <field name="landed_cost_lines" readonly="1">
+                                                    <tree>
+                                                        <field name="name"/>
+                                                        <field name="cost_sheet_line_id"/>
+                                                        <field name="amount"/>
+                                                        <field name="split_method"/>
+                                                        <field name="additional_landed_cost" sum="Total Landed Cost"/>
+                                                    </tree>
+                                                </field>
+                                            </page>
+                                            <page string="Qualification &amp; Justification">
+                                                <group string="Qualification">
+                                                    <field name="qualification" nolabel="1"/>
+                                                </group>
+                                                <group string="Justification">
+                                                    <field name="justification" nolabel="1"/>
+                                                </group>
+                                            </page>
+                                            <page string='Variants'>
+                                                <group>
+                                                    <group>
+                                                        <field name="selected_variant"
+                                                               domain="[('pol_id', '=', active_id)]"
+                                                               options="{'no_create': True,'no_create_edit':True,'no_open':True}"/>
+                                                    </group>
+                                                </group>
+                                                <field name="variant_ids" nolabel="1" context="{'default_pol_id': active_id}">
+                                                    <tree editable="bottom">
+                                                        <!--<field name="selected_variant"/>-->
+                                                        <field name="name" required="1"/>
+                                                        <field name="description"/>
+                                                        <field name="pol_id" invisible="1"/>
+                                                    </tree>
+                                                    <form>
+                                                        <group>
+                                                            <field name="name" required="1"/>
+                                                            <field name="description"/>
+                                                        </group>
+                                                    </form>
+                                                </field>
+                                            </page>
+                                            <page string='Certificate(s)'>
+                                                <field name="certificate_ids" nolabel="1">
+                                                    <tree>
+                                                        <field name="name"/>
+                                                        <field name="code"/>
+                                                    </tree>
+                                                </field>
+                                            </page>
+                                            <page string="Invoices and Incoming Shipments">
+                                                <group col="4">
+                                                    <field name="purchase_method" widget="radio"/>
+                                                    <field name="invoice_lines"/>
+                                                    <field name="move_ids"/>
+                                                </group>
+                                            </page>
+                                        </notebook>
+                                    </sheet>
+                                </form>
+                            </field>
+                        </page>
+                        <page string="Bids Comparison" states="on_estimation">
+                                <button name="toggle_bid_html" type="object" string="Group by Supplier" class="oe_link"
+                                        attrs="{'invisible': [('bid_html_group_supplier','=', True)]}" icon="fa-plus"/>
+                                <button name="toggle_bid_html" type="object" string="Group by Product"  class="oe_link"
+                                        attrs="{'invisible': [('bid_html_group_supplier','!=', True)]}" icon="fa-plus"/>
+                            <field name="bid_html"/>
+                            <field name="bid_html_group_supplier" invisible="1"/>
+                        </page>
+                        <page string="Request For Quotations" states="on_estimation,sale_quotation,sale_ready">
+                            <field name="purchase_orders_dup" options="{'reload_on_button': True}">
+                                <tree colors="green:state == 'sale_ready'"  create="0">
+                                    <field name="name"/>
+                                    <field name="date_order"/>
+                                    <field name="partner_id"/>
+                                    <field name="date_planned"/>
+                                    <field name="amount_untaxed"/>
+                                    <field name="amount_total"/>
+                                    <field name="state"/>
+                                    <button states="draft" help="Send RFQ by Email"  type="object"
+                                            name="action_rfq_send" title="Email" icon="fa-envelope-o"/>
+                                    <button states="draft" help="Print RFQ" type="object"
+                                            name="print_quotation" class="oe_highlight" icon="fa-print"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Enquired Products" states="enquiry,sale_quotation,done,on_estimation,sale_ready">
+                            <field name="enquiry_product_lines" states="" options="{'reload_on_button': True}"
+                                   context="{'default_supplier_closing_date': supplier_closing_date}">
+                                <tree colors="green:principal_supplied">
+                                    <field name="serial_no" string="#"/>
+                                    <field name="product_id"/>
+                                    <button help="Product History" type="object" class="oe_highlight" icon="fa-search"
+                                            name="view_history" />
+                                    <field name="name"/>
+                                    <field name="product_uom_qty" string="Qty"/>
+                                    <field name="product_uom_id"/>
+                                    <field name="principal_supplied" invisible="1"/>
+                                </tree>
+                            </field>
+                            <field name="product_lines" states="sale_ready">
+
+                                <tree colors="green:principal_supplied">
+                                    <field name="serial_no" string="#"/>
+                                    <field name="product_id"/>
+                                    <button help="Product History" type="object" class="oe_highlight" icon="fa-search"
+                                            name="view_history" />
+                                    <field name="name"/>
+                                    <field name="product_uom_qty" string="Qty"/>
+                                    <field name="product_uom_id"/>
+                                    <!--<field name="cost_price"/>-->
+                                    <!--<field name="price_unit"/>-->
+                                    <field name="vat" widget="many2many_tags" domain="[('type_tax_use', '=', 'sale')]"/>
+                                    <field name="override_sale_price" invisible="1"/>
+                                    <field name="price_subtotal"/>
+                                    <field name="price_tax" invisible="1"/>
+                                    <field name="price_total" invisible="1"/>
+                                    <field name="principal_supplied" invisible="1"/>
+                                </tree>
+                            </field>
+                            <p>* Legends: Green - Principal Suppliable items</p>
+                            <group class="oe_subtotal_footer oe_right" colspan="2" name="sale_total"
+                                   attrs="{'invisible': [('state','in', ['enquiry','sent'])]}">
+                                <field name="amount_untaxed" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                                <field name="amount_tax" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                                <div class="oe_subtotal_footer_separator oe_inline o_td_label">
+                                    <label for="amount_total" />
+                                </div>
+                                <field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                                <field name="amount_in_words" invisible="1"/>
+                            </group>
+                            <group string="Customer Remarks">
+                                <field name="customer_remark" nolabel="1" placeholder="Remarks to customer..."/>
+                            </group>
+                            <!--<group string="Qualification and Justification">-->
+                                <!--<field name="qualification" nolabel="1" placeholder="Qualification and Justification.."/>-->
+                            <!--</group>-->
+                        </page>
+                        <page string="Products and Suppliers" states="enquiry,sale_quotation,done,on_estimation,sale_ready">
+                            <field name="create_by" widget="toggle_button_with_string" icon="fa-plus-circle"
+                               options="{'terminology':['Add Supplier-wise Batch of Product','Add Product-wise Batch of Suppliers']}"
+                               string="Add By Supplier/Product" class="oe_edit_only"/>
+                            <separator/>
+                            <group class="oe_edit_only" col="6">
+                                <group colspan="2">
+                                    <field name="supplier_id" attrs="{'invisible': [('create_by', '=', True)]}" options="{'no_create': True,'no_create_edit':True}"/>
+                                    <field name="enquiry_line_id" options="{'no_create': True,'no_create_edit':True}"
+                                           domain="[('enquiry_id', '=', active_id)]" attrs="{'invisible': [('create_by', '=', False)]}"/>
+                                </group>
+                                <group colspan="3">
+                                    <field name="enquiry_line_list" widget="many2many_tags"
+                                           domain="[('enquiry_id', '=', active_id)]"
+                                           options="{'no_create': True,'no_create_edit':True,'direct_search': True}"
+                                           attrs="{'invisible': ['|',('create_by', '=', True),('supplier_id','=',False)]}"/>
+                                    <field name="supplier_id_list" widget="many2many_tags"
+                                           options="{'no_create': True,'no_create_edit':True,'direct_search': True}"
+                                           attrs="{'invisible': ['|',('create_by', '=', False),('enquiry_line_id','=',False)]}"/>
+                                </group>
+                                <group>
+                                    <button name="add_by_supplier_product" string="Update" icon="fa-refresh"
+                                        type="object" class="oe_link oe_right"/>
+                                </group>
+
+                            </group>
+                            <field name="supplier_product_lines" readonly="1">
+                                <tree>
+                                    <field name="product_id"/>
+                                    <field name="supplier_id"/>
+                                    <field name="enquiry_line_id"/>
+                                    <field name="product_qty"/>
+                                    <field name="po_line_reference" readonly="1" attrs="{'invisible': [('po_line_reference', '=', '[False] False')]}"/>
+                                </tree>
+                            </field>
+                        </page>
+
+                        <page string="Sale Orders" attrs="{'invisible': [('state', 'not in', ('sale_quotation','done'))]}">
+                            <field name="sale_ids">
+                                <tree create="false">
+                                    <field name="name"/>
+                                    <field name="date_order"/>
+                                    <field name="partner_id"/>
+                                    <field name="amount_total"/>
+                                    <field name="state" string="Status"/>
+                                </tree>
+                            </field>
+                        </page>
+
+                        <page string="Info" states="enquiry,sale_quotation,done,on_estimation,sale_ready">
+                            <group>
+                                <field name="priority" states="enquiry,sale_quotation,done,sent,on_estimation,sale_ready"/>
+                                <field name="analytic_account_id" readonly="1"/>
+                                <!--<field name="partner_sequence" invisible="1"/>-->
+                                <!--<field name="principal_supplier_id"-->
+                                       <!--attrs="{'invisible': [('partner_sequence', '=', False)],-->
+                                       <!--'required': [('partner_sequence', '=', True)]}"-->
+                                       <!--context="{'default_is_principal_supplier': True,-->
+                                                 <!--'default_supplier': True,-->
+                                                 <!--'default_customer': False,}"-->
+                                <!--/>-->
+                                <field name="currency_id" states="enquiry,sale_quotation,done,sent,on_estimation,sale_ready"/>
+                                <field name="sale_id" states="sale_quotation" invisible="1"/>
+                            </group>
+                            <group>
+                                <field name="user_id"/>
+                                <field name="company_id" invisible="1"/>
+                                <field name="selected_purchase_order" invisible="1"/>
+                            </group>
+                        </page>
+                        <page string="Attachments">
+                            <field name="enquiry_attachment_ids"
+                                    context="{'default_sub_model': 'enquiry.details'}">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="description"/>
+                                    <field name="datas_fname"/>
+                                    <field name="datas"/>
+                                </tree>
+                                <form string="Attachments">
+                                   <sheet>
+                                    <label for="name" class="oe_edit_only"/>
+                                    <h1>
+                                        <field name="name"/>
+                                    </h1>
+                                    <group>
+                                        <group>
+                                            <field name="type"/>
+                                            <field name="datas" filename="datas_fname" attrs="{'invisible':[('type','=','url')]}"/>
+                                            <field name="datas_fname" invisible="1" attrs="{'invisible':[('type','=','url')]}" class="oe_inline oe_right"/>
+                                            <field name="url" widget="url" attrs="{'invisible':[('type','=','binary')]}"/>
+                                            <field name="mimetype" groups="base.group_no_one" invisible="1"/>
+                                            <field name="sub_model" invisible="1"/>
+                                        </group>
+                                        <group name="description_group" string="Description" groups="base.group_no_one"  colspan="4">
+                                            <field name="description" nolabel="1"/>
+                                        </group>
+                                    </group>
+                                  </sheet>
+                                </form>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_enquiry_details_tree" model="ir.ui.view">
+        <field name="name">enquiry.details.tree</field>
+        <field name="model">enquiry.details</field>
+        <field name="arch" type="xml">
+            <tree string="Enquiry Details">
+                <field name="reference" />
+                <field name="partner_id"/>
+                <field name="creation_date"/>
+                <field name="user_id"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="enquiry_products_line_view_form" model="ir.ui.view">
+        <field name="name">enquiry.products.line.form</field>
+        <field name="model">enquiry.products.line</field>
+        <field name="arch" type="xml">
+            <form string="Products Line">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="serial_no"/>
+                            <field name="product_id"/>
+                            <field name="name"/>
+                            <field name="default_code"/>
+                            <field name="product_uom_id"/>
+                            <field name="product_uom_qty"/>
+                            <field name="prod_temp_id" invisible="1"/>
+<!--                            <field name="partner_final_destinations"/>-->
+                            <field name="manufacturer_id" options="{'no_create':True}" domain="[('product_template_id', '=', prod_temp_id)]"/>
+                            <field name="selected_pol_id" attrs="{'invisible': [('selected_pol_id', '=', False)]}"/>
+                        </group>
+                        <group>
+                            <field name="principal_supplied"/>
+                            <field name="cost_price" />
+                            <field name="price_unit" />
+                            <field name="vat" widget="many2many_tags" domain="[('type_tax_use', '=', 'sale')]"/>
+                            <field name="override_sale_price"/>
+                            <field name="price_subtotal"/>
+                            <br/><br/><br/><br/><br/><br/>
+                            <field name="supplier_closing_date"/>
+                            <field name="final_destination" context="{'for_final_destination': True}"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Suppliers">
+                            <field name="supplier_product_lines" context="{
+                                   'default_product_id': product_id,
+                                   'default_product_qty': product_uom_qty,
+                                   'default_product_uom_id': product_uom_id}">
+                                <tree editable="bottom">
+                                    <field name="enquiry_id" invisible="1"/>
+                                    <field name="enquiry_line_id" invisible="1"/>
+                                    <field name="product_id" invisible="1"/>
+                                    <field name="supplier_id"/>
+                                    <field name="product_uom_id"/>
+                                    <field name="product_qty"/>
+                                    <field name="purchase_order_line_id" readonly="1"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Certificate(s) Required">
+                            <field name="certificate_ids">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="code"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Quotation To Select" invisible="1">
+                            <field name="pol_ids">
+                                <tree string="RFQs to Select" create="false">
+                                    <field name="serial_no" readonly="True" string="SI. No" invisible="True"/>
+                                    <field name="order_id" readonly="True"/>
+                                    <field name="product_id" readonly="True" invisible="True"/>
+                                    <field name="manufacturer_id" readonly="True" context="{'default_customer': False, 'default_supplier': False, 'default_is_manufac': True, 'default_is_company': True}"/>
+                                    <field name="product_qty" readonly="True"/>
+                                    <field name="currency_id" readonly="True"/>
+                                    <field name="price_unit" string="Unit Price FC" readonly="True" invisible="True" on_change="onchange_unit_price_fc(price_unit, currency_id, product_qty)"/>
+                                    <field name="price_unit_lc" readonly="True" invisible="True"/>
+                                    <field name="price_subtotal_lc" readonly="True" invisible="True"/>
+                                    <field name="date_order" invisible="True"/>
+                                    <field name="state" invisible="True"/>
+                                    <field name="selected_for_sale" readonly="True" string="Selected"/>
+                                    <field name="is_revision" invisible="1"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="enquiry_products_line_view_tree" model="ir.ui.view">
+        <field name="name">enquiry.products.line.tree</field>
+        <field name="model">enquiry.products.line</field>
+        <field name="arch" type="xml">
+            <tree string="Enquiry Products Line">
+                <field name="product_id"/>
+                <field name="serial_no"/>
+                <field name="name"/>
+                <field name="cost_price"/>
+                <field name="price_unit"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="product_certificate_view_form" model="ir.ui.view">
+        <field name="name">product.certificate.form</field>
+        <field name="model">product.certificate</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="charge_id" context="{'default_name': (name or ''), 'default_cost_type': 'equipment_cost'}"/>
+                    <!--<field name="selected"/>-->
+                </group>
+                <field name="note"/>
+            </form>
+        </field>
+    </record>
+
+    <record id="product_certificate_view_tree" model="ir.ui.view">
+        <field name="name">product.certificate.tree</field>
+        <field name="model">product.certificate</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="note"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="product_certificate_action" model="ir.actions.act_window">
+        <field name="name">Product Certificates</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">product.certificate</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+                Click to create Product Certificates.
+          </p><p>
+            <!-- More details about what a user can do with this object will be OK -->
+          </p>
+        </field>
+    </record>
+
+    <record id="enquiry_details_action" model="ir.actions.act_window">
+        <field name="name">Enquiry Details</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">enquiry.details</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+                Click to create Enquiry Details.
+          </p><p>
+            <!-- More details about what a user can do with this object will be OK -->
+          </p>
+        </field>
+    </record>
+
+    <menuitem id="enquiry_menu" name="Enquiry" sequence="2"/>
+    <menuitem id="enquiry_main_menu" name="Enquiries" parent="enquiry_menu" sequence="1"/>
+    <menuitem id="enquiry_sub_menu" name="Enquiry" parent="enquiry_main_menu" action="enquiry_details_action" sequence="1"/>
+
+
+</odoo>

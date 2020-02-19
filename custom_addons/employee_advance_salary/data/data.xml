@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+
+    <record model="account.account" id="l10n_ae.uae_account_salary_3001">
+        <field name="name">Salary Advance</field>
+        <field name="code">102001</field>
+        <field name="user_type_id" ref="account.data_account_type_receivable" />
+        <field name="reconcile" eval="True" />
+        <field name="chart_template_id" ref="l10n_ae.uae_chart_template_standard"/>
+     </record>
+		
+		<record id="sequence_payment_salary_advance" model="ir.sequence">
+            <field name="name">Salary Advance Payments sequence</field>
+            <field name="code">account.payment.employee.advance</field>
+            <field name="prefix">SADV.OUT/%(range_year)s/</field>
+            <field eval="1" name="number_next"/>
+            <field eval="1" name="number_increment"/>
+            <field eval="True" name="use_date_range"/>
+            <field eval="False" name="company_id"/>
+            <field name="padding">4</field>
+        </record>
+
+        <record id="salary_advance_journal" model="account.journal">
+            <field name="name">Salary Advance Journal</field>
+            <field name="code">SADV</field>
+            <field name="type">general</field>
+            <!-- <field name="company_id"></field> -->
+            <field name="default_credit_account_id" ref="l10n_ae.uae_account_salary_3001"/>
+            <field name="default_debit_account_id" ref="l10n_ae.uae_account_salary_3001"/>
+            <field name="sequence" ref="employee_advance_salary.sequence_payment_salary_advance"/>
+        </record>
+
+</data>
+</odoo>

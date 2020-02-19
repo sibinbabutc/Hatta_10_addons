@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        
+        <record id="view_hr_holidaystatus_form_inherit" model="ir.ui.view">
+            <field name="name">hr.holidays.status.form</field>
+            <field name="model">hr.holidays.status</field>
+            <field name="inherit_id" ref="hr_holidays.edit_holiday_status_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//group[@name='selection']" position="inside">
+                    <field name="is_encashable"/>
+                </xpath>
+            </field>
+        </record>
+        
+    </data>
+</openerp>

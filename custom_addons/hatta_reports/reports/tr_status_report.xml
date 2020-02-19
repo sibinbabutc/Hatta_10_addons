@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="tr_status_report_document">
+        <t t-call="hatta_reports.simple_external_layout">
+        <div class="page ft_font">
+            <table class="table table-bordered" style="border:solid .05em black;">
+                <thead>
+                    <th style="border:solid .05em black;">SI #</th>
+                    <th style="border:solid .05em black;">TT Date</th>
+                    <th style="border:solid .05em black;">Amount Cleared</th>
+                    <th style="border:solid .05em black;">Amount Used</th>
+                    <th style="border:solid .05em black;">Cr Days</th>
+                    <th style="border:solid .05em black;">Due Date</th>
+                    <th style="border:solid .05em black;">Balance Available</th>
+                    <th style="border:solid .05em black;">Particulars</th>
+                    <th style="border:solid .05em black;">DISB ID</th>
+                </thead>
+                    <t t-foreach="docs" t-as="o">
+                    <tr>
+                        <td style="border:solid .05em black;"><t t-esc="o_index+1"/></td>
+                        <td style="border:solid .05em black; text-align:center;">
+                            <span t-esc="datetime.datetime.strptime(o['tt_date'], '%Y-%m-%d').strftime('%d-%m-%Y')"/></td>
+                        <td style="border:solid .05em black; text-align:right;"><span t-esc="o['amount_cleared']"/></td>
+                        <td style="border:solid .05em black; text-align:right;"><span t-esc="o['amount_used']"/></td>
+                        <td style="border:solid .05em black; text-align:center;"><span t-esc="o['cr_days']"/></td>
+                        <td style="border:solid .05em black; text-align:center;">
+                            <t t-if="o['due_date']">
+                                <span t-esc="datetime.datetime.strptime(o['due_date'], '%Y-%m-%d').strftime('%d-%m-%Y')"/>
+                            </t>
+                        </td>
+                        <td style="border:solid .05em black; text-align:right;"></td>
+                        <td style="border:solid .05em black; text-align:right;"><span t-esc="o['note']"/></td>
+                        <td style="border:solid .05em black; text-align:right;"><span t-esc="o['disb_id']"/></td>
+                    </tr>
+                </t>
+                    <tr>
+
+                        <t t-set="amount_cleared_sum" t-value="sum(line.get('amount_cleared') for line in docs)"/>
+                        <t t-set="amount_used_sum" t-value="sum(line.get('amount_used') for line in docs)"/>
+                        <td colspan="2" style="border:solid .05em black;">Total:</td>
+                        <td style="border:solid .05em black; text-align:right;"><t t-esc="amount_cleared_sum"/></td>
+                        <td style="border:solid .05em black; text-align:right;"><t t-esc="amount_used_sum"/></td>
+                        <td colspan="5" style="border:solid .05em black; text-align:right;"></td>
+                    </tr>
+
+            </table>
+            <table width="35%" style="border:solid .05em black;padding:5px;">
+                <tr>
+                    <td width="40%" style="padding:5px;"><b>TR Limit</b></td>
+                    <td style="padding:5px;">:</td>
+                    <td style="padding:5px;"><t t-esc="tr_account.limit"/></td>
+                </tr>
+                <tr>
+                    <td width="40%" style="padding:5px;"><b>Amount Used </b></td>
+                    <td style="padding:5px;">:</td>
+                    <td style="padding:5px;"><t t-esc="amount_used_sum"/></td>
+                </tr>
+                <tr>
+                    <td width="40%" style="padding:5px;"><b>Amount Cleared</b></td>
+                    <td style="padding:5px;">:</td>
+                    <td style="padding:5px;"><t t-esc="amount_cleared_sum"/></td>
+                </tr>
+                <tr>
+                    <td width="40%" style="padding:5px;"><b>Balance</b></td>
+                    <td style="padding:5px;">:</td>
+                    <td style="padding:5px;">X</td>
+                </tr>
+            </table>
+        </div>
+        </t>
+    </template>
+
+    <template id="tr_status_report_header" inherit_id="hatta_reports.simple_external_layout_header">
+        <div class="report-title" position="inside">
+            <t t-if="xmlid == 'hatta_reports.tr_status_report'">
+                TR STATUS REPORT
+            </t>
+        </div>
+    </template>
+
+    <template id="tr_status_report">
+            <t t-call="hatta_reports.tr_status_report_document"/>
+    </template>
+
+    <report
+        string="TR Status Report"
+        id="hatta_tr_status_report"
+        report_type="qweb-html"
+        model="report.hatta_reports.tr_status_report"
+        name="hatta_reports.tr_status_report"
+        file="hatta_reports.tr_status_report"
+        paperformat="hatta_trading.paperformat_hatta_consolidated"
+    />
+</odoo>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="generate_otp_cron" model="ir.cron">
+            <field name="name">Generate OTP</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field eval="True" name="doall"/>
+            <field name="model">hatta.login.otp</field>
+            <field eval="'generate_otp_cron'" name="function"/>
+            <field eval="'()'" name="args"/>
+        </record>
+        
+        <record id="generate_otp_cron_email" model="ir.cron">
+            <field name="name">Generate OTP With Email</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field eval="True" name="doall"/>
+            <field name="model">hatta.login.otp</field>
+            <field eval="'generate_otp_cron_email'" name="function"/>
+            <field eval="'()'" name="args"/>
+        </record>
+        
+        <record id="user_logout_scheduler" model="ir.cron">
+            <field name="name">User Logout Scheduler</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field eval="False" name="doall"/>
+            <field name="model">login.log.view</field>
+            <field eval="'logout_users'" name="function"/>
+            <field eval="'()'" name="args"/>
+        </record>
+    </data>
+</odoo>

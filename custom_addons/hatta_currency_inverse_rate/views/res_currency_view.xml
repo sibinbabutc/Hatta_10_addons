@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+    <record model='ir.ui.view' id='view_currency_form'>
+        <field name='name'>res.currency.form</field>
+        <field name="model">res.currency</field>
+        <field name="inherit_id" ref="base.view_currency_form"/>
+        <field name='arch' type='xml'>
+            <field name="rate" position="after">
+                <field name="inverse_rate"/>
+                <field name="unit_name"/>
+                <field name="sub_unit_name"/>
+            </field>
+        </field>
+    </record>
+
+    <record model='ir.ui.view' id='view_currency_tree'>
+        <field name='name'>res.currency.tree</field>
+        <field name="model">res.currency</field>
+        <field name="inherit_id" ref="base.view_currency_tree"/>
+        <field name='arch' type='xml'>
+            <field name="rate" position="after">
+                <field name="inverse_rate"/>
+            </field>
+        </field>
+    </record>
+ <record model='ir.ui.view' id='view_currency_rate_tree'>
+            <field name='name'>res.currency.rate.tree</field>
+            <field name="model">res.currency.rate</field>
+            <field name="inherit_id" ref="base.view_currency_rate_tree"/>
+            <field name='arch' type='xml'>
+                <field name="rate" position="after">
+                    <field name="inverse_rate"/>
+                </field>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='view_currency_rate_form'>
+            <field name='name'>res.currency.rate.form</field>
+            <field name="model">res.currency.rate</field>
+            <field name="inherit_id" ref="base.view_currency_rate_form"/>
+            <field name='arch' type='xml'>
+                <field name="rate" position="after">
+                    <field name="inverse_rate"/>
+                </field>
+            </field>
+        </record>
+<!--    <record model='ir.ui.view' id='view_currency_rate_form'>-->
+<!--        <field name='name'>res.currency.rate.form</field>-->
+<!--        <field name="model">res.currency.rate</field>-->
+<!--        <field name="inherit_id" ref="hatta_trading.cost_sheet_form_view"/>-->
+<!--        <field name='arch' type='xml'>-->
+<!--            <xpath expr="//sheet/group/field[@name='currency_id']" position="after">-->
+<!--                    <field name="inverse_rate"/>-->
+<!--            </xpath>-->
+<!--        </field>-->
+<!--    </record>-->
+</odoo>

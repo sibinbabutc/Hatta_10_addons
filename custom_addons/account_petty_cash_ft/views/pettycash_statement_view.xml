@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+
+    <record id="action_account_report_general_ledger" model="ir.actions.client">
+        <field name="name">Petty Cash Statement</field>
+        <field name="tag">account_report_generic</field>
+        <field name="context" eval="{'url': '/account_reports/output_format/petty_cash_statement/1', 'model': 'account.pettycash.statement'}" />
+    </record>
+
+</odoo>

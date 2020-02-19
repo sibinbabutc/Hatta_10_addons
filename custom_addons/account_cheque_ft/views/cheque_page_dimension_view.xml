@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="cheque_format_form_view" model="ir.ui.view">
+        <field name="name">Cheque Format Form View</field>
+        <field name="model">cheque.format</field>
+        <field name="arch" type="xml">
+            <form string="Cheque Format">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <!--<group>-->
+                            <!--<field name="page_height"/>-->
+                            <!--<field name="page_width"/>-->
+                        <!--</group>-->
+                        <group string="Payee Name">
+                            <field name="payee_tm"/>
+                            <field name="payee_lm"/>
+                            <field name="payee_fs"/>
+                        </group>
+                        <group string="Cheque Date">
+                            <field name="date_tm"/>
+                            <field name="date_lm"/>
+                            <field name="date_fs"/>
+                            <!--<field name="date_cs"/>-->
+                        </group>
+                        <group string="Amount in Words">
+                            <field name="amt_word_tm"/>
+                            <field name="amt_word_lm"/>
+                            <field name="amt_word_fs"/>
+                            <!--<field name="amt_word_cs"/>-->
+                        </group>
+                        <group string="Amount">
+                            <field name="amt_tm"/>
+                            <field name="amt_lm"/>
+                            <field name="amt_fs"/>
+                            <!--<field name="amt_cs"/>-->
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="cheque_format_tree_view" model="ir.ui.view">
+        <field name="name">Cheque Format Tree View</field>
+        <field name="model">cheque.format</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_for_create_cheque_format" model="ir.actions.act_window">
+        <field name="name">Cheque Format</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">cheque.format</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+            <!-- Add Text Here -->
+          </p><p>
+            <!-- More details about what a user can do with this object will be OK -->
+          </p>
+        </field>
+    </record>
+    <menuitem id="cheque_configuration_menu"
+              name="Cheque Formats"
+              parent="account.menu_finance_configuration"
+              action="action_for_create_cheque_format"
+              sequence="100"/>
+</odoo>

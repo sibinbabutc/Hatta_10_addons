@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <template id="assets_backend" inherit_id="web.assets_backend" name="web_editor assets for backend">
+        <xpath expr="script[last()]" position="after">
+            <script type="text/javascript" src="/account_voucher_ft/static/src/js/payment.js" />
+        </xpath>
+    </template>
+
+</odoo>

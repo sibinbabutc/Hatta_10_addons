@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <template id="hr_payslip_report_document">
+        <t t-call="report.html_container">
+            <t t-foreach="docs" t-as="o">
+                <div class="page">
+                    <div class="col-xs-12">
+                        <div class="col-xs-6">
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td>Employee Name</td>
+                                    <td><span t-field="o.employee_id"/></td>
+                                </tr>
+                                <tr>
+                                    <td>Employee ID</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Designation</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Joining Date</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Bank Name</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Passport</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Work Permit</td>
+                                    <td></td>
+                                </tr>
+
+
+
+
+
+
+                            </table>
+                        </div>
+                        <div class="col-xs-6">
+
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+
+    <report
+        id="hr_payslip_report"
+        model="hr.payslip"
+        report_type="qweb-pdf"
+        string="Payslip Report"
+        name="hatta_hr.hr_payslip_report_document"
+        file="hatta_hr.hr_payslip_report_document"
+    />
+</odoo>
